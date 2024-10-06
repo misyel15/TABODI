@@ -1,0 +1,256 @@
+body {
+font : 73% Arial;
+color : #666;
+  background-color: #b2fefa; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to right, #b2fefa, #0ed2f7);
+ padding: 20px;
+ 
+}
+			/*WRAP*/
+#container {
+width : 950px;
+margin : 0 auto;
+padding : 0;
+line-height : 1.7em;
+background : #b2fefa;
+color : black;
+border: solid 10px white;
+}
+			/*TOP BANNER*/
+#top {
+margin : 0;
+padding : 0;
+height : 110px;
+background :#0ed2f7;
+border-bottom : 2px solid #fff;
+}
+#top h1 {
+padding : 30px 0 0 430px;
+margin : 0;
+font : 175% georgia, Helvetica, "Trebuchet MS", Tahoma, sans-serif;
+letter-spacing : 5px;
+color : #fff;
+background : transparent;
+}
+#top p {
+padding : 5px 0 0 10px;
+margin : 0;
+}
+
+			/*TOP MENU*/
+#menu {
+margin : 0;
+padding : 0;
+height : 30px;
+}
+			/*RIGHT MENU*/
+#rightnav {
+float : right;
+width : 160px;
+margin : 0;
+padding : 0;
+border-right : 2px solid #fff;
+color : white;
+background :  #009c36;
+}
+			/*MAIN CONTENT*/
+#content {
+margin : 0;
+padding : 0;
+}
+#content2 {
+margin :  0 170px 0 0;
+padding : 0;
+}
+			/*FOOTER*/
+#footer {
+clear : both;
+margin : 0;
+padding : 0.5em;
+border-top : 5px solid #ddffcc;
+color : #fff;
+background :  #009c36;
+text-align: center;
+}
+#footer img {
+float : right;
+}
+* > html #footer img {
+margin : 0;
+}
+#footer a:link, #footer a:visited {
+text-decoration : none;
+color : #eee;
+background : transparent;
+text-decoration : none;
+}
+#footer a:hover {
+text-decoration : none;
+color : #91f975;
+background : inherit;
+}
+#active {
+text-decoration : none;
+background : red;
+color : #aaa;
+}
+			/*TYPOGRAPHY*/
+			
+
+h1{
+  color: black;
+ 
+}
+
+h2 {
+margin : 0;
+padding : 0 0 0 5px;
+font : 130% georgia, Helvetica, "Trebuchet MS", Tahoma, sans-serif;
+letter-spacing : 5px;
+
+color : white;
+text-align: center;
+background : inherit;
+}
+h3 {
+margin : 0;
+padding : 0 0 5px 10px;
+font : 130% georgia, Helvetica, "Trebuchet MS", Tahoma, sans-serif;
+text-transform : uppercase;
+color : #520934;
+background : inherit;
+}
+p {
+padding : 15px;
+margin: 0;
+text-align: justify;
+}
+
+			/*LINKS*/
+a:link, a:visited {
+text-decoration : none;
+color : white;
+
+text-decoration : none;
+}
+a:hover {
+text-decoration : none;
+color : #91f975 ;
+background : inherit;
+}
+a:active {
+text-decoration : none;
+background : inherit;
+color : #aaa;
+}
+a img {
+border : none;
+}
+#navlist li {
+list-style-type : square;
+margin : 0 15px 0 0;
+padding : 0;
+background : inherit;
+color : white;
+}
+			/*IMAGES*/
+.imgright {
+float : right;
+margin : 0 10px 10px 10px;
+padding : 10px;
+}
+.imgleft {
+float : left;
+margin : 0;
+padding : 0;
+
+}
+			/*GALLERY*/
+#gallery {
+height : 125px;
+}
+#gallery img {
+float : left;
+margin-left:3px;
+padding : 5px;
+width: 98%;
+height : 380px;
+}
+			/*CLASS*/
+.happy {
+border-top : 1px solid #808080;
+padding : 10px;
+}
+.clear {
+clear : both;
+overflow : hidden;
+width : 0;
+height : 1px;
+}
+.quote {
+margin : 10px;
+border : 1px solid #91f975;
+padding : 15px;
+color : white;
+background : transparent;
+}
+
+.btn{
+	margin-bottom:20px;
+	margin-right:20px;
+  float: right;
+  background: #009c36 ; 
+  color: black;
+   box-shadow: none; 
+   text-shadow: none; 
+   border: none; 
+   padding: 8px; 
+   text-transform: uppercase;font-family: 'fjalla_oneregular';
+ }
+.btn:hover{
+  background: #91f975;
+  color: black; 
+  transition:all 1s;}
+
+.block h1{
+  color: black;
+  font-size: 20px !important; 
+  line-height: 26px !important;
+   padding-bottom: 10px !important;
+ }
+   .block img{
+  	width: 98%;
+  	height: 300px;
+    margin-left: 7px;
+    
+  }
+  .block p{
+    text-align: justify;
+    color: black;
+	padding:20px;
+
+  }
+  .block h1{
+   margin-left: 10px;
+    color: black;
+
+  }
+  #link {
+	  color: blue;
+	  margin-left: 5px;
+  }
+  #link:hover{
+	  color: red;
+  }
+  #rightnav p {
+	  border: 1px solid white;
+	  border-top:1px solid white;
+	  text-align: justify;
+  }
+  #footp{
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  }
+
+ 
