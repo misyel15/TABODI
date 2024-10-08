@@ -333,7 +333,41 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
 
   	
 </head>
+<script>
+    $(document).ready(function () {
+      $('.carousel').carousel({
+        interval: 3000  // Change slide every 3 seconds
+      });
+    });
+  </script>
+   </script>
 
+<!-- Anti-inspect JavaScript -->
+<script>
+// Disable right-click
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+}, false);
+
+// Disable F12 (Inspect Element) and Ctrl+Shift+I
+document.addEventListener('keydown', function (e) {
+    // F12
+    if (e.keyCode === 123) {
+        e.preventDefault();
+    }
+    // Ctrl + Shift + I
+    if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+        e.preventDefault();
+    }
+}, false);
+
+// Disable Ctrl+U (View Source)
+document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.keyCode === 85) {
+        e.preventDefault();
+    }
+}, false);
+</script>
 </body>
 
 </html>
