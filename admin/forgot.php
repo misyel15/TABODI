@@ -6,9 +6,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include("../db_connect.php");
-include '../includes/style.php'; 
-include '../includes/head.php'; 
+include("db_connect.php");
+include 'includes/style.php'; 
+include 'includes/head.php'; 
 $error = "";
 $msg = "";
 
@@ -16,9 +16,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require '../phpmailer/src/Exception.php';
-require '../phpmailer/src/PHPMailer.php';
-require '../phpmailer/src/SMTP.php';
+require 'phpmailer/src/Exception.php';
+require 'phpmailer/src/PHPMailer.php';
+require 'phpmailer/src/SMTP.php';
 
 function sendemail($email, $reset_token)
 {
