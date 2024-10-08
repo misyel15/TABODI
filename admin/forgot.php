@@ -4,19 +4,25 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include("db_connect.php");
-include 'includes/style.php'; 
-include 'includes/head.php'; 
-$error="";
-$msg="";
+<?php
+session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include("../db_connect.php");
+include '../includes/style.php'; 
+include '../includes/head.php'; 
+$error = "";
+$msg = "";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
+require '../phpmailer/src/Exception.php';
+require '../phpmailer/src/PHPMailer.php';
+require '../phpmailer/src/SMTP.php';
 
 function sendemail($email, $reset_token)
 {
@@ -27,56 +33,30 @@ function sendemail($email, $reset_token)
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'zeninmacky05@gmail.com'; // SMTP username
-        $mail->Password = 'frut mage zsxu mzsd';    // SMTP password
+        $mail->Username = 'your-email@gmail.com'; // SMTP username
+        $mail->Password = 'your-password';        // SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
         //Recipients
-        $mail->setFrom('mccschedsystem@gmail.com', 'MCC SCHED SYSTEM ADMIN');
+        $mail->setFrom('noreply@yourdomain.com', 'Your System');
         $mail->addAddress($email);
 
-        //Reset link
-        $resetLink = 'http://localhost/SCHED4/admin/reset_password.php?email=' . urlencode($email) . '&token=' . $reset_token;
+        // Reset link
+        $resetLink = 'http://yourdomain.com/reset_password.php?email=' . urlencode($email) . '&token=' . $reset_token;
 
-        //Content
+        // Content
         $mail->isHTML(true);
-        $mail->Subject = 'Here is your link to Reset the password of your MCC SCHED-SYSTEM Account';
+        $mail->Subject = 'Password Reset Request';
         $mail->Body = "
         <html>
-        <head>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                }
-                .container {
-                    width: 80%;
-                    margin: 20px auto;
-                    padding: 20px;
-                    background-color: #fff;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                }
-                .button {
-                    padding: 10px 20px;
-                    background-color: #007bff;
-                    color: #fff;
-                    text-decoration: none;
-                    border-radius: 4px;
-                }
-            </style>
-        </head>
         <body>
-            <div class='container'>
-                <p>Hello,</p>
-                <p>We received a request to reset your password. Click the button below to reset it:</p>
-                <p><a href='" . $resetLink . "' class='button'>Reset Password</a></p>
-                <p>If you did not request a password reset, please ignore this email.</p>
-            </div>
+            <p>Hello,</p>
+            <p>Click the link below to reset your password:</p>
+            <a href='" . $resetLink . "'>Reset Password</a>
+            <p>If you did not request this, please ignore this email.</p>
         </body>
-        </html>
-        ";
+        </html>";
 
         $mail->send();
         return true;
@@ -96,34 +76,16 @@ if (isset($_POST['reset'])) {
 
         if (mysqli_query($conn, $update) && sendemail($email, $reset_token)) {
             echo '<script>
-                    window.onload = function() {
-                        Swal.fire({
-                            title: "Success!",
-                            text: "Reset password link sent to your email",
-                            icon: "success"
-                        });
-                    };
+                    Swal.fire("Success!", "Reset password link sent to your email", "success");
                   </script>';
         } else {
             echo '<script>
-                    window.onload = function() {
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Failed to send reset password link. Please try again later.",
-                            icon: "error"
-                        });
-                    };
+                    Swal.fire("Error!", "Failed to send reset password link. Please try again.", "error");
                   </script>';
         }
     } else {
         echo '<script>
-                window.onload = function() {
-                    Swal.fire({
-                        title: "Error!",
-                        text: "No account associated with this email. Please check your email.",
-                        icon: "error"
-                    });
-                };
+                Swal.fire("Error!", "No account associated with this email.", "error");
               </script>';
     }
 }
