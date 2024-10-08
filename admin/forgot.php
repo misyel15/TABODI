@@ -5,8 +5,10 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include("db_connect.php");
-include 'includes/style.php';
-include 'includes/head.php';
+include 'includes/style.php'; 
+include 'includes/head.php'; 
+$error="";
+$msg="";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -16,17 +18,17 @@ require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
 require 'phpmailer/src/SMTP.php';
 
-// Function to send email
 function sendemail($email, $reset_token)
 {
     $mail = new PHPMailer(true);
+
     try {
         //Server settings
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'your-email@gmail.com'; // SMTP username
-        $mail->Password = 'your-email-password';   // SMTP password
+        $mail->Username = 'zeninmacky05@gmail.com'; // SMTP username
+        $mail->Password = 'frut mage zsxu mzsd';    // SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
@@ -34,12 +36,12 @@ function sendemail($email, $reset_token)
         $mail->setFrom('mccschedsystem@gmail.com', 'MCC SCHED SYSTEM ADMIN');
         $mail->addAddress($email);
 
-        // Reset link
-        $resetLink = 'http://localhost/SCHED4/admin/reset_password.php?email=' . urlencode($email) . '&token=' . urlencode($reset_token);
+        //Reset link
+        $resetLink = 'http://localhost/SCHED4/admin/reset_password.php?email=' . urlencode($email) . '&token=' . $reset_token;
 
-        // Content
+        //Content
         $mail->isHTML(true);
-        $mail->Subject = 'Reset Password for MCC SCHED-SYSTEM Account';
+        $mail->Subject = 'Here is your link to Reset the password of your MCC SCHED-SYSTEM Account';
         $mail->Body = "
         <html>
         <head>
@@ -79,12 +81,10 @@ function sendemail($email, $reset_token)
         $mail->send();
         return true;
     } catch (Exception $e) {
-        echo "Mailer Error: {$mail->ErrorInfo}";  // Output PHPMailer error for debugging
         return false;
     }
 }
 
-// Handle form submission
 if (isset($_POST['reset'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $check = "SELECT * FROM users WHERE email = '$email'";
@@ -128,42 +128,21 @@ if (isset($_POST['reset'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- Required meta tags-->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="au theme template">
-    <meta name="author" content="Hau Nguyen">
-    <meta name="keywords" content="au theme template">
-
-    <title>MCC Faculty Scheduling</title>
-    <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/png">
-
-    <!-- Fontfaces CSS-->
-    <link href="css/font-face.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
-    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
-
-    <!-- Bootstrap CSS-->
-    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
-
-    <!-- Vendor CSS-->
-    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
-    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
-    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
-
-    <!-- Main CSS-->
-    <link href="css/theme.css" rel="stylesheet" media="all">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin | Forgot Password</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
+        /* Main layout adjustments */
         body {
             background-color: #f4f4f4;
             font-family: 'Source Sans Pro', sans-serif;
@@ -212,6 +191,7 @@ if (isset($_POST['reset'])) {
             border: none;
         }
 
+        /* Logo styling */
         #logo-img {
             width: 5em;
             height: 5em;
@@ -220,6 +200,7 @@ if (isset($_POST['reset'])) {
             border-radius: 50%;
         }
 
+        /* Make the layout responsive */
         @media (max-width: 576px) {
             .card-body {
                 padding: 1rem;
@@ -244,7 +225,6 @@ if (isset($_POST['reset'])) {
         }
     </style>
 </head>
-
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="card card-outline card-primary">
@@ -270,18 +250,17 @@ if (isset($_POST['reset'])) {
                 </div>
             </form>
             <p class="mt-3 mb-1">
-                <a href="login.php">Login</a>
+                <a href="index.php">Login</a>
             </p>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS-->
-<script src="vendor/jquery-3.2.1.min.js"></script>
-<script src="vendor/bootstrap-4.1/popper.min.js"></script>
-<script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-<script src="vendor/select2/select2.min.js"></script>
-<script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-<script src="js/main.js"></script>
+<!-- jQuery -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.min.js"></script>
 </body>
 </html>
