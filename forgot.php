@@ -2,7 +2,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +13,6 @@ ini_set('display_errors', 1);
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
-
     <style>
         /* Main layout adjustments */
         body {
@@ -26,19 +24,16 @@ ini_set('display_errors', 1);
             height: 100vh;
             margin: 0;
         }
-
         .login-box {
             width: 100%;
             max-width: 400px;
             margin: 20px;
         }
-
         .card {
             border-radius: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: none;
         }
-
         .card-header {
             background-color: lightgray;
             color: black;
@@ -46,25 +41,20 @@ ini_set('display_errors', 1);
             padding: 1.5rem;
             border-radius: 20px 20px 0 0;
         }
-
         .h1 {
             font-size: 1.75rem;
             font-weight: bold;
         }
-
         .card-body {
             padding: 2rem;
         }
-
         .input-group-text {
             background-color: #f4f4f4;
         }
-
         .btn {
             background-color: #007bff;
             border: none;
         }
-
         /* Logo styling */
         #logo-img {
             width: 5em;
@@ -73,26 +63,21 @@ ini_set('display_errors', 1);
             object-position: center center;
             border-radius: 50%;
         }
-
         /* Make the layout responsive */
         @media (max-width: 576px) {
             .card-body {
                 padding: 1rem;
             }
-
             .h1 {
                 font-size: 1.5rem;
             }
-
             #logo-img {
                 width: 4em;
                 height: 4em;
             }
-
             .btn {
                 padding: 0.75rem 1rem;
             }
-
             .login-box {
                 margin: 10px;
             }
@@ -103,7 +88,7 @@ ini_set('display_errors', 1);
 <div class="login-box">
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <center><img src="assets/uploads/back.png" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img"></center>
+            <img src="assets/uploads/back.png" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img">
             <a class="h1"><b>Retrieve</b>|Account</a>
         </div>
         <div class="card-body">
