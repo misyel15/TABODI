@@ -1,32 +1,22 @@
-<?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+<?php 
 session_start();
 include("db_connect.php");
-
-// Check database connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-// Include necessary files
 include 'includes/style.php'; 
 include 'includes/head.php'; 
+
 $error = "";
 $msg = "";
 
-// Use PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Load PHPMailer classes
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
+require 'phpmailer/src/Exception.php'; // Adjust the path as needed
+require 'phpmailer/src/PHPMailer.php'; // Adjust the path as needed
+require 'phpmailer/src/SMTP.php'; // Adjust the path as needed
 
-// Function to send email
-function sendemail($email, $reset_token) {
+function sendEmail($email, $reset_token)
+{
     $mail = new PHPMailer(true);
 
     try {
@@ -34,8 +24,8 @@ function sendemail($email, $reset_token) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'zeninmacky05@gmail.com'; // SMTP username
-        $mail->Password = 'frut mage zsxu mzsd';    // SMTP password
+        $mail->Username = 'your_email@gmail.com'; // Your SMTP username
+        $mail->Password = 'your_app_password';    // Your SMTP password (use an App Password if using Gmail)
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
@@ -48,7 +38,7 @@ function sendemail($email, $reset_token) {
 
         // Content
         $mail->isHTML(true);
-        $mail->Subject = 'Here is your link to Reset the password of your MCC SCHED-SYSTEM Account';
+        $mail->Subject = 'Reset Your MCC SCHED-SYSTEM Account Password';
         $mail->Body = "
         <html>
         <head>
@@ -88,11 +78,10 @@ function sendemail($email, $reset_token) {
         $mail->send();
         return true;
     } catch (Exception $e) {
-        return false; // Optionally log error message: $mail->ErrorInfo
+        return false;
     }
 }
 
-// Handle form submission
 if (isset($_POST['reset'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $check = "SELECT * FROM users WHERE email = '$email'";
@@ -102,12 +91,12 @@ if (isset($_POST['reset'])) {
         $reset_token = bin2hex(random_bytes(10));
         $update = "UPDATE users SET reset_token = '$reset_token' WHERE email = '$email'";
 
-        if (mysqli_query($conn, $update) && sendemail($email, $reset_token)) {
+        if (mysqli_query($conn, $update) && sendEmail($email, $reset_token)) {
             echo '<script>
                     window.onload = function() {
                         Swal.fire({
                             title: "Success!",
-                            text: "Reset password link sent to your email",
+                            text: "Reset password link sent to your email.",
                             icon: "success"
                         });
                     };
@@ -137,45 +126,27 @@ if (isset($_POST['reset'])) {
 }
 ?>
 
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="School Faculty Scheduling System">
     <meta name="author" content="Your Name">
     <meta name="keywords" content="School, Faculty, Scheduling, System">
 
-    <!-- Title Page -->
-    <title>Login</title>
+    <title>Password Reset</title>
     <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
-    <!-- Fontfaces CSS -->
     <link href="css/font-face.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
-    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
-
-    <!-- Bootstrap CSS -->
     <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
-
-    <!-- Vendor CSS -->
-    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
-    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
-    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
-    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
-    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
-    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
-    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
-
-    <!-- Main CSS -->
-    <link href="css/theme.css" rel="stylesheet" media="all">
-
-    <!-- Include SweetAlert CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 
     <style>
-        /* Main layout adjustments */
         body {
             background-color: #f4f4f4;
             font-family: 'Source Sans Pro', sans-serif;
@@ -216,41 +187,13 @@ if (isset($_POST['reset'])) {
             background-color: #007bff;
             border: none;
         }
-        /* Logo styling */
-        #logo-img {
-            width: 5em;
-            height: 5em;
-            object-fit: cover;
-            object-position: center center;
-            border-radius: 50%;
-        }
-        /* Make the layout responsive */
-        @media (max-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-            .h1 {
-                font-size: 1.5rem;
-            }
-            #logo-img {
-                width: 4em;
-                height: 4em;
-            }
-            .btn {
-                padding: 0.75rem 1rem;
-            }
-            .login-box {
-                margin: 10px;
-            }
-        }
     </style>
 </head>
-<body class="hold-transition login-page">
+<body>
 <div class="login-box">
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <img src="assets/uploads/back.png" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img">
-            <a class="h1"><b>Retrieve</b>|Account</a>
+            <a class="h1"><b>Retrieve</b> | Account</a>
         </div>
         <div class="card-body">
             <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
@@ -275,6 +218,6 @@ if (isset($_POST['reset'])) {
 </div>
 
 <!-- Include SweetAlert JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
 </body>
 </html>
