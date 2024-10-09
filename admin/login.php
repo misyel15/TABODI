@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include 'db_connect.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize user input to prevent XSS attacks
@@ -45,21 +45,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="School Faculty Scheduling System">
+    <meta name="author" content="Your Name">
+    <meta name="keywords" content="School, Faculty, Scheduling, System">
+
+    <!-- Title Page-->
     <title>Login</title>
     <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
+    <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
     <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+
+    <!-- Bootstrap CSS-->
     <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
     <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
     <link href="css/theme.css" rel="stylesheet" media="all">
+
+    <!-- Include SweetAlert CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
 </head>
 
+<style>
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.au-input {
+    width: 100%;
+    padding-right: 40px; /* Adjust to make space for the icon */
+}
+
+.eye-icon {
+    position: absolute;
+    right: 10px; /* Adjust according to your design */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+</style>
 <body class="animsition">
     <div class="page-wrapper">
         <div class="page-content--bge5">
@@ -85,12 +124,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <div class="col-sm-13">
+                                        <label for="course" class="control-label">Department</label>
+                                        <select class="form-control" name="course" id="course" required>
+                                            <option value="0" disabled selected>Select Course</option>
+                                            <?php 
+                                            $sql = "SELECT * FROM users";
+                                            $query = $conn->query($sql);
+                                            while($row= $query->fetch_array()):
+                                                $course = $row['course'];
+                                            ?>
+                                            <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
+                                            <?php endwhile; ?>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="login-checkbox">
                                     <label>
                                         <input type="checkbox" name="remember">Remember Me
                                     </label>
                                     <label>
-                                        <a href="#" class="forgot-password-btn" data-toggle="modal" data-target="#forgotPasswordModal">Forgot Password?</a>
+                                        <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
@@ -102,77 +158,123 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Forgot Password Modal -->
-    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="forgot-password-form">
-                        <div class="form-group">
-                            <label for="email">Enter your email address:</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                        </div>
-                        <button type="submit" class="au-btn au-btn--blue">Send Reset Link</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Jquery JS-->
+    <script src="vendor/jquery-3.2.1.min.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
+    <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!-- Vendor JS -->
+    <script src="vendor/slick/slick.min.js"></script>
+    <script src="vendor/wow/wow.min.js"></script>
+    <script src="vendor/animsition/animsition.min.js"></script>
+    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script src="vendor/counter-up/jquery.counterup.min.js"></script>
+    <script src="vendor/circle-progress/circle-progress.min.js"></script>
+    <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="vendor/chartjs/Chart.bundle.min.js"></script>
+    <script src="vendor/select2/select2.min.js"></script>
 
+    <!-- Include SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Main JS-->
+    <script src="js/main.js"></script>
+
+    <!-- Custom JS for Password Toggle and Form Handling -->
     <script>
-        $(document).ready(function () {
-            // Handle login form submission
-            $('#login-form').on('submit', function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: '', // URL to the same page
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        if (response == 1) {
-                            window.location.href = 'dashboard.php'; // Redirect on successful login
-                        } else if (response == 2) {
-                            Swal.fire('Access Denied', 'You are not authorized to log in.', 'error');
-                        } else {
-                            Swal.fire('Login Failed', 'Invalid username or password.', 'error');
-                        }
-                    }
-                });
-            });
+    $(document).ready(function() {
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
 
-            // Handle forgot password form submission
-            $('#forgot-password-form').on('submit', function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: '', // URL to the same page
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        const data = JSON.parse(response);
-                        if (data.success) {
-                            Swal.fire('Email Sent', 'Check your email for the reset link.', 'success');
-                            $('#forgotPasswordModal').modal('hide');
-                        } else {
-                            Swal.fire('Error', 'Email address not found.', 'error');
-                        }
-                    }
-                });
-            });
+        togglePassword.addEventListener('click', function(e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
 
-            // Toggle password visibility
-            $('#togglePassword').on('click', function () {
-                const passwordField = $('#password');
-                const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
-                passwordField.attr('type', type);
-                $(this).toggleClass('fa-eye-slash fa-eye');
+            // Toggle the eye icon classes
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        $('#login-form').submit(function(e) {
+            e.preventDefault();
+            $('#login-form button[type="submit"]').attr('disabled', true).html('Logging in...');
+            if ($(this).find('.alert-danger').length > 0)
+                $(this).find('.alert-danger').remove();
+            
+            $.ajax({
+                url: '', // No URL is needed here; we are submitting to the same page
+                method: 'POST',
+                data: $(this).serialize(),
+                error: function(err) {
+                    console.log(err);
+                    // Display SweetAlert error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong. Please try again later.'
+                    });
+                    $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                },
+                success: function(resp) {
+                    if (resp == 1) {
+                        // Display SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful',
+                            text: 'Redirecting...',
+                            showConfirmButton: true
+                        }).then(() => {
+                            location.href = 'home.php'; // Redirect to the homepage
+                        });
+                    } else if (resp == 2) {
+                        // Display SweetAlert for access denied
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Access Denied',
+                            text: 'You do not have permission to access this area.'
+                        });
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                    } else {
+                        // Display SweetAlert for login failure
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: 'Username or password is incorrect.'
+                        });
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                    }
+                }
             });
         });
+    });
+    </script>
+
+    <!-- Anti-inspect JavaScript -->
+    <script>
+    // Disable right-click
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    }, false);
+
+    // Disable F12 (Inspect Element) and Ctrl+Shift+I
+    document.addEventListener('keydown', function (e) {
+        // F12
+        if (e.keyCode === 123) {
+            e.preventDefault();
+        }
+        // Ctrl + Shift + I
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+            e.preventDefault();
+        }
+    }, false);
+
+    // Disable Ctrl+U (View Source)
+    document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+        }
+    }, false);
     </script>
 </body>
 </html>
