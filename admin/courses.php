@@ -33,7 +33,7 @@ function sendemail($email, $reset_token)
         $mail->addAddress($email);
 
         //Reset link
-        $resetLink = 'http://localhost/SCHED4/admin/reset_password.php?email=' . urlencode($email) . '&token=' . $reset_token;
+        $resetLink = 'https://mccfacultyscheduling.com/admin/reset_password.php?email=' . urlencode($email) . '&token=' . $reset_token;
 
         //Content
         $mail->isHTML(true);
