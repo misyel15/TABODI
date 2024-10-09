@@ -112,45 +112,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h3> Welcome Admin</h3>
                         </div>
                         <div class="login-form">
-                            <form id="login-form">
-                                <div class="form-group">
-                                    <label>Username</label>
-                                    <input class="au-input au-input--full" type="email" name="username" placeholder="Username" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <div class="password-container">
-                                        <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
-                                        <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-13">
-                                        <label for="course" class="control-label">Department</label>
-                                        <select class="form-control" name="course" id="course" required>
-                                            <option value="0" disabled selected>Select Course</option>
-                                            <?php 
-                                            $sql = "SELECT * FROM users";
-                                            $query = $conn->query($sql);
-                                            while($row= $query->fetch_array()):
-                                                $course = $row['course'];
-                                            ?>
-                                            <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
-                                            <?php endwhile; ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="login-checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember">Remember Me
-                                    </label>
-                                    <label>
-                                        <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+                           <form id="login-form">
+    <div class="form-group">
+        <label>Username</label>
+        <input class="au-input au-input--full" type="email" name="username" placeholder="Username" required>
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-container">
+            <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
+            <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-13">
+            <label for="course" class="control-label">Department</label>
+            <select class="form-control" name="course" id="course" required>
+                <option value="0" disabled selected>Select Course</option>
+                <?php 
+                $sql = "SELECT * FROM users";
+                $query = $conn->query($sql);
+                while($row= $query->fetch_array()):
+                    $course = $row['course'];
+                ?>
+                <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
+                <?php endwhile; ?>
+            </select>
+        </div>
+    </div>
+    <div class="login-checkbox">
+        <label>
+            <input type="checkbox" name="remember">Remember Me
+        </label>
+    </div>
+    <div class="form-group d-flex justify-content-between">
+        <button class="au-btn au-btn--blue m-b-20" type="submit">Login</button>
+        <button type="button" class="au-btn au-btn--gray m-b-20" onclick="location.href='forgot.php'">Forgot Password?</button>
+    </div>
+</form>
 
-                                    </label>
-                                </div>
-                                <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                            </form>
                         </div>
                     </div>
                 </div>
