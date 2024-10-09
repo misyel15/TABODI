@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                </div>
                                <div class="form-group d-flex justify-content-between">
                                    <button class="au-btn au-btn--blue m-b-20" type="submit">Login</button>
-                                   <button type="button" class="au-btn au-btn--gray m-b-20" onclick="location.href='forgot.php'">Forgot Password?</button>
+                                   <button type="button" class="au-btn au-btn--gray m-b-20" onclick="location.href='index.php'">Forgot Password?</button>
                                </div>
                            </form>
                         </div>
