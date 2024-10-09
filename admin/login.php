@@ -1,46 +1,70 @@
 <?php
 session_start();
-include 'db_connect.php'; 
+include 'db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize user input to prevent XSS attacks
-    $username = htmlspecialchars(trim($_POST['username']));
-    $password = htmlspecialchars(trim($_POST['password']));
+    if (isset($_POST['email'])) { // Check if the request is for forgot password
+        $email = htmlspecialchars(trim($_POST['email']));
 
-    // Prepare and execute the login query
-    $stmt = $conn->prepare("
-        SELECT id, name, username, dept_id, type FROM users 
-        WHERE username = ? 
-        AND password = ?
-    ");
-    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
-    $stmt->bind_param("ss", $username, $hashed_password);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        // Check if email exists in the database
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $user_data = $result->fetch_assoc();
+        if ($result->num_rows > 0) {
+            // Generate a unique reset token (you should store this in your database)
+            $token = bin2hex(random_bytes(50));
+            // Store the token and its expiration in the database (not shown here)
+            // Send email with reset link (using PHPMailer or similar)
+            $resetLink = "https://yourdomain.com/reset_password.php?token=" . $token;
 
-        // Store only necessary user information in the session
-        $_SESSION['user_id'] = $user_data['id'];
-        $_SESSION['dept_id'] = $user_data['dept_id'];
-        $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
-        $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
-        $_SESSION['login_type'] = $user_data['type'];
+            // Your email sending logic goes here...
 
-        if ($_SESSION['login_type'] != 1) {
-            session_unset();
-            echo 2; // User is not allowed
+            echo json_encode(['success' => true]);
         } else {
-            echo 1; // Successful login
+            echo json_encode(['success' => false]);
         }
-    } else {
-        echo 3; // Invalid username/password
+        exit;
+    } else { // Handle login request
+        // Sanitize user input to prevent XSS attacks
+        $username = htmlspecialchars(trim($_POST['username']));
+        $password = htmlspecialchars(trim($_POST['password']));
+
+        // Prepare and execute the login query
+        $stmt = $conn->prepare("
+            SELECT id, name, username, dept_id, type FROM users 
+            WHERE username = ? 
+            AND password = ?
+        ");
+        $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
+        $stmt->bind_param("ss", $username, $hashed_password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $user_data = $result->fetch_assoc();
+
+            // Store only necessary user information in the session
+            $_SESSION['user_id'] = $user_data['id'];
+            $_SESSION['dept_id'] = $user_data['dept_id'];
+            $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
+            $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
+            $_SESSION['login_type'] = $user_data['type'];
+
+            if ($_SESSION['login_type'] != 1) {
+                session_unset();
+                echo 2; // User is not allowed
+            } else {
+                echo 1; // Successful login
+            }
+        } else {
+            echo 3; // Invalid username/password
+        }
+        exit;
     }
-    exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -145,8 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <input type="checkbox" name="remember">Remember Me
                                     </label>
                                     <label>
-                                        <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-
+                                        <a href="#" class="forgot-password-btn" data-toggle="modal" data-target="#forgotPasswordModal">Forgot Password?</a>
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
@@ -158,123 +181,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Jquery JS-->
-    <script src="vendor/jquery-3.2.1.min.js"></script>
-    <!-- Bootstrap JS-->
-    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
-    <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <!-- Vendor JS -->
-    <script src="vendor/slick/slick.min.js"></script>
-    <script src="vendor/wow/wow.min.js"></script>
-    <script src="vendor/animsition/animsition.min.js"></script>
-    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <script src="vendor/counter-up/jquery.waypoints.min.js"></script>
-    <script src="vendor/counter-up/jquery.counterup.min.js"></script>
-    <script src="vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="vendor/chartjs/Chart.bundle.min.js"></script>
-    <script src="vendor/select2/select2.min.js"></script>
-
-    <!-- Include SweetAlert JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
-
-    <!-- Main JS-->
-    <script src="js/main.js"></script>
-
-    <!-- Custom JS for Password Toggle and Form Handling -->
-    <script>
-    $(document).ready(function() {
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#password');
-
-        togglePassword.addEventListener('click', function(e) {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-
-            // Toggle the eye icon classes
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        $('#login-form').submit(function(e) {
-            e.preventDefault();
-            $('#login-form button[type="submit"]').attr('disabled', true).html('Logging in...');
-            if ($(this).find('.alert-danger').length > 0)
-                $(this).find('.alert-danger').remove();
-            
-            $.ajax({
-                url: '', // No URL is needed here; we are submitting to the same page
-                method: 'POST',
-                data: $(this).serialize(),
-                error: function(err) {
-                    console.log(err);
-                    // Display SweetAlert error message
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong. Please try again later.'
-                    });
-                    $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                },
-                success: function(resp) {
-                    if (resp == 1) {
-                        // Display SweetAlert success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Login Successful',
-                            text: 'Redirecting...',
-                            showConfirmButton: true
-                        }).then(() => {
-                            location.href = 'home.php'; // Redirect to the homepage
-                        });
-                    } else if (resp == 2) {
-                        // Display SweetAlert for access denied
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Access Denied',
-                            text: 'You do not have permission to access this area.'
-                        });
-                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                    } else {
-                        // Display SweetAlert for login failure
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Login Failed',
-                            text: 'Username or password is incorrect.'
-                        });
-                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                    }
-                }
-            });
-        });
-    });
-    </script>
-
-    <!-- Anti-inspect JavaScript -->
-    <script>
-    // Disable right-click
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    }, false);
-
-    // Disable F12 (Inspect Element) and Ctrl+Shift+I
-    document.addEventListener('keydown', function (e) {
-        // F12
-        if (e.keyCode === 123) {
-            e.preventDefault();
-        }
-        // Ctrl + Shift + I
-        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-            e.preventDefault();
-        }
-    }, false);
-
-    // Disable Ctrl+U (View Source)
-    document.addEventListener('keydown', function (e) {
-        if (e.ctrlKey && e.keyCode === 85) {
-            e.preventDefault();
-        }
-    }, false);
-    </script>
-</body>
-</html>
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="forgot-password-form">
+                        <div class="form-group">
+                            <label for="email">Enter your email address:</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="course">Select Course</label>
+                            <select class="form-control" name="course" id="course" required>
+                                <option value="0" disabled selected>Select Course</option>
+                                <?php 
+                                $sql = "SELECT * FROM users";
+                                $query = $conn->query($sql);
+                                while($row= $query->fetch_array()):
+                                    $course = $row['course'];
+                                ?>
+                                <option
