@@ -136,7 +136,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                     <ul class="navbar-mobile__list list-unstyled">
                         <li class="has-sub">
                         
-                        <li><a href="forgot.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                         <li><a href="courses.php"><i class="fas fa-chart-bar"></i>Course</a></li>
                         <li><a href="subjects.php"><i class="fas fa-table"></i>Subject</a></li>
                         <li><a href="faculty.php"><i class="far fa-check-square"></i>Faculty</a></li>
@@ -177,7 +177,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         
-                        <li><a href="forgot.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                        <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
                         <li><a href="courses.php"><i class="fas fa-chart-bar"></i>Course</a></li>
                         <li><a href="subjects.php"><i class="fas fa-table"></i>Subject</a></li>
                         <li><a href="faculty.php"><i class="far fa-check-square"></i>Faculty</a></li>
