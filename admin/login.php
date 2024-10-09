@@ -3,65 +3,44 @@ session_start();
 include 'db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['email'])) { // Check if the request is for forgot password
-        $email = htmlspecialchars(trim($_POST['email']));
+    // Sanitize user input to prevent XSS attacks
+    $username = htmlspecialchars(trim($_POST['username']));
+    $password = htmlspecialchars(trim($_POST['password']));
 
-        // Check if email exists in the database
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    // Prepare and execute the login query
+    $stmt = $conn->prepare("
+        SELECT id, name, username, dept_id, type FROM users 
+        WHERE username = ? 
+        AND password = ?
+    ");
+    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
+    $stmt->bind_param("ss", $username, $hashed_password);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            // Generate a unique reset token
-            $token = bin2hex(random_bytes(50));
-            // Store the token and its expiration in the database (not shown here)
-            // Send email with reset link (using PHPMailer or similar)
-            $resetLink = "https://yourdomain.com/reset_password.php?token=" . $token;
+    if ($result->num_rows > 0) {
+        $user_data = $result->fetch_assoc();
 
-            // Your email sending logic goes here...
+        // Store only necessary user information in the session
+        $_SESSION['user_id'] = $user_data['id'];
+        $_SESSION['dept_id'] = $user_data['dept_id'];
+        $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
+        $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
+        $_SESSION['login_type'] = $user_data['type'];
 
-            echo json_encode(['success' => true]);
+        if ($_SESSION['login_type'] != 1) {
+            session_unset();
+            echo 2; // User is not allowed
         } else {
-            echo json_encode(['success' => false]);
+            echo 1; // Successful login
         }
-        exit;
-    } else { // Handle login request
-        $username = htmlspecialchars(trim($_POST['username']));
-        $password = htmlspecialchars(trim($_POST['password']));
-
-        // Prepare and execute the login query
-        $stmt = $conn->prepare("
-            SELECT id, name, username, dept_id, type FROM users 
-            WHERE username = ? 
-            AND password = ?
-        ");
-        $hashed_password = md5($password); // Use a stronger hashing algorithm in production
-        $stmt->bind_param("ss", $username, $hashed_password);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $user_data = $result->fetch_assoc();
-            $_SESSION['user_id'] = $user_data['id'];
-            $_SESSION['dept_id'] = $user_data['dept_id'];
-            $_SESSION['username'] = htmlspecialchars($user_data['username']);
-            $_SESSION['name'] = htmlspecialchars($user_data['name']);
-            $_SESSION['login_type'] = $user_data['type'];
-
-            if ($_SESSION['login_type'] != 1) {
-                session_unset();
-                echo 2; // User is not allowed
-            } else {
-                echo 1; // Successful login
-            }
-        } else {
-            echo 3; // Invalid username/password
-        }
-        exit;
+    } else {
+        echo 3; // Invalid username/password
     }
+    exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
