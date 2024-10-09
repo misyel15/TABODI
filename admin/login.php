@@ -7,13 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
 
-    // Prepare and execute the login query
+    // Prepare and execute the login query with hashed password
     $stmt = $conn->prepare("
         SELECT id, name, username, dept_id, type FROM users 
         WHERE username = ? 
         AND password = ?
     ");
-    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
+    $hashed_password = md5($password); // Use md5 or stronger hashing algorithm
     $stmt->bind_param("ss", $username, $hashed_password);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -40,8 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Title Page-->
     <title>Login</title>
     <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
+
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
     <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -107,50 +106,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="login-content">
                         <div class="login-logo">
                             <a href="#">
-                                <img src="assets/uploads/mcclogo.jpg" style="width:150px; height:90px;" alt="CoolAdmin">
+                                <img src="assets/uploads/mcclogo.jpg" style="width:150px; height:90px;" alt="School Logo">
                             </a>
                             <h3> Welcome Admin</h3>
                         </div>
                         <div class="login-form">
-                           <form id="login-form">
-    <div class="form-group">
-        <label>Username</label>
-        <input class="au-input au-input--full" type="email" name="username" placeholder="Username" required>
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <div class="password-container">
-            <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
-            <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-13">
-            <label for="course" class="control-label">Department</label>
-            <select class="form-control" name="course" id="course" required>
-                <option value="0" disabled selected>Select Course</option>
-                <?php 
-                $sql = "SELECT * FROM users";
-                $query = $conn->query($sql);
-                while($row= $query->fetch_array()):
-                    $course = $row['course'];
-                ?>
-                <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-    </div>
-    <div class="login-checkbox">
-        <label>
-            <input type="checkbox" name="remember">Remember Me
-        </label>
-    </div>
-    <div class="form-group d-flex justify-content-between">
-        <button class="au-btn au-btn--blue m-b-20" type="submit">Login</button>
-        <button type="button" class="au-btn au-btn--gray m-b-20" onclick="location.href='forgot.php'">Forgot Password?</button>
-    </div>
-</form>
-
+                           <form id="login-form" method="POST" action="">
+                               <div class="form-group">
+                                   <label>Username</label>
+                                   <input class="au-input au-input--full" type="email" name="username" placeholder="Username" required>
+                               </div>
+                               <div class="form-group">
+                                   <label>Password</label>
+                                   <div class="password-container">
+                                       <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
+                                       <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
+                                   </div>
+                               </div>
+                               <div class="form-group">
+                                   <div class="col-sm-13">
+                                       <label for="course" class="control-label">Department</label>
+                                       <select class="form-control" name="course" id="course" required>
+                                           <option value="0" disabled selected>Select Course</option>
+                                           <?php 
+                                           $sql = "SELECT * FROM users";
+                                           $query = $conn->query($sql);
+                                           while($row = $query->fetch_array()):
+                                               $course = $row['course'];
+                                           ?>
+                                           <option value="<?php echo $course; ?>"><?php echo ucwords($course); ?></option>
+                                           <?php endwhile; ?>
+                                       </select>
+                                   </div>
+                               </div>
+                               <div class="login-checkbox">
+                                   <label>
+                                       <input type="checkbox" name="remember">Remember Me
+                                   </label>
+                               </div>
+                               <div class="form-group d-flex justify-content-between">
+                                   <button class="au-btn au-btn--blue m-b-20" type="submit">Login</button>
+                                   <button type="button" class="au-btn au-btn--gray m-b-20" onclick="location.href='forgot.php'">Forgot Password?</button>
+                               </div>
+                           </form>
                         </div>
                     </div>
                 </div>
@@ -199,48 +197,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $('#login-form').submit(function(e) {
             e.preventDefault();
             $('#login-form button[type="submit"]').attr('disabled', true).html('Logging in...');
-            if ($(this).find('.alert-danger').length > 0)
-                $(this).find('.alert-danger').remove();
-            
+
             $.ajax({
-                url: '', // No URL is needed here; we are submitting to the same page
+                url: 'login.php',
                 method: 'POST',
                 data: $(this).serialize(),
-                error: function(err) {
+                error: err => {
                     console.log(err);
-                    // Display SweetAlert error message
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong. Please try again later.'
-                    });
                     $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                 },
                 success: function(resp) {
                     if (resp == 1) {
-                        // Display SweetAlert success message
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Login Successful',
+                            title: 'Login successful!',
                             text: 'Redirecting...',
-                            showConfirmButton: true
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
                         }).then(() => {
-                            location.href = 'home.php'; // Redirect to the homepage
+                            location.href = 'index.php';
                         });
                     } else if (resp == 2) {
-                        // Display SweetAlert for access denied
                         Swal.fire({
-                            icon: 'error',
                             title: 'Access Denied',
-                            text: 'You do not have permission to access this area.'
+                            text: 'You are not authorized to access this area.',
+                            icon: 'warning',
                         });
                         $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                     } else {
-                        // Display SweetAlert for login failure
                         Swal.fire({
-                            icon: 'error',
                             title: 'Login Failed',
-                            text: 'Username or password is incorrect.'
+                            text: 'Invalid username or password.',
+                            icon: 'error',
                         });
                         $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                     }
@@ -248,33 +236,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         });
     });
-    </script>
-
-    <!-- Anti-inspect JavaScript -->
-    <script>
-    // Disable right-click
-    document.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-    }, false);
-
-    // Disable F12 (Inspect Element) and Ctrl+Shift+I
-    document.addEventListener('keydown', function (e) {
-        // F12
-        if (e.keyCode === 123) {
-            e.preventDefault();
-        }
-        // Ctrl + Shift + I
-        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-            e.preventDefault();
-        }
-    }, false);
-
-    // Disable Ctrl+U (View Source)
-    document.addEventListener('keydown', function (e) {
-        if (e.ctrlKey && e.keyCode === 85) {
-            e.preventDefault();
-        }
-    }, false);
     </script>
 </body>
 </html>
