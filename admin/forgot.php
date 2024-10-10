@@ -6,9 +6,9 @@ include 'includes/head.php';
 $error="";
 $msg="";
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+use PHPMailer\src\PHPMailer;
+use PHPMailer\src\SMTP;
+use PHPMailer\src\Exception;
 
 require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
