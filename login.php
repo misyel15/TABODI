@@ -108,7 +108,7 @@ include 'headers.php';
         <a class="navbar-brand" href="index.php">
         <div class="logo-container d-flex align-items-center">
     <img src="mcclogo.jpg" width="45px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
-    <span class="logo-text ms-3">MCC Scheduling</span>
+    <span class="logo-text ms-3">MFSS</span>
 </div>
      </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
