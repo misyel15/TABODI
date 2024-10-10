@@ -122,11 +122,11 @@ include 'headers.php';
       <a class="nav-link" href="index.php">Home</a>
     </li>
 
-    <li class="nav-item" style="margin-left:15px; font-weight: bold;">
+    <li class="nav-item" style="margin-left:10px; font-weight: bold;">
       <a class="nav-link" href="about.php">About</a>
     </li>
 
-    <li class="nav-item dropdown" style="margin-left:15px; font-weight: bold;">
+    <li class="nav-item dropdown" style="margin-left:10px; font-weight: bold;">
       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Login
       </a>
