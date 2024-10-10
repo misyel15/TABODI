@@ -108,7 +108,7 @@ include 'headers.php';
         <a class="navbar-brand" href="index.php">
         <div class="logo-container d-flex align-items-center">
     <img src="back.png" width="45px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
-    <span class="logo-text ms-2">MCC Faculty Scheduling</span>
+    <span class="logo-text ms-0">MCC Faculty Scheduling</span>
 </div>
      </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,7 +118,7 @@ include 'headers.php';
         
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
   <ul class="navbar-nav ml-auto">
-    <li class="nav-item active" style="margin-left:15px; font-weight: bold;">
+    <li class="nav-item active" style="margin-left:10px; font-weight: bold;">
       <a class="nav-link" href="index.php">Home</a>
     </li>
 
