@@ -107,7 +107,7 @@ include 'headers.php';
       <nav class="navbar navbar-expand-lg custom_nav-container">
         <a class="navbar-brand" href="index.php">
         <div class="logo-container d-flex align-items-center">
-    <img src="back.png" width="50px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
+    <img src="back.png" width="45px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
     <span class="logo-text ms-2">MCC Faculty Scheduling</span>
 </div>
      </a>
