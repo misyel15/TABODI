@@ -17,7 +17,7 @@ include 'headers.php';
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
   <title>Mcc Faculty Scheduling</title>
-  <link rel="icon" type="image/png" href="back.png">
+  <link rel="icon" type="image/png" href="mcclogo.jpg">
   
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap1.css" />
@@ -107,8 +107,8 @@ include 'headers.php';
       <nav class="navbar navbar-expand-lg custom_nav-container">
         <a class="navbar-brand" href="index.php">
         <div class="logo-container d-flex align-items-center">
-    <img src="back.png" width="45px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
-    <span class="logo-text ms-0">MCC Scheduling</span>
+    <img src="mcclogo.jpg" width="45px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
+    <span class="logo-text ms-0" style="margin-left:20px;">MCC Scheduling</span>
 </div>
      </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
