@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php'; 
-require 'vendor/autoload.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize user input to prevent XSS attacks
