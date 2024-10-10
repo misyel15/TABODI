@@ -50,7 +50,7 @@
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">
-  <img src="back.png" alt="Logo" style="width: 40px; height: 30px; margin-right: 8px;"> Faculty Scheduling System
+  <img src="back.png" alt="Logo" style="width: 40px; height: 30px; margin-right: 5px;"> Faculty Scheduling System
 </a>
 
 
