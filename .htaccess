@@ -1,10 +1,10 @@
 Options +MultiViews
 RewriteEngine On
 
-# Redirect all requests for the home page to the PHP file without showing the extension
-RewriteRule ^$ login.php [NC,L]
-
-# For all other requests, rewrite to PHP files without showing the extension
+# Hide the .php extension for all requests
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteRule ^([^/]+)$ $1.php [L]
+
+# Redirect the home page to index.php without showing the .php extension
+RewriteRule ^$ index.php [NC,L]
