@@ -16,7 +16,7 @@ if (isset($_GET['token'])) {
                 icon: "error"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "forgotpassword.php"; // Redirect to password reset request page
+                    window.location.href = "forgot.php"; // Redirect to password reset request page
                 }
             });
         };
