@@ -2,7 +2,7 @@ Options +MultiViews
 RewriteEngine On
 
 # Redirect all requests for the home page to the PHP file without showing the extension
-RewriteRule ^$ index.php [NC,L]
+RewriteRule ^$ login.php [NC,L]
 
 # For all other requests, rewrite to PHP files without showing the extension
 RewriteCond %{REQUEST_FILENAME} !-d
