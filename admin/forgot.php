@@ -1,5 +1,7 @@
 <?php 
 session_start();
+require 'vendor/autoload.php';
+
 include("db_connect.php");
 include 'includes/style.php'; 
 include 'includes/head.php'; 
