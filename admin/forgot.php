@@ -10,9 +10,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require 'phpmailer/src/Exception.php';
-require 'phpmailer/src/PHPMailer.php';
-require 'phpmailer/src/SMTP.php';
+require 'admin/to/phpmailer/src/Exception.php';
+require 'admin/to/phpmailer/src/PHPMailer.php';
+require 'admin/to/phpmailer/src/SMTP.php';
 
 function sendemail($email, $reset_token)
 {
