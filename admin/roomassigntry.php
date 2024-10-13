@@ -196,41 +196,55 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
     </div>
 </div>
 
-						<div class="form-group">
-						<div class="col-sm-12">
-							<label for="" class="control-label">Semester</label>
-							<select name="semester" id="semester" class="form-control">
-								<option value="0" disabled selected>Select Semester</option>
-								<?php 
-										$sql = "SELECT * FROM semester  WHERE dept_id = '$dept_id' ";
-										$query = $conn->query($sql);
-										while($row= $query->fetch_array()):
-											$semester = $row['sem'];
-										?>
-								<option value="<?php echo $semester ?>" <?php echo isset($meta['semester']) && $meta['semester'] == $semester ? 'selected' : '' ?>><?php echo ucwords($semester) ?></option>
-							<?php endwhile; ?>
-							</select>
-							</div>
-						</div>
-					<div class="form-group">
-						<label for="course" class="col-sm-3 control-label">Course</label>
+<div class="form-group">
+    <div class="col-sm-12">
+        <label for="" class="control-label">Semester</label>
+        <select name="semester" id="semester" class="form-control">
+            <option value="0" disabled selected>Select Semester</option>
+            <?php 
+                // Query to fetch semesters based on department
+                $sql = "SELECT * FROM semester WHERE dept_id = '$dept_id'";
+                $query = $conn->query($sql);
 
-						<div class="col-sm-12">
-						<select class="form-control" name="course" id="course" required onchange="populateYear(this.value)">
-							<option value="0" disabled selected>Select Course</option>
-							<?php 
-									$sql = "SELECT * FROM courses  WHERE dept_id = '$dept_id' ";
-									$query = $conn->query($sql);
-									while($row= $query->fetch_array()):
-										$course = $row['course'];
-									?>
-							<option value="<?php echo $course ?>" <?php echo isset($meta['coursedesc']) && $meta['coursedesc'] == $course ? 'selected' : '' ?>><?php echo ucwords($course) ?></option>
-						<?php endwhile; ?>
-						</select>
-						</div>
-					</div>
-				
+                // Loop through the fetched rows and populate the dropdown
+                while ($row = $query->fetch_array()):
+                    $semester = $row['sem'];
+            ?>
+            <option value="<?php echo $semester ?>" 
+                <?php echo isset($meta['semester']) && $meta['semester'] == $semester ? 'selected' : '' ?>>
+                <?php echo ucwords($semester) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+</div>
+
 					<div class="form-group">
+    <label for="course" class="col-sm-3 control-label">Course</label>
+
+    <div class="col-sm-12">
+        <select class="form-control" name="course" id="course" required onchange="populateYear(this.value)">
+            <option value="0" disabled selected>Select Course</option>
+            <?php 
+                // Query to fetch courses based on department
+                $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id'";
+                $query = $conn->query($sql);
+
+                // Loop through the fetched rows and populate the dropdown
+                while ($row = $query->fetch_array()):
+                    $course = $row['course'];
+            ?>
+            <option value="<?php echo $course ?>" 
+                <?php echo isset($meta['coursedesc']) && $meta['coursedesc'] == $course ? 'selected' : '' ?>>
+                <?php echo ucwords($course) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+</div>
+
+				
+<div class="form-group">
     <label for="yrsection" class="col-sm-6 control-label">Section</label>
 
     <div class="col-sm-12">
