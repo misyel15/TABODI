@@ -21,7 +21,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 							<select name="course" id="course" class="custom-select select2">
 							<option value="0" disabled selected>Select Course</option>
 							<?php 
-								$sections = $conn->query("SELECT * FROM courses order by id asc");
+								$sections = $conn->query("SELECT * FROM courses WHERE dept_id = $dept_id ORDER BY id ASC");
 								while($row= $sections->fetch_array()):
 							?>
 								<option value="<?php echo $row['course'] ?>" <?php echo isset($_GET['course']) && $_GET['course'] == $row['course'] ? 'selected' : '' ?>><?php echo $row['course'] ?></option>
@@ -42,7 +42,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 							<select name="semester" id="semester" class="form-control">
 								<option value="0" disabled selected>Select Semester</option>
 								<?php 
-										$sql = "SELECT * FROM semester";
+										$sql = "SELECT * FROM semester WHERE dept_id = $dept_id";
 										$query = $conn->query($sql);
 										while($row= $query->fetch_array()):
 											$semester = $row['sem'];
@@ -93,9 +93,9 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                             if(isset($_GET['secid']) && isset($_GET['semester'])){
                                 $secid = $conn->real_escape_string($_GET['secid']);
                                 $semester = $conn->real_escape_string($_GET['semester']);
-                                $loads = $conn->query("SELECT * FROM loading WHERE course = '$secid' AND semester = '$semester' ORDER BY timeslot_sid ASC");
+                                $loads = $conn->query("SELECT * FROM loading WHERE course = '$secid' AND semester = '$semester' AND dept_id = '$dept_id' ORDER BY timeslot_sid ASC");
                             } else {
-                                $loads = $conn->query("SELECT * FROM loading ORDER BY timeslot_sid ASC");
+                                $loads = $conn->query("SELECT * FROM loading WHERE dept_id = '$dept_id' ORDER BY timeslot_sid ASC");
                             }
 
                             if ($loads) {
