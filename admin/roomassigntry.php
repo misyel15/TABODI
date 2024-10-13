@@ -47,15 +47,15 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                 <tbody>
                     <?php
                     $times = array();
-                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='MW' order by time_id;");
-                    while ($t = $timesdata->fetch_assoc()) {
+                  $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='MW' AND dept_id = '$dept_id' ORDER BY time_id;");
+?>
                         $times[] = $t['timeslot'];
                     }
 
                     foreach ($times as $time) {
                         echo "<tr><td>$time</td>";
                         foreach ($rooms as $room) {
-                            $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='MW'";
+                      $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='MW' AND dept_id='$dept_id'";
                             $result = mysqli_query($conn, $query);
                             if (mysqli_num_rows($result) > 0) {
                                 $row = mysqli_fetch_assoc($result);
@@ -64,7 +64,10 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 $faculty = $row['faculty'];
                                 $load_id = $row['id'];
                                 $scheds = $subject . " " . $course;
-                                $faculty_name = $conn->query("SELECT concat(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id=$faculty")->fetch_assoc()['name'];
+                               $faculty_name = $conn->query("SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
+                               FROM faculty 
+                               WHERE id = $faculty AND dept_id = $dept_id")
+                     ->fetch_assoc()['name'];
                                 $newSched = $scheds . " " . $faculty_name;
                                 echo '<td class="text-center content" data-id="' . $load_id . '" data-scode="' . $subject . '">' 
                                     . $newSched 
@@ -346,7 +349,11 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 						<select name="faculty" id="" class="custom-select select2">
 							<option value="0">All</option>
 						<?php 
-							$faculty = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM faculty order by concat(lastname,', ',firstname,' ',middlename) asc");
+							$faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
+                          FROM faculty 
+                          WHERE dept_id = $dept_id 
+                          ORDER BY name ASC");
+
 							while($row= $faculty->fetch_array()):
 						?>
 							<option value="<?php echo $row['id'] ?>" <?php echo isset($meta['faculty']) && $meta['faculty'] == $row['id'] ? 'selected' : '' ?>><?php echo ucwords($row['name']) ?></option>
@@ -360,7 +367,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 							<select name="semester" id="semester" class="form-control">
 								<option value="0" disabled selected>Select Semester</option>
 								<?php 
-										$sql = "SELECT * FROM semester";
+										$sql = "SELECT * FROM semester WHERE dept_id = $dept_id";
 										$query = $conn->query($sql);
 										while($row= $query->fetch_array()):
 											$semester = $row['sem'];
@@ -377,7 +384,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 						<select class="form-control" name="course" id="course" required onchange="populateYear(this.value)">
 							<option value="0" disabled selected>Select Course</option>
 							<?php 
-									$sql = "SELECT * FROM courses";
+									$sql = "SELECT * FROM courses WHERE dept_id = $dept_id";
 									$query = $conn->query($sql);
 									while($row= $query->fetch_array()):
 										$course = $row['course'];
@@ -396,7 +403,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
             <option value="0" disabled selected>Select Yr. & Sec.</option>
             <?php 
                 // Modify the SQL query to include an ORDER BY clause to sort by year
-                $sql = "SELECT * FROM section ORDER BY year ASC, section ASC";
+                $sql = "SELECT * FROM section WHERE dept_id = $dept_id ORDER BY year ASC, section ASC";
                 $query = $conn->query($sql);
                 while ($row = $query->fetch_array()):
                     $course = $row['course'];
@@ -416,7 +423,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <select class="form-control" name="subject" id="subject" required>
                                     <option value="" disabled selected>Select Subject</option>
 									<?php 
-									$sql = "SELECT * FROM subjects";
+									$sql = "SELECT * FROM subjects WHERE dept_id = $dept_id";
 									$query = $conn->query($sql);
 									while($prow= $query->fetch_array()):
 									?>
@@ -437,7 +444,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <select class="form-control" name="room" id="room" required>
                                     <option value="" disabled selected>Select Room</option>
 									<?php 
-									$sql = "SELECT * FROM roomlist";
+									$sql = "SELECT * FROM roomlist WHERE dept_id = $dept_id";
 									$query = $conn->query($sql);
 									while($row= $query->fetch_array()):
 									?>
@@ -453,7 +460,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 								<select class="form-control" name="days" id="days">
 									<option value="" disabled selected>Select Days of Week</option>
 									<?php 
-									$sql = "SELECT * FROM days";
+									$sql = "SELECT * FROM days WHERE dept_id = $dept_id";
 									$query = $conn->query($sql);
 									while($row= $query->fetch_array()):
 									?>
@@ -470,7 +477,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <select class="form-control" name="timeslot_id" id="timeslot_id" required>
                                     <option value="" disabled selected>Select Timeslot</option>
 									<?php 
-									$sql = "SELECT * FROM timeslot";
+									$sql = "SELECT * FROM timeslot WHERE dept_id = $dept_id";
 									$query = $conn->query($sql);
 									while($row= $query->fetch_array()):
 									?>
