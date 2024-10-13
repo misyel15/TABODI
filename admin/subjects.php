@@ -43,7 +43,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <select id="filter-course" class="form-control">
                                     <option value="">All Courses</option>
                                     <?php 
-                                        $sql = "SELECT * FROM courses";
+                                        $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id' ";
                                         $query = $conn->query($sql);
                                         while($row = $query->fetch_array()):
                                             $course = $row['course'];
@@ -167,7 +167,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                         <select class="form-control" name="course" id="course" required>
                                             <option value="0" disabled selected>Select Course</option>
                                             <?php 
-                                                $sql = "SELECT * FROM courses";
+                                                $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id' ";
                                                 $query = $conn->query($sql);
                                                 while($row= $query->fetch_array()):
                                                     $course = $row['course'];
