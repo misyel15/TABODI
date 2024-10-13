@@ -3,7 +3,7 @@ session_start();
 include('db_connect.php');
 include 'includes/header.php';
 
-// Check if department ID is set in session
+// Ensure department ID is set
 if (!isset($_SESSION['dept_id'])) {
     die("Department ID not set.");
 }
