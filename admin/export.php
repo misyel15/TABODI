@@ -33,7 +33,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 						<select name="sec_id" id="sec_id" class="custom-select select2">
 							<option value="0" disabled selected>Select Yr. & Sec.</option>
 							<?php 
-								$sections = $conn->query("SELECT * FROM section order by year asc");
+								$sections = $conn->query("SELECT * FROM section WHERE dept_id = $dept_id order by year asc");
 								while($row= $sections->fetch_array()):
 							?>
 								<option value="<?php echo $row['year']."".$row['section'] ?>" <?php echo isset($_GET['secid']) && $_GET['secid'] == $row['year']."".$row['section'] ? 'selected' : '' ?>><?php echo $row['year']."".$row['section'] ?></option>
