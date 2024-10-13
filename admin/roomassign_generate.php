@@ -10,14 +10,14 @@ function generateTableContent($conn) {
 
     // Get room names
     $rooms = [];
-    $roomsResult = $conn->query("SELECT room_name FROM roomlist ORDER BY room_id");
+    $roomsResult = $conn->query("SELECT room_name FROM roomlist WHERE dept_id = $dept_id ORDER BY room_id");
     while ($room = $roomsResult->fetch_assoc()) {
         $rooms[] = $room['room_name'];
     }
 
     // Get time slots
     $times = [];
-    $timesResult = $conn->query("SELECT timeslot FROM timeslot WHERE schedule='MW' ORDER BY time_id");
+  $timesResult = $conn->query("SELECT timeslot FROM timeslot WHERE schedule='MW' AND dept_id = '$dept_id' ORDER BY time_id");
     while ($time = $timesResult->fetch_assoc()) {
         $times[] = $time['timeslot'];
     }
@@ -32,7 +32,7 @@ function generateTableContent($conn) {
     foreach ($times as $time) {
         $content .= '<tr><td>' . htmlspecialchars($time) . '</td>';
         foreach ($rooms as $room) {
-            $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='MW'";
+          $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='MW' AND dept_id='$dept_id'";
             $result = $conn->query($query);
 
             if ($result->num_rows > 0) {
@@ -43,7 +43,9 @@ function generateTableContent($conn) {
                 $load_id = $row['id'];
                 $scheds = $subject . " " . $course;
 
-                $facultyQuery = "SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=$faculty";
+                $facultyQuery = "SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
+                 FROM faculty 
+                 WHERE id = $faculty AND dept_id = $dept_id";
                 $facultyData = $conn->query($facultyQuery);
                 $instname = ($facultyData->num_rows > 0) ? $facultyData->fetch_assoc()['name'] : '';
                 $content .= '<td class="text-center" data-id="' . $load_id . '" data-scode="' . $subject . '">' . htmlspecialchars($scheds . " " . $instname) . '</td>';
