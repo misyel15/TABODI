@@ -74,25 +74,30 @@ if (isset($_GET['id'])) {
         <input type="email" name="email" id="email" class="form-control" value="<?php echo isset($meta['email']) ? htmlspecialchars($meta['email']) : ''; ?>" required autocomplete="off">
     </div>
 
-    <!-- Course Field -->
-    <div class="form-group">
-        <div class="col-sm-13">
-            <label for="course" class="control-label">Course</label>
-            <select class="form-control" name="course" id="course" required>
-                <option value="0" disabled selected>Select Course</option>
-                <?php 
-                    $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id' ";
-                    $query = $conn->query($sql);
-                    while($row= $query->fetch_array()):
-                        $course = $row['course'];
-                    ?>
-                <option value="<?php echo  $course ?>" <?php echo (isset($meta['course']) && $meta['course'] == $course) ? 'selected' : ''; ?>>
-                    <?php echo ucwords($course) ?>
-                </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
+  <!-- Course Field -->
+<div class="form-group">
+    <div class="col-sm-12">
+        <label for="course" class="control-label">Course</label>
+        <select class="form-control" name="course" id="course" required>
+            <option value="0" disabled selected>Select Course</option>
+            <?php 
+                // Fetch courses filtered by department
+                $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id'";
+                $query = $conn->query($sql);
+
+                // Loop through each course and populate the dropdown
+                while($row = $query->fetch_array()):
+                    $course = $row['course'];
+            ?>
+            <option value="<?php echo htmlspecialchars($course) ?>" 
+                <?php echo (isset($meta['course']) && $meta['course'] == $course) ? 'selected' : ''; ?>>
+                <?php echo ucwords(htmlspecialchars($course)) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
     </div>
+</div>
+
 
     <!-- Password Field -->
     <div class="form-group">
