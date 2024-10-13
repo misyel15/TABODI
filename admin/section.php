@@ -47,7 +47,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                         <select class="form-control" name="course" id="course" required>
                                             <option value="" disabled selected>Select Course</option>
                                             <?php
-                                            $sql = "SELECT * FROM courses";
+                                            $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id' ";
                                             $query = $conn->query($sql);
                                             while($prow = $query->fetch_assoc()){
                                                 echo "<option value='".$prow['course']."'>".$prow['course']."</option>";
