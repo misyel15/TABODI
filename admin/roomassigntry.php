@@ -203,7 +203,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
             <option value="0" disabled selected>Select Semester</option>
             <?php 
                 // Query to fetch semesters based on department
-                $sql = "SELECT * FROM semester WHERE dept_id = '$dept_id'";
+                $sql = "SELECT * FROM semester";
                 $query = $conn->query($sql);
 
                 // Loop through the fetched rows and populate the dropdown
