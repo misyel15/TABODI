@@ -219,7 +219,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
     </div>
 </div>
 
-					<div class="form-group">
+<div class="form-group">
     <label for="course" class="col-sm-3 control-label">Course</label>
 
     <div class="col-sm-12">
@@ -247,109 +247,144 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 <div class="form-group">
     <label for="yrsection" class="col-sm-6 control-label">Section</label>
 
+  <div class="col-sm-12">
+    <select class="form-control" name="yrsection" id="yrsection" required onchange="populateSubjects()">
+        <option value="0" disabled selected>Select Yr. & Sec.</option>
+        <?php 
+            // Modify the SQL query to filter by dept_id and include an ORDER BY clause to sort by year and section
+            $sql = "SELECT * FROM section WHERE dept_id = '$dept_id' ORDER BY year ASC, section ASC";
+            $query = $conn->query($sql);
+
+            // Loop through the fetched rows and populate the dropdown
+            while ($row = $query->fetch_array()):
+                $yr_section_value = $row['year'] . $row['section']; // Combine year and section for value
+                $yr_section_display = $row['year'] . " " . $row['section']; // Display in a readable format
+        ?>
+        <option value="<?php echo htmlspecialchars($yr_section_value) ?>" 
+            <?php echo isset($meta['course']) && $meta['course'] == $yr_section_value ? 'selected' : '' ?>>
+            <?php echo ucwords(htmlspecialchars($yr_section_display)) ?>
+        </option>
+        <?php endwhile; ?>
+    </select>
+</div>
+
+
+<div class="form-group">
+    <label for="subject" class="col-sm-3 control-label">Subject</label>
+
     <div class="col-sm-12">
-        <select class="form-control" name="yrsection" id="yrsection" required onchange="populateSubjects()">
-            <option value="0" disabled selected>Select Yr. & Sec.</option>
+        <select class="form-control" name="subject" id="subject" required>
+            <option value="" disabled selected>Select Subject</option>
             <?php 
-                // Modify the SQL query to include an ORDER BY clause to sort by year
-                $sql = "SELECT * FROM section ORDER BY year ASC, section ASC";
-                $query = $conn->query($sql);
-                while ($row = $query->fetch_array()):
-                    $course = $row['course'];
+            // Query to fetch subjects based on department
+            $sql = "SELECT * FROM subjects WHERE dept_id = '$dept_id'";
+            $query = $conn->query($sql);
+
+            // Loop through the fetched rows and populate the dropdown
+            while ($prow = $query->fetch_array()):
+                $subject = $prow['subject']; // Get the subject value
             ?>
-            <option value="<?php echo $row['year']."".$row['section'] ?>" <?php echo isset($meta['course']) && $meta['course'] == $row['year']."".$row['section'] ? 'selected' : '' ?>>
-                <?php echo ucwords($row['year']." ".$row['section']) ?>
+            <option value="<?php echo htmlspecialchars($subject) ?>" 
+                <?php echo isset($meta['subjects']) && $meta['subjects'] == $subject ? 'selected' : '' ?>>
+                <?php echo ucwords(htmlspecialchars($subject)) ?>
             </option>
             <?php endwhile; ?>
         </select>
     </div>
 </div>
 
-					<div class="form-group">
-                                <label for="subject" class="col-sm-3 control-label">Subject</label>
+					<input type="hidden" name="description" id="description" value="<?php echo isset($meta['sub_description']) ? htmlspecialchars($meta['sub_description']) : '' ?>">
+<input type="hidden" name="total_units" id="total_units" value="<?php echo isset($meta['total_units']) ? htmlspecialchars($meta['total_units']) : '' ?>">
+<input type="hidden" name="lec_units" id="lec_units" value="<?php echo isset($meta['lec_units']) ? htmlspecialchars($meta['lec_units']) : '' ?>">
+<input type="hidden" name="lab_units" id="lab_units" value="<?php echo isset($meta['lab_units']) ? htmlspecialchars($meta['lab_units']) : '' ?>">
+<input type="hidden" name="room_name" id="room_name" value="<?php echo isset($meta['room_name']) ? htmlspecialchars($meta['room_name']) : '' ?>">
 
-                                <div class="col-sm-12">
-                                <select class="form-control" name="subject" id="subject" required>
-                                    <option value="" disabled selected>Select Subject</option>
-									<?php 
-									$sql = "SELECT * FROM subjects  WHERE dept_id = '$dept_id' ";
-									$query = $conn->query($sql);
-									while($prow= $query->fetch_array()):
-									?>
-							<option value="<?php echo $prow['subject'] ?>" <?php echo isset($meta['subjects']) && $meta['subjects'] == $prow['subject'] ? 'selected' : '' ?>><?php echo ucwords($prow['subject']) ?></option>
-						<?php endwhile; ?>
-                                </select>
-                                </div>
-                        </div>
-						<input type="hidden" name="description" id="description" value="<?php echo isset($meta['sub_description']) ? $meta['sub_description'] : '' ?>">
-						<input type="hidden" name="total_units" id="total_units" value="<?php echo isset($meta['total_units']) ? $meta['total_units'] : '' ?>">
-						<input type="hidden" name="lec_units" id="lec_units" value="<?php echo isset($meta['lec_units']) ? $meta['lec_units'] : '' ?>">
-						<input type="hidden" name="lab_units" id="lab_units" value="<?php echo isset($meta['lab_units']) ? $meta['lab_units'] : '' ?>">
-						<input type="hidden" name="room_name" id="room_name" value="<?php echo isset($meta['room_name']) ? $meta['room_name'] : '' ?>">
-					<div class="form-group">
-                                <label for="room" class="col-sm-3 control-label">Room</label>
+<div class="form-group">
+    <label for="room" class="col-sm-3 control-label">Room</label>
 
-                                <div class="col-sm-12">
-                                <select class="form-control" name="room" id="room" required>
-                                    <option value="" disabled selected>Select Room</option>
-									<?php 
-									$sql = "SELECT * FROM roomlist  WHERE dept_id = '$dept_id' ";
-									$query = $conn->query($sql);
-									while($row= $query->fetch_array()):
-									?>
-							<option value="<?php echo $row['room_id'] ?>" <?php echo isset($meta['rooms']) && $meta['rooms'] == $row['room_id'] ? 'selected' : '' ?>><?php echo ucwords($row['room_name']) ?></option>
-						<?php endwhile; ?>
-                                </select>
-                                </div>
-                            </div>
-							<div class="form-group">
-						<div class="col-sm-12">
-								<label for="specialization" class="control-label">Days of Week</label>
+    <div class="col-sm-12">
+        <select class="form-control" name="room" id="room" required>
+            <option value="" disabled selected>Select Room</option>
+            <?php 
+            // Query to fetch room list based on department
+            $sql = "SELECT * FROM roomlist WHERE dept_id = '$dept_id'";
+            $query = $conn->query($sql);
 
-								<select class="form-control" name="days" id="days">
-									<option value="" disabled selected>Select Days of Week</option>
-									<?php 
-									$sql = "SELECT * FROM days";
-									$query = $conn->query($sql);
-									while($row= $query->fetch_array()):
-									?>
-							<option value="<?php echo $row['days'] ?>" <?php echo isset($meta['days']) && $meta['days'] == $row['days'] ? 'selected' : '' ?>><?php echo ucwords($row['days']) ?></option>
-						<?php endwhile; ?>
-								</select>
-								</div>
-							</div>
-							<input type="hidden" name="timeslot" id="timeslot" value="<?php echo isset($meta['timeslot']) ? $meta['timeslot'] : '' ?>">
-							<div class="form-group">
-                                <label for="room" class="col-sm-3 control-label">Timeslot</label>
+            // Loop through the fetched rows and populate the dropdown
+            while ($row = $query->fetch_array()):
+                $room_id = $row['room_id'];
+                $room_name = $row['room_name'];
+            ?>
+            <option value="<?php echo htmlspecialchars($room_id) ?>" 
+                <?php echo isset($meta['rooms']) && $meta['rooms'] == $room_id ? 'selected' : '' ?>>
+                <?php echo ucwords(htmlspecialchars($room_name)) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-sm-12">
+        <label for="specialization" class="control-label">Days of Week</label>
+        <select class="form-control" name="days" id="days">
+            <option value="" disabled selected>Select Days of Week</option>
+            <?php 
+            // Query to fetch days based on department
+            $sql = "SELECT * FROM days WHERE dept_id = '$dept_id'";
+            $query = $conn->query($sql);
 
-                                <div class="col-sm-12">
-                                <select class="form-control" name="timeslot_id" id="timeslot_id" required>
-                                    <option value="" disabled selected>Select Timeslot</option>
-									<?php 
-									$sql = "SELECT * FROM timeslot";
-									$query = $conn->query($sql);
-									while($row= $query->fetch_array()):
-									?>
-							<option value="<?php echo $row['id'] ?>" <?php echo isset($meta['timeslot_id']) && $meta['timeslot_id'] == $row['id'] ? 'selected' : '' ?>><?php echo ucwords($row['timeslot']." ".$row['schedule']) ?></option>
-						<?php endwhile; ?>
-                                </select>
-                                </div>
-                            </div>
-							<div class="form-group">
-							<div class="col-sm-12">
-								<input type="hidden" class="form-control" name="hours" id="hours" value="<?php echo isset($meta['hours']) ? $meta['hours'] : ''?>">
-								<input type="hidden" name="timeslot_sid" id="timeslot_sid" value="<?php echo isset($meta['timeslot_sid']) ? $meta['timeslot_sid'] : '' ?>">
-							</div>
-							</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-		</form>
-	</div>
+            // Loop through the fetched rows and populate the dropdown
+            while ($row = $query->fetch_array()):
+            ?>
+            <option value="<?php echo htmlspecialchars($row['days']) ?>" 
+                <?php echo isset($meta['days']) && $meta['days'] == $row['days'] ? 'selected' : '' ?>>
+                <?php echo ucwords(htmlspecialchars($row['days'])) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+</div>
+
+<!-- Timeslot Selection -->
+<input type="hidden" name="timeslot" id="timeslot" value="<?php echo isset($meta['timeslot']) ? htmlspecialchars($meta['timeslot']) : '' ?>">
+
+<div class="form-group">
+    <label for="timeslot_id" class="col-sm-3 control-label">Timeslot</label>
+
+    <div class="col-sm-12">
+        <select class="form-control" name="timeslot_id" id="timeslot_id" required>
+            <option value="" disabled selected>Select Timeslot</option>
+            <?php 
+            // Query to fetch timeslots based on department
+            $sql = "SELECT * FROM timeslot WHERE dept_id = '$dept_id'";
+            $query = $conn->query($sql);
+
+            // Loop through the fetched rows and populate the dropdown
+            while ($row = $query->fetch_array()):
+            ?>
+            <option value="<?php echo htmlspecialchars($row['id']) ?>" 
+                <?php echo isset($meta['timeslot_id']) && $meta['timeslot_id'] == $row['id'] ? 'selected' : '' ?>>
+                <?php echo ucwords(htmlspecialchars($row['timeslot']." ".$row['schedule'])) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+</div>
+
+<!-- Hidden Inputs -->
+<div class="form-group">
+    <div class="col-sm-12">
+        <input type="hidden" class="form-control" name="hours" id="hours" value="<?php echo isset($meta['hours']) ? htmlspecialchars($meta['hours']) : '' ?>">
+        <input type="hidden" name="timeslot_sid" id="timeslot_sid" value="<?php echo isset($meta['timeslot_sid']) ? htmlspecialchars($meta['timeslot_sid']) : '' ?>">
+    </div>
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+</div>
+
 <div class="imgF" style="display: none " id="img-clone">
 			<span class="rem badge badge-primary" onclick="rem_func($(this))"><i class="fa fa-times"></i></span>
 	</div>
