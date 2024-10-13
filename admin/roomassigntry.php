@@ -47,7 +47,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                 <tbody>
                     <?php
                     $times = array();
-                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='MW' order by time_id;");
+                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='MW' AND dept_id = '$dept_id' order by time_id;");
                     while ($t = $timesdata->fetch_assoc()) {
                         $times[] = $t['timeslot'];
                     }
