@@ -103,10 +103,10 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                 <thead>
                     <tr>
                         <th class="text-center">Time</th>
-                        <?php
+                       <?php
                         // PHP code to generate table headers
                         $rooms = array();
-                        $roomsdata = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id'order by room_id;");
+                        $roomsdata = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id' order by room_id;");
                         while ($r = $roomsdata->fetch_assoc()) {
                             $rooms[] = $r['room_name'];
                         }
@@ -119,7 +119,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                 <tbody>
                     <?php
                     $times = array();
-                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='TTH' order by time_id;");
+                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='TTH' AND dept_id = '$dept_id' order by time_id;");
                     while ($t = $timesdata->fetch_assoc()) {
                         $times[] = $t['timeslot'];
                     }
