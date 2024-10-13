@@ -1,264 +1,236 @@
-<?php 
+<?php
 session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+include('db_connect.php');
+include 'includes/header.php';
 
-include("db_connect.php");
-include 'includes/style.php'; 
-include 'includes/head.php'; 
-
-// PHPMailer setup
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
-require 'phpmailer/src/Exception.php'; 
-require 'phpmailer/src/PHPMailer.php'; 
-require 'phpmailer/src/SMTP.php'; 
-
-function sendEmail($email, $reset_token) {
-    $mail = new PHPMailer(true);
-    try {
-        // Server settings
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'zeninmacky05@gmail.com'; // SMTP username
-        $mail->Password = 'frut mage zsxu mzsd'; // SMTP password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port = 465;
-
-        // Recipients
-        $mail->setFrom('mccschedsystem@gmail.com', 'MCC SCHED SYSTEM ADMIN');
-        $mail->addAddress($email);
-
-        // Reset link
-        $resetLink = 'https://mccfacultyscheduling.com/admin/reset_password.php?email=' . urlencode($email) . '&token=' . $reset_token;
-
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = 'Here is your link to Reset the password of your MCC SCHED-SYSTEM Account';
-        $mail->Body = "
-        <html>
-        <head>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                }
-                .container {
-                    width: 80%;
-                    margin: 20px auto;
-                    padding: 20px;
-                    background-color: #fff;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                }
-                .button {
-                    padding: 10px 20px;
-                    background-color: #007bff;
-                    color: #fff;
-                    text-decoration: none;
-                    border-radius: 4px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class='container'>
-                <p>Hello,</p>
-                <p>We received a request to reset your password. Click the button below to reset it:</p>
-                <p><a href='" . $resetLink . "' class='button'>Reset Password</a></p>
-                <p>If you did not request a password reset, please ignore this email.</p>
-            </div>
-        </body>
-        </html>
-        ";
-
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        return false;
-    }
-}
-
-if (isset($_POST['reset'])) {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $check = "SELECT * FROM users WHERE email = '$email'";
-    $result = mysqli_query($conn, $check);
-
-    if ($result && mysqli_num_rows($result) == 1) {
-        $reset_token = bin2hex(random_bytes(10));
-        $update = "UPDATE users SET reset_token = '$reset_token' WHERE email = '$email'";
-
-        if (mysqli_query($conn, $update) && sendEmail($email, $reset_token)) {
-            echo '<script>
-                    window.onload = function() {
-                        Swal.fire({
-                            title: "Success!",
-                            text: "Reset password link sent to your email",
-                            icon: "success"
-                        });
-                    };
-                  </script>';
-        } else {
-            echo '<script>
-                    window.onload = function() {
-                        Swal.fire({
-                            title: "Error!",
-                            text: "Failed to send reset password link. Please try again later.",
-                            icon: "error"
-                        });
-                    };
-                  </script>';
-        }
-    } else {
-        echo '<script>
-                window.onload = function() {
-                    Swal.fire({
-                        title: "Error!",
-                        text: "No account associated with this email. Please check your email.",
-                        icon: "error"
-                    });
-                };
-              </script>';
-    }
-}
+// Assuming you store the department ID in the session during login
+// Example: $_SESSION['dept_id'] = $user['dept_id'];
+$dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Required meta tags-->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="School Faculty Scheduling System">
-    <meta name="author" content="Your Name">
-    <meta name="keywords" content="School, Faculty, Scheduling, System">
 
-    <!-- Title Page-->
-    <title>Reset Password</title>
-    <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
-    <!-- Fontfaces CSS-->
-    <link href="css/font-face.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
-    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+<!-- Include SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!-- Bootstrap CSS-->
-    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+<!-- Include DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
 
-    <!-- Vendor CSS-->
-    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
-    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
-    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
-    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
-    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
-    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
-    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+<!-- Include SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Main CSS-->
-    <link href="css/theme.css" rel="stylesheet" media="all">
+<!-- Include DataTables JS -->
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
-    <!-- Include SweetAlert CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-
-    <style>
-        /* Main layout adjustments */
-        body {
-            background-color: #f4f4f4;
-            font-family: 'Source Sans Pro', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-box {
-            width: 100%;
-            max-width: 400px;
-            margin: 20px;
-        }
-        .card {
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-        .card-header {
-            background-color: lightgray;
-            color: black;
-            text-align: center;
-            padding: 1.5rem;
-            border-radius: 20px 20px 0 0;
-        }
-        .h1 {
-            font-size: 1.75rem;
-            font-weight: bold;
-        }
-        .card-body {
-            padding: 2rem;
-        }
-        .input-group-text {
-            background-color: #f4f4f4;
-        }
-        .btn {
-            background-color: #007bff;
-            border: none;
-        }
-        /* Logo styling */
-        #logo-img {
-            width: 5em;
-            height: 5em;
-            object-fit: cover;
-            object-position: center center;
-            border-radius: 50%;
-        }
-        /* Make the layout responsive */
-        @media (max-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-            .h1 {
-                font-size: 1.5rem;
-            }
-            #logo-img {
-                width: 4em;
-                height: 4em;
-            }
-            .btn {
-                padding: 0.75rem 1rem;
-            }
-            .login-box {
-                margin: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="login-box">
-    <div class="card card-outline card-primary">
-        <div class="card-header text-center">
-            <img src="assets/uploads/back.png" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img">
-            <a class="h1"><b>Retrieve</b>|Account</a>
-        </div>
-        <div class="card-body">
-            <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
-            <form action="" method="post">
-                <div class="input-group mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Email" required>
-                    <div class="input-group-append">
-                        <div class="input-group-text"><span class="fas fa-envelope"></span></div>
+<div class="container-fluid"  style="margin-top:100px;">
+    <div class="col-lg-14">
+        <div class="row">
+            <!-- Table Panel -->
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <b>Course List</b>
+                        <span class="">
+                        <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#courseModal"><i class="fa fa-user-plus"></i> New Entry</button>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover" id="course-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Course</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                    $i = 1;
+                                    $course = $conn->query("SELECT * FROM courses WHERE dept_id = '$dept_id' ORDER BY id ASC");
+                                    while($row=$course->fetch_assoc()):
+                                    ?>
+                                    <tr>
+                                        <td class="text-center"><?php echo $i++ ?></td>
+                                        <td class="">
+                                            <p>Course: <b><?php echo $row['course'] ?></b></p>
+                                            <p>Description: <small><b><?php echo $row['description'] ?></b></small></p>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-primary edit_course" type="button" data-id="<?php echo $row['id'] ?>" data-course="<?php echo $row['course'] ?>" data-description="<?php echo $row['description'] ?>" data-toggle="modal" data-target="#courseModal">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete_course" type="button" data-id="<?php echo $row['id'] ?>">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <button type="submit" name="reset" class="btn btn-primary btn-block">Request new password</button>
+            </div>
+            <!-- Table Panel -->
+
+            <!-- Modal -->
+            <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="courseModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="courseModalLabel">Course Form</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="" id="manage-course">
+                            <div class="modal-body">
+                                <input type="hidden" name="id">
+                                <div class="form-group">
+                                    <label class="control-label">Course</label>
+                                    <input type="text" class="form-control" name="course">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Description</label>
+                                    <textarea class="form-control" cols="30" rows='3' name="description"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
+            <!-- Modal -->
         </div>
     </div>
 </div>
 
-<!-- SweetAlert Script -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
-</body>
-</html>
+<style>
+    td {
+        vertical-align: middle !important;
+    }
+</style>
+
+<script>
+    function _reset() {
+        $('#manage-course').get(0).reset();
+        $('#manage-course input,#manage-course textarea').val('');
+    }
+
+    $('#manage-course').submit(function(e) {
+        e.preventDefault();
+
+        // Validation: Check if required fields are filled
+        let course = $("input[name='course']").val().trim();
+        let description = $("textarea[name='description']").val().trim();
+
+        if (course === '' || description === '') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning!',
+                text: 'Please fill out all required fields.',
+                showConfirmButton: true
+            });
+            return; // Stop the form submission if validation fails
+        }
+
+        $.ajax({
+            url: 'ajax.php?action=save_course',
+            data: new FormData($(this)[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            success: function(resp) {
+                if (resp == 1) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Data successfully added!',
+                        showConfirmButton: true
+                    }).then(function() {
+                        location.reload();
+                    });
+                } else if (resp == 2) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Data successfully updated!',
+                        showConfirmButton: true
+                    }).then(function() {
+                        location.reload();
+                    });
+                } else if (resp == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Course already exists!',
+                        showConfirmButton: true
+                    });
+                }
+            }
+        });
+    });
+
+    $('.edit_course').click(function() {
+        start_load();
+        var cat = $('#manage-course');
+        cat.get(0).reset();
+        cat.find("[name='id']").val($(this).attr('data-id'));
+        cat.find("[name='course']").val($(this).attr('data-course'));
+        cat.find("[name='description']").val($(this).attr('data-description'));
+        end_load();
+    });
+
+    $('.delete_course').click(function() {
+        var id = $(this).attr('data-id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                delete_course(id);
+            }
+        });
+    });
+
+    function delete_course(id) {
+        $.ajax({
+            url: 'ajax.php?action=delete_course',
+            method: 'POST',
+            data: { id: id },
+            success: function(resp) {
+                if (resp == 1) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Data successfully deleted.',
+                        showConfirmButton: true
+                    }).then(function() {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
+
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('#course-table').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true
+        });
+    });
+</script>
