@@ -45,7 +45,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         <select name="semester" id="semester" class="form-control">
                             <option value="0" disabled selected>Select Semester</option>
                             <?php 
-                                $semesters = $conn->query("SELECT * FROM semester");
+                            $semesters = $conn->query("SELECT * FROM semester WHERE dept_id = '$dept_id'");
                                 if ($semesters) {
                                     while ($row = $semesters->fetch_array()):
                                         $semester = htmlspecialchars($row['sem']);
@@ -97,7 +97,8 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                     $instid = htmlspecialchars($lrow['faculty']);
                                     $semester = htmlspecialchars($lrow['semester']);
 
-                                    $subjects = $conn->query("SELECT * FROM subjects WHERE subject = '$subject_code'");
+                                  $subjects = $conn->query("SELECT * FROM subjects WHERE subject = '$subject_code' AND dept_id = '$dept_id'");
+
                                     if ($subjects && $srow = $subjects->fetch_assoc()) {
                                         $description = htmlspecialchars($srow['description']);
                                         $units = htmlspecialchars($srow['total_units']);
@@ -105,15 +106,16 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                         $description = 'N/A';
                                         $units = 'N/A';
                                     }
+                                   $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id = '$instid' AND dept_id = '$dept_id'");
 
-                                    $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id = '$instid'");
                                     if ($faculty && $frow = $faculty->fetch_assoc()) {
                                         $instname = htmlspecialchars($frow['name']);
                                     } else {
                                         $instname = 'N/A';
                                     }
 
-                                    $rooms = $conn->query("SELECT * FROM roomlist WHERE room_id = '$room_id'");
+                              $rooms = $conn->query("SELECT * FROM roomlist WHERE room_id = '$room_id' AND dept_id = '$dept_id'");
+
                                     if ($rooms && $roomrow = $rooms->fetch_assoc()) {
                                         $room_name = htmlspecialchars($roomrow['room_name']);
                                     } else {
