@@ -21,7 +21,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 
-<div class="container-fluid"  style="margin-top:100px;">
+<div class="container-fluid" style="margin-top:100px;">
     <div class="col-lg-14">
         <div class="row">
             <!-- Table Panel -->
@@ -29,8 +29,10 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                 <div class="card">
                     <div class="card-header">
                         <b>Course List</b>
-                        <span class="">
-                        <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#courseModal"><i class="fa fa-user-plus"></i> New Entry</button>
+                        <span>
+                            <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#courseModal">
+                                <i class="fa fa-user-plus"></i> New Entry
+                            </button>
                         </span>
                     </div>
                     <div class="card-body">
@@ -47,11 +49,11 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                     <?php 
                                     $i = 1;
                                     $course = $conn->query("SELECT * FROM courses WHERE dept_id = '$dept_id' ORDER BY id ASC");
-                                    while($row=$course->fetch_assoc()):
+                                    while($row = $course->fetch_assoc()):
                                     ?>
                                     <tr>
                                         <td class="text-center"><?php echo $i++ ?></td>
-                                        <td class="">
+                                        <td>
                                             <p>Course: <b><?php echo $row['course'] ?></b></p>
                                             <p>Description: <small><b><?php echo $row['description'] ?></b></small></p>
                                         </td>
@@ -88,11 +90,11 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <input type="hidden" name="id">
                                 <div class="form-group">
                                     <label class="control-label">Course</label>
-                                    <input type="text" class="form-control" name="course">
+                                    <input type="text" class="form-control" name="course" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Description</label>
-                                    <textarea class="form-control" cols="30" rows='3' name="description"></textarea>
+                                    <textarea class="form-control" cols="30" rows='3' name="description" required></textarea>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -117,7 +119,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 <script>
     function _reset() {
         $('#manage-course').get(0).reset();
-        $('#manage-course input,#manage-course textarea').val('');
+        $('#manage-course input, #manage-course textarea').val('');
     }
 
     $('#manage-course').submit(function(e) {
@@ -138,34 +140,42 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
             return; // Stop the form submission if validation fails
         }
 
+        // Prepare the data to send
+        let data = new FormData($(this)[0]);
+
         $.ajax({
             url: 'ajax.php?action=save_course',
-            data: new FormData($(this)[0]),
+            data: data,
             cache: false,
             contentType: false,
             processData: false,
             method: 'POST',
-            type: 'POST',
             success: function(resp) {
-                if (resp == 1 || resp == 2) {
+                console.log("Response:", resp); // Log the response for debugging
+
+                if (resp == 1) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: resp == 1 ? 'Data successfully added!' : 'Data successfully updated!',
+                        text: 'Data successfully added!',
                         showConfirmButton: true
                     }).then(function() {
-                        if (resp == 1) {
-                            // If it's a new entry, reload the page or add the new row to the table dynamically
-                            location.reload();
-                        } else if (resp == 2) {
-                            // If it's an update, modify the existing row
-                            var updatedRow = $('#course-table').find('button[data-id="' + id + '"]').closest('tr');
-                            updatedRow.find('td:eq(1)').html(`
-                                <p>Course: <b>${course}</b></p>
-                                <p>Description: <small><b>${description}</b></small></p>
-                            `);
-                            $('#courseModal').modal('hide');
-                        }
+                        location.reload(); // Reload page on success
+                    });
+                } else if (resp == 2) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Data successfully updated!',
+                        showConfirmButton: true
+                    }).then(function() {
+                        // Update the existing row in the DataTable
+                        var updatedRow = $('#course-table').find('button[data-id="' + id + '"]').closest('tr');
+                        updatedRow.find('td:eq(1)').html(`
+                            <p>Course: <b>${course}</b></p>
+                            <p>Description: <small><b>${description}</b></small></p>
+                        `);
+                        $('#courseModal').modal('hide'); // Hide the modal
                     });
                 } else if (resp == 0) {
                     Swal.fire({
@@ -174,7 +184,23 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         text: 'Course already exists!',
                         showConfirmButton: true
                     });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An unexpected error occurred. Please try again.',
+                        showConfirmButton: true
+                    });
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request. Please try again.',
+                    showConfirmButton: true
+                });
             }
         });
     });
@@ -214,23 +240,33 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                     Swal.fire({
                         icon: 'success',
                         title: 'Deleted!',
-                        text: 'Data successfully deleted.',
+                        text: 'The course has been deleted.',
                         showConfirmButton: true
                     }).then(function() {
-                        location.reload();
+                        location.reload(); // Reload page after deletion
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the course. Please try again.',
+                        showConfirmButton: true
                     });
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request. Please try again.',
+                    showConfirmButton: true
+                });
             }
         });
     }
 
-    // Initialize DataTable
     $(document).ready(function() {
-        $('#course-table').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true
-        });
+        $('#course-table').DataTable(); // Initialize DataTable
     });
 </script>
