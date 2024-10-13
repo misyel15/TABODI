@@ -4,7 +4,6 @@ include('db_connect.php');
 include 'includes/header.php';
 
 // Assuming you store the department ID in the session during login
-// Example: $_SESSION['dept_id'] = $user['dept_id'];
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 ?>
 
@@ -127,6 +126,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         // Validation: Check if required fields are filled
         let course = $("input[name='course']").val().trim();
         let description = $("textarea[name='description']").val().trim();
+        let id = $("input[name='id']").val(); // Get the course ID
 
         if (course === '' || description === '') {
             Swal.fire({
@@ -147,23 +147,25 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
             method: 'POST',
             type: 'POST',
             success: function(resp) {
-                if (resp == 1) {
+                if (resp == 1 || resp == 2) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Data successfully added!',
+                        text: resp == 1 ? 'Data successfully added!' : 'Data successfully updated!',
                         showConfirmButton: true
                     }).then(function() {
-                        location.reload();
-                    });
-                } else if (resp == 2) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Data successfully updated!',
-                        showConfirmButton: true
-                    }).then(function() {
-                        location.reload();
+                        if (resp == 1) {
+                            // If it's a new entry, reload the page or add the new row to the table dynamically
+                            location.reload();
+                        } else if (resp == 2) {
+                            // If it's an update, modify the existing row
+                            var updatedRow = $('#course-table').find('button[data-id="' + id + '"]').closest('tr');
+                            updatedRow.find('td:eq(1)').html(`
+                                <p>Course: <b>${course}</b></p>
+                                <p>Description: <small><b>${description}</b></small></p>
+                            `);
+                            $('#courseModal').modal('hide');
+                        }
                     });
                 } else if (resp == 0) {
                     Swal.fire({
@@ -178,13 +180,11 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
     });
 
     $('.edit_course').click(function() {
-        start_load();
         var cat = $('#manage-course');
         cat.get(0).reset();
         cat.find("[name='id']").val($(this).attr('data-id'));
         cat.find("[name='course']").val($(this).attr('data-course'));
         cat.find("[name='description']").val($(this).attr('data-description'));
-        end_load();
     });
 
     $('.delete_course').click(function() {
