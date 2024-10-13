@@ -346,7 +346,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 						<select name="faculty" id="" class="custom-select select2">
 							<option value="0">All</option>
 						<?php 
-							$faculty = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM faculty order by concat(lastname,', ',firstname,' ',middlename) asc");
+							$faculty = $conn->query("SELECT *,concat(lastname,', ',firstname,' ',middlename) as name FROM faculty order by concat(lastname,', ',firstname,' ',middlename) dept_id = '$dept_id' asc");
 							while($row= $faculty->fetch_array()):
 						?>
 							<option value="<?php echo $row['id'] ?>" <?php echo isset($meta['faculty']) && $meta['faculty'] == $row['id'] ? 'selected' : '' ?>><?php echo ucwords($row['name']) ?></option>
