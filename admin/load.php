@@ -3,6 +3,7 @@ session_start();
 include('db_connect.php');
 include 'includes/header.php';
 
+// Assuming you store the department ID in the session during login
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 ?>
 <!DOCTYPE html>
@@ -42,7 +43,6 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                     <?php
                     if (isset($_GET['id'])) {
                         $fid = $_GET['id'];
-
                         $stmt = $conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id = ? AND dept_id = ?");
                         $stmt->bind_param("ii", $fid, $dept_id); // Bind both fid and dept_id as integers
                         $stmt->execute();
@@ -70,7 +70,6 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                             <select name="faculty_id" id="faculty_id" class="custom-select select2">
                                 <option value=""></option>
                                 <?php
-                                // Fetch faculty members of the current department
                                 $stmt = $conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE dept_id = ? ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC");
                                 $stmt->bind_param("i", $dept_id); // Bind dept_id as integer
                                 $stmt->execute();
@@ -108,13 +107,14 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <?php
                                 if (isset($_GET['id'])) {
                                     $faculty_id = $_GET['id'];
-                                    // Fetch the loading data for the selected faculty and department
                                     $stmt = $conn->prepare("SELECT * FROM loading WHERE faculty = ? AND dept_id = ? ORDER BY timeslot_sid ASC");
                                     $stmt->bind_param("ii", $faculty_id, $dept_id); // Bind faculty_id and dept_id as integers
                                     $stmt->execute();
                                     $loads = $stmt->get_result();
 
-                                    if ($loads) {
+                                    if ($loads && $loads->num_rows > 0) { // Check if there are scheduled loads
+                                        $sumtu = 0;
+                                        $sumh = 0;
                                         while ($lrow = $loads->fetch_assoc()) {
                                             $days = $lrow['days'];
                                             $timeslot = $lrow['timeslot'];
@@ -208,7 +208,14 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                                 <td class="text-center">' . htmlspecialchars($sumh) . '</td>
                                             </tr>';
                                     } else {
-                                        echo '<tr><td colspan="9" class="text-center">No loading found for this instructor.</td></tr>';
+                                        // No scheduled loads found, display a message in a box
+                                        echo '<tr>
+                                                <td colspan="9" class="text-center">
+                                                    <div class="alert alert-warning" role="alert">
+                                                        No scheduled loads found for this instructor.
+                                                    </div>
+                                                </td>
+                                              </tr>';
                                     }
                                     $stmt->close();
                                 }
@@ -221,6 +228,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         </div>
     </div>
 </div>
+<!-- Add Footer and Scripts -->
 
 </body>
 </html>
