@@ -29,7 +29,7 @@ function generateTableContent($conn, $dept_id) {
 
     // Get time slots
     $times = [];
-    $timesResult = $conn->prepare("SELECT timeslot FROM timeslot WHERE schedule='MW' AND dept_id = ? ORDER BY time_id");
+    $timesResult = $conn->prepare("SELECT timeslot FROM timeslot WHERE schedule='TTH' AND dept_id = ? ORDER BY time_id");
     $timesResult->bind_param("i", $dept_id);
     $timesResult->execute();
     $result = $timesResult->get_result();
