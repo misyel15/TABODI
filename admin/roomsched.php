@@ -1,13 +1,15 @@
 <?php 
+session_start();
 include('db_connect.php');
 
 // Handle the AJAX request to fetch schedule data
 if (isset($_POST['room_id'])) {
     $room_id = $_POST['room_id'];
+    $dept_id = $_SESSION['dept_id']; // Get department ID from session
 
-    // Fetch schedule based on room_id
-    $stmt = $conn->prepare("SELECT * FROM loading WHERE rooms = ? ORDER BY timeslot ASC");
-    $stmt->bind_param("i", $room_id);
+    // Fetch schedule based on room_id and dept_id
+    $stmt = $conn->prepare("SELECT * FROM loading WHERE rooms = ? AND dept_id = ? ORDER BY timeslot ASC");
+    $stmt->bind_param("ii", $room_id, $dept_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -15,7 +17,7 @@ if (isset($_POST['room_id'])) {
         $output = '';
         while ($row = $result->fetch_assoc()) {
             $time = htmlspecialchars($row['timeslot']);
-            $monday = isset($row['course']) ? htmlspecialchars($row['course']) : '';
+            $monday = isset($row['Monday']) ? htmlspecialchars($row['Monday']) : '';
             $tuesday = isset($row['Tuesday']) ? htmlspecialchars($row['Tuesday']) : '';
             $wednesday = isset($row['Wednesday']) ? htmlspecialchars($row['Wednesday']) : '';
             $thursday = isset($row['Thursday']) ? htmlspecialchars($row['Thursday']) : '';
@@ -42,21 +44,13 @@ if (isset($_POST['room_id'])) {
 }
 ?>
 
-<?php
-session_start();
-include('db_connect.php');
-include 'includes/header.php';
-
-// Assuming you store the department ID in the session during login
-// Example: $_SESSION['dept_id'] = $user['dept_id'];
-$dept_id = $_SESSION['dept_id']; // Get the department ID from the session
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Schedule Load</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         @media (max-width: 768px) {
             .card-header {
@@ -135,7 +129,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
     </div>
 </div>
 
-<!-- Include jQuery, Bootstrap JS, and your custom JS -->
+<!-- Include jQuery, Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
