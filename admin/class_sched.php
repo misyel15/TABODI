@@ -30,7 +30,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         <select name="sec_id" id="sec_id" class="custom-select select2">
                             <option value=""></option>
                             <?php 
-                                $sections = $conn->query("SELECT * FROM section ORDER BY year ASC");
+                                $sections = $conn->query("SELECT * FROM section dept_id = '$dept_id' ORDER BY year ASC");
                                 if ($sections) {
                                     while($row = $sections->fetch_array()):
                             ?>
@@ -84,7 +84,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 $semester = $conn->real_escape_string($_GET['semester']);
                                 $loads = $conn->query("SELECT * FROM loading WHERE course = '$secid' AND semester = '$semester' ORDER BY timeslot_sid ASC");
                             } else {
-                                $loads = $conn->query("SELECT * FROM loading ORDER BY timeslot_sid ASC");
+                                $loads = $conn->query("SELECT * FROM loading dept_id = '$dept_id' ORDER BY timeslot_sid ASC");
                             }
 
                             if ($loads) {
