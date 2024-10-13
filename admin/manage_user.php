@@ -76,7 +76,7 @@ if (isset($_GET['id'])) {
 
   <!-- Course Field -->
 <div class="form-group">
-    <div class="col-sm-12">
+    <div class="col-sm-13">
         <label for="course" class="control-label">Course</label>
         <select class="form-control" name="course" id="course" required>
             <option value="0" disabled selected>Select Course</option>
