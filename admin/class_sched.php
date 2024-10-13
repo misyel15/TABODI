@@ -4,7 +4,6 @@ include('db_connect.php');
 include 'includes/header.php';
 
 // Assuming you store the department ID in the session during login
-// Example: $_SESSION['dept_id'] = $user['dept_id'];
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 ?>
 <div class="container-fluid" style="margin-top:100px;">
@@ -13,7 +12,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         <div class="card">
             <div class="card-header">
                 <?php
-                    if(isset($_GET['secid']) && isset($_GET['semester'])){
+                    if (isset($_GET['secid']) && isset($_GET['semester'])) {
                         $secid = $conn->real_escape_string($_GET['secid']);
                         $semester = $conn->real_escape_string($_GET['semester']);
                         echo '<b>Class Schedule of '.$secid.' | '.$semester.'</b>';
@@ -30,9 +29,10 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         <select name="sec_id" id="sec_id" class="custom-select select2">
                             <option value=""></option>
                             <?php 
-                                $sections = $conn->query("SELECT * FROM section dept_id = '$dept_id' ORDER BY year ASC");
+                                // Get sections based on dept_id
+                                $sections = $conn->query("SELECT * FROM section WHERE dept_id = '$dept_id' ORDER BY year ASC");
                                 if ($sections) {
-                                    while($row = $sections->fetch_array()):
+                                    while ($row = $sections->fetch_array()):
                             ?>
                             <option value="<?php echo htmlspecialchars($row['year'].$row['section']); ?>" <?php echo isset($_GET['secid']) && $_GET['secid'] == $row['year'].$row['section'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($row['year'].$row['section']); ?></option>
                             <?php 
@@ -47,7 +47,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                             <?php 
                                 $semesters = $conn->query("SELECT * FROM semester");
                                 if ($semesters) {
-                                    while($row = $semesters->fetch_array()):
+                                    while ($row = $semesters->fetch_array()):
                                         $semester = htmlspecialchars($row['sem']);
                             ?>
                             <option value="<?php echo $semester; ?>" <?php echo isset($_GET['semester']) && $_GET['semester'] == $row['sem'] ? 'selected' : ''; ?>><?php echo ucwords($semester); ?></option>
@@ -79,16 +79,16 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         <?php
                             $total_units = 0;  // Initialize total units
                             
-                            if(isset($_GET['secid']) && isset($_GET['semester'])){
+                            if (isset($_GET['secid']) && isset($_GET['semester'])) {
                                 $secid = $conn->real_escape_string($_GET['secid']);
                                 $semester = $conn->real_escape_string($_GET['semester']);
-                                $loads = $conn->query("SELECT * FROM loading WHERE course = '$secid' AND semester = '$semester' ORDER BY timeslot_sid ASC");
+                                $loads = $conn->query("SELECT * FROM loading WHERE course = '$secid' AND semester = '$semester' AND dept_id = '$dept_id' ORDER BY timeslot_sid ASC");
                             } else {
-                                $loads = $conn->query("SELECT * FROM loading dept_id = '$dept_id' ORDER BY timeslot_sid ASC");
+                                $loads = $conn->query("SELECT * FROM loading WHERE dept_id = '$dept_id' ORDER BY timeslot_sid ASC");
                             }
 
                             if ($loads) {
-                                while($lrow = $loads->fetch_assoc()){
+                                while ($lrow = $loads->fetch_assoc()) {
                                     $days = htmlspecialchars($lrow['days']);
                                     $timeslot = htmlspecialchars($lrow['timeslot']);
                                     $course = htmlspecialchars($lrow['course']);
@@ -153,30 +153,29 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
     </div>
     <!-- Table Panel -->
 </div>
-</div>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" role="dialog">
-<div class="modal-dialog">
-  <!-- Modal content-->
-  <div class="modal-content">
-    <div class="modal-header">
-      <h4 class="modal-title">User Details</h4>
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">User Details</h4>
+            </div>
+            <div class="modal-body">
+                <div class="scheddays"><p>Schedule: </p><span></span></div>
+                <div class="time"><p>Time: </p><span></span></div>
+                <div class="course"><p>Course Code: </p><span></span></div>
+                <div class="description"><p>Description: </p><span></span></div>
+                <div class="units"><p>Units: </p><span></span></div>
+                <div class="room"><p>Room: </p><span></span></div>
+                <div class="instructor"><p>Instructor: </p><span></span></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-    <div class="modal-body">
-      <div class="scheddays"><p>Schedule: </p><span></span></div>
-      <div class="time"><p>Time: </p><span></span></div>
-      <div class="course"><p>Course Code: </p><span></span></div>
-      <div class="description"><p>Description: </p><span></span></div>
-      <div class="units"><p>Units: </p><span></span></div>
-      <div class="room"><p>Room: </p><span></span></div>
-      <div class="instructor"><p>Instructor: </p><span></span></div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-    </div>
-  </div>
-</div>
 </div>
 
 <style>
