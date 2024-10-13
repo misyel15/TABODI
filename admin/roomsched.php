@@ -2,6 +2,12 @@
 session_start();
 include('db_connect.php');
 include 'includes/header.php';
+
+// Check if department ID is set in session
+if (!isset($_SESSION['dept_id'])) {
+    die("Department ID not set.");
+}
+
 // Handle the AJAX request to fetch schedule data
 if (isset($_POST['room_id'])) {
     $room_id = $_POST['room_id'];
@@ -17,12 +23,12 @@ if (isset($_POST['room_id'])) {
         $output = '';
         while ($row = $result->fetch_assoc()) {
             $time = htmlspecialchars($row['timeslot']);
-            $monday = isset($row['Monday']) ? htmlspecialchars($row['Monday']) : '';
-            $tuesday = isset($row['Tuesday']) ? htmlspecialchars($row['Tuesday']) : '';
-            $wednesday = isset($row['Wednesday']) ? htmlspecialchars($row['Wednesday']) : '';
-            $thursday = isset($row['Thursday']) ? htmlspecialchars($row['Thursday']) : '';
-            $friday = isset($row['Friday']) ? htmlspecialchars($row['Friday']) : '';
-            $saturday = isset($row['Saturday']) ? htmlspecialchars($row['Saturday']) : '';
+            $monday = htmlspecialchars($row['Monday'] ?? '');
+            $tuesday = htmlspecialchars($row['Tuesday'] ?? '');
+            $wednesday = htmlspecialchars($row['Wednesday'] ?? '');
+            $thursday = htmlspecialchars($row['Thursday'] ?? '');
+            $friday = htmlspecialchars($row['Friday'] ?? '');
+            $saturday = htmlspecialchars($row['Saturday'] ?? '');
 
             // Append rows with the sub-descriptions for each day
             $output .= '<tr>
@@ -56,10 +62,7 @@ if (isset($_POST['room_id'])) {
             .card-header {
                 text-align: center;
             }
-            .table thead th {
-                font-size: 12px;
-            }
-            .table td {
+            .table thead th, .table td {
                 font-size: 12px;
             }
             .modal-dialog {
@@ -74,7 +77,6 @@ if (isset($_POST['room_id'])) {
 </head>
 <body>
 <div class="container-fluid" style="margin-top:100px;">
-    <!-- Table Panel -->
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -87,32 +89,23 @@ if (isset($_POST['room_id'])) {
                         <div class="col-md-4">
                             <select name="room_name" id="room_name" class="custom-select select2" onchange="fetchRoomSchedule(this.value)">
                                 <option value="">Select Room</option>
-                          <?php
-// Prepare the SQL statement to fetch room names based on dept_id
-$stmt = $conn->prepare("SELECT * FROM roomlist WHERE dept_id = '$dept_id' ORDER BY id ASC");
+                                <?php
+                                // Prepare the SQL statement to fetch room names based on dept_id
+                                $stmt = $conn->prepare("SELECT * FROM roomlist WHERE dept_id = ? ORDER BY id ASC");
+                                $stmt->bind_param("i", $dept_id); // Assuming dept_id is an integer
+                                $stmt->execute();
+                                $result = $stmt->get_result();
 
-// Bind the dept_id parameter to the statement
-$stmt->bind_param("i", $dept_id); // Assuming dept_id is an integer
+                                if ($result) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo '<option value="' . htmlspecialchars($row['id']) . '">' . ucwords(htmlspecialchars($row['room_name'])) . '</option>';
+                                    }
+                                } else {
+                                    echo 'Error: ' . htmlspecialchars($conn->error);
+                                }
 
-// Execute the statement
-$stmt->execute();
-$result = $stmt->get_result();
-
-// Check if the result is valid and fetch the rooms
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        // Output each room option
-        echo '<option value="' . htmlspecialchars($row['id']) . '">' . ucwords(htmlspecialchars($row['room_name'])) . '</option>';
-    }
-} else {
-    // Handle errors
-    echo 'Error: ' . htmlspecialchars($conn->error);
-}
-
-// Close the statement
-$stmt->close();
-?>
-
+                                $stmt->close();
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -141,7 +134,6 @@ $stmt->close();
     </div>
 </div>
 
-<!-- Include jQuery, Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -153,11 +145,15 @@ function fetchRoomSchedule(roomId) {
             url: '', // Current page
             type: 'POST',
             data: { room_id: roomId },
+            beforeSend: function() {
+                $('#insloadtable tbody').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>'); // Show loading message
+            },
             success: function(response) {
                 $('#insloadtable tbody').html(response); // Update table body with response data
             },
             error: function(xhr, status, error) {
                 console.log('Error: ' + error);
+                $('#insloadtable tbody').html('<tr><td colspan="7" class="text-center">Error loading schedule.</td></tr>'); // Show error message
             }
         });
     } else {
