@@ -4,7 +4,6 @@ include('db_connect.php');
 include 'includes/header.php';
 
 // Assuming you store the department ID in the session during login
-// Example: $_SESSION['dept_id'] = $user['dept_id'];
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 ?>
 <!-- Include SweetAlert CSS -->
@@ -37,12 +36,6 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         </button>
                     </div>
                     <div class="card-body">
-                        <!-- Search Section -->
-                        <div class="row mb-3">
-                            <div class="col-md-12">
-                                   </div>
-                        </div>
-
                         <!-- Filter Section -->
                         <div class="row mb-3">
                             <div class="col-md-6 col-lg-4">
@@ -129,8 +122,8 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                         </div>
                         <form action="" id="manage-subject">
                             <div class="modal-body">
-                            <input type="hidden" name="id">
-                            <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>"> <!-- Hidden dept_id input -->
+                                <input type="hidden" name="id">
+                                <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>"> <!-- Hidden dept_id input -->
     
                                 <div class="form-group">
                                     <div class="col-sm-12">
@@ -179,16 +172,15 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                                 while($row= $query->fetch_array()):
                                                     $course = $row['course'];
                                                 ?>
-                                            <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
+                                            <option value="<?php echo $course; ?>"><?php echo ucwords($course); ?></option>
                                             <?php endwhile; ?>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
-                                        <label for="cyear" class="control-label">Year</label>
-                                        <select class="form-control" name="cyear" id="cyear">
-                                            <option value="" disabled selected>Select Year</option>
+                                        <label for="cyear" class="control-label">Year Level</label>
+                                        <select class="form-control" name="cyear" id="cyear" required>
                                             <option value="1st">1st</option>
                                             <option value="2nd">2nd</option>
                                             <option value="3rd">3rd</option>
@@ -199,29 +191,23 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <label for="semester" class="control-label">Semester</label>
-                                        <select class="form-control" name="semester" id="semester">
-                                            <option value="" disabled selected>Select Semester</option>
-                                            <option value="1st">1st</option>
-                                            <option value="2nd">2nd</option>
-                                            <option value="3nd">Summer</option>
+                                        <select class="form-control" name="semester" id="semester" required>
+                                            <option value="1st">1st Semester</option>
+                                            <option value="2nd">2nd Semester</option>
+                                            <option value="Summer">Summer</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
-                                        <label for="specialization" class="control-label">Specialization</label>
-                                        <select class="form-control" name="specialization" id="specialization">
-                                            <option value="" disabled selected>Select Specialization</option>
-                                            <option value="Major">Major</option>
-                                            <option value="Minor">Minor</option>
-                                        </select>
+                                        <label class="control-label">Specialization</label>
+                                        <input type="text" class="form-control" name="specialization">
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Save</button>
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                               
+                                <button type="submit" class="btn btn-primary">Save Subject</button>
                             </div>
                         </form>
                     </div>
@@ -237,22 +223,32 @@ $(document).ready(function() {
     // Initialize DataTable
     $('#subjectTable').DataTable();
 
-    // Add new subject
+    // Filter subjects by course and semester
+    $('#filter-course, #filter-semester').on('change', function() {
+        var courseFilter = $('#filter-course').val().toLowerCase();
+        var semesterFilter = $('#filter-semester').val().toLowerCase();
+        
+        $('#subjectTable tbody tr').each(function() {
+            var row = $(this);
+            var course = row.data('course').toLowerCase();
+            var semester = row.data('semester').toLowerCase();
+            
+            if ((courseFilter === '' || course === courseFilter) && (semesterFilter === '' || semester === semesterFilter)) {
+                row.show();
+            } else {
+                row.hide();
+            }
+        });
+    });
+
+    // Add/Edit subject
     $('#manage-subject').submit(function(e) {
         e.preventDefault();
-        
-        // Basic input validation
+
         var subject = $('[name="subject"]').val().trim();
-        var description = $('[name="description"]').val().trim();
-        var units = $('[name="units"]').val().trim();
-        var lec_units = $('[name="lec_units"]').val().trim();
-        var lab_units = $('[name="lab_units"]').val().trim();
-        var hours = $('[name="hours"]').val().trim();
         var course = $('[name="course"]').val();
         var cyear = $('[name="cyear"]').val();
         var semester = $('[name="semester"]').val();
-        var specialization = $('[name="specialization"]').val();
-
         if (!subject || !course || !cyear || !semester) {
             Swal.fire({
                 icon: 'error',
@@ -263,7 +259,7 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url: 'ajax.php?action=save_subject',
+            url: 'ajax.php?action=save_subject', // Change to the actual PHP endpoint
             data: new FormData($(this)[0]),
             method: 'POST',
             processData: false,
@@ -274,17 +270,45 @@ $(document).ready(function() {
                         icon: 'success',
                         title: 'Subject successfully saved!',
                         showConfirmButton: true,
-                        
                     }).then((result) => {
-                        if (result.dismiss === Swal.DismissReason.timer) {
-                            location.reload();
+                        if (result.isConfirmed) {
+                            var id = $('[name="id"]').val();
+                            var isEdit = id != '';  // Check if it's an edit
+
+                            // If it's an edit, update the corresponding row in the table
+                            if (isEdit) {
+                                var row = $('.edit_subject[data-id="'+id+'"]').closest('tr'); // Find the row
+                                
+                                // Update the row content dynamically
+                                row.find('td:eq(1)').html(`
+                                    <p><b>Subject:</b> ${subject}</p>
+                                    <p><small><b>Description:</b> ${$('[name="description"]').val()}</small></p>
+                                    <p><small><b>Total Units:</b> ${$('[name="units"]').val()}</small></p>
+                                    <p><small><b>Lec Units:</b> ${$('[name="lec_units"]').val()}</small></p>
+                                    <p><small><b>Lab Units:</b> ${$('[name="lab_units"]').val()}</small></p>
+                                    <p><small><b>Hours:</b> ${$('[name="hours"]').val()}</small></p>
+                                    <p><small><b>Course:</b> ${course}</small></p>
+                                    <p><small><b>Year:</b> ${cyear}</small></p>
+                                    <p><small><b>Semester:</b> ${semester}</small></p>
+                                    <p><small><b>Specialization:</b> ${$('[name="specialization"]').val()}</small></p>
+                                `);
+
+                                // Update the row's data attributes for filtering
+                                row.attr('data-course', course);
+                                row.attr('data-semester', semester);
+
+                            } else {
+                                location.reload();  // Optionally, refresh the table for new entry
+                            }
+
+                            $('#subjectModal').modal('hide');  // Close the modal
                         }
                     });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error saving subject!',
-                        text: resp // Display the server response in case of error
+                        text: resp
                     });
                 }
             },
@@ -298,7 +322,7 @@ $(document).ready(function() {
         });
     });
 
-    // Edit subject
+    // Populate form for editing subject
     $('.edit_subject').click(function() {
         var form = $('#manage-subject');
         form.find("[name='id']").val($(this).data('id'));
@@ -339,7 +363,7 @@ $(document).ready(function() {
                                 showConfirmButton: true,
                              
                             }).then((result) => {
-                                if (result.dismiss === Swal.DismissReason.timer) {
+                                if (result.isConfirmed) {
                                     location.reload();
                                 }
                             });
@@ -349,28 +373,5 @@ $(document).ready(function() {
             }
         });
     });
-
-    // Filter functionality
-    $('#filter-course, #filter-semester').change(function() {
-        var courseFilter = $('#filter-course').val().toLowerCase();
-        var semesterFilter = $('#filter-semester').val().toLowerCase();
-
-        $('.subject-row').each(function() {
-            var course = $(this).data('course').toLowerCase();
-            var semester = $(this).data('semester').toLowerCase();
-            var show = true;
-
-            if (courseFilter && course !== courseFilter) {
-                show = false;
-            }
-
-            if (semesterFilter && semester !== semesterFilter) {
-                show = false;
-            }
-
-            $(this).toggle(show);
-        });
-    });
 });
-
 </script>
