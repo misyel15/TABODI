@@ -148,7 +148,7 @@ if (isset($_POST['room_id'])) {
 function fetchRoomSchedule(roomId) {
     if(roomId) {
         $.ajax({
-            url: '', // Current page
+            url: ''ajax.php?action=save_schedule', // Current page
             type: 'POST',
             data: { room_id: roomId },
             beforeSend: function() {
