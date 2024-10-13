@@ -202,7 +202,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 							<select name="semester" id="semester" class="form-control">
 								<option value="0" disabled selected>Select Semester</option>
 								<?php 
-										$sql = "SELECT * FROM semester";
+										$sql = "SELECT * FROM semester  WHERE dept_id = '$dept_id' ";
 										$query = $conn->query($sql);
 										while($row= $query->fetch_array()):
 											$semester = $row['sem'];
@@ -219,7 +219,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 						<select class="form-control" name="course" id="course" required onchange="populateYear(this.value)">
 							<option value="0" disabled selected>Select Course</option>
 							<?php 
-									$sql = "SELECT * FROM courses";
+									$sql = "SELECT * FROM courses  WHERE dept_id = '$dept_id' ";
 									$query = $conn->query($sql);
 									while($row= $query->fetch_array()):
 										$course = $row['course'];
@@ -258,7 +258,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <select class="form-control" name="subject" id="subject" required>
                                     <option value="" disabled selected>Select Subject</option>
 									<?php 
-									$sql = "SELECT * FROM subjects";
+									$sql = "SELECT * FROM subjects  WHERE dept_id = '$dept_id' ";
 									$query = $conn->query($sql);
 									while($prow= $query->fetch_array()):
 									?>
@@ -279,7 +279,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <select class="form-control" name="room" id="room" required>
                                     <option value="" disabled selected>Select Room</option>
 									<?php 
-									$sql = "SELECT * FROM roomlist";
+									$sql = "SELECT * FROM roomlist  WHERE dept_id = '$dept_id' ";
 									$query = $conn->query($sql);
 									while($row= $query->fetch_array()):
 									?>
