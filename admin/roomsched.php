@@ -87,20 +87,32 @@ if (isset($_POST['room_id'])) {
                         <div class="col-md-4">
                             <select name="room_name" id="room_name" class="custom-select select2" onchange="fetchRoomSchedule(this.value)">
                                 <option value="">Select Room</option>
-                                <?php
-                                $stmt = $conn->prepare("SELECT id, room_name FROM roomlist WHERE dept_id = '$dept_id' ORDER BY id ASC");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
+                          <?php
+// Prepare the SQL statement to fetch room names based on dept_id
+$stmt = $conn->prepare("SELECT id, room_name FROM roomlist WHERE dept_id = ? ORDER BY id ASC");
 
-                                if ($result) {
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo '<option value="' . htmlspecialchars($row['id']) . '">' . ucwords(htmlspecialchars($row['room_name'])) . '</option>';
-                                    }
-                                } else {
-                                    echo 'Error: ' . $conn->error;
-                                }
-                                $stmt->close();
-                                ?>
+// Bind the dept_id parameter to the statement
+$stmt->bind_param("i", $dept_id); // Assuming dept_id is an integer
+
+// Execute the statement
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Check if the result is valid and fetch the rooms
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        // Output each room option
+        echo '<option value="' . htmlspecialchars($row['id']) . '">' . ucwords(htmlspecialchars($row['room_name'])) . '</option>';
+    }
+} else {
+    // Handle errors
+    echo 'Error: ' . htmlspecialchars($conn->error);
+}
+
+// Close the statement
+$stmt->close();
+?>
+
                             </select>
                         </div>
                     </div>
