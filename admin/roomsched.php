@@ -16,7 +16,13 @@ if (isset($_POST['room_id'])) {
     // Fetch schedule based on room_id and dept_id
     $stmt = $conn->prepare("SELECT * FROM loading WHERE rooms = ? AND dept_id = ? ORDER BY timeslot ASC");
     $stmt->bind_param("ii", $room_id, $dept_id);
-    $stmt->execute();
+    
+    // Execute the statement
+    if (!$stmt->execute()) {
+        echo "Error executing query: " . htmlspecialchars($stmt->error);
+        exit();
+    }
+
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
@@ -85,14 +91,14 @@ if (isset($_POST['room_id'])) {
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <label for="" class="control-label col-md-2 offset-md-2">View Loads of:</label>
+                        <label for="room_name" class="control-label col-md-2 offset-md-2">View Loads of:</label>
                         <div class="col-md-4">
                             <select name="room_name" id="room_name" class="custom-select select2" onchange="fetchRoomSchedule(this.value)">
                                 <option value="">Select Room</option>
                                 <?php
                                 // Prepare the SQL statement to fetch room names based on dept_id
                                 $stmt = $conn->prepare("SELECT * FROM roomlist WHERE dept_id = ? ORDER BY id ASC");
-                                $stmt->bind_param("i", $dept_id); // Assuming dept_id is an integer
+                                $stmt->bind_param("i", $_SESSION['dept_id']); // Assuming dept_id is an integer
                                 $stmt->execute();
                                 $result = $stmt->get_result();
 
@@ -149,6 +155,7 @@ function fetchRoomSchedule(roomId) {
                 $('#insloadtable tbody').html('<tr><td colspan="7" class="text-center">Loading...</td></tr>'); // Show loading message
             },
             success: function(response) {
+                console.log(response); // Log the response for debugging
                 $('#insloadtable tbody').html(response); // Update table body with response data
             },
             error: function(xhr, status, error) {
