@@ -1,7 +1,16 @@
 <?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include('db_connect.php');
 
-function generateTableContent($conn) {
+if (!isset($_SESSION['dept_id'])) {
+    die("Department ID is not set in the session.");
+}
+$dept_id = $_SESSION['dept_id'];
+
+function generateTableContent($conn, $dept_id) {
     $content = '<h1>Monday/Wednesday</h1>
     <table border="0.5" cellspacing="0" cellpadding="3" class="table table-bordered waffle no-grid" id="insloadtable">
         <thead>
@@ -10,15 +19,21 @@ function generateTableContent($conn) {
 
     // Get room names
     $rooms = [];
-    $roomsResult = $conn->query("SELECT room_name FROM roomlist ORDER BY room_id");
-    while ($room = $roomsResult->fetch_assoc()) {
+    $roomsResult = $conn->prepare("SELECT room_name FROM roomlist WHERE dept_id = ? ORDER BY room_id");
+    $roomsResult->bind_param("i", $dept_id);
+    $roomsResult->execute();
+    $result = $roomsResult->get_result();
+    while ($room = $result->fetch_assoc()) {
         $rooms[] = $room['room_name'];
     }
 
     // Get time slots
     $times = [];
-    $timesResult = $conn->query("SELECT timeslot FROM timeslot WHERE schedule='TTH' ORDER BY time_id");
-    while ($time = $timesResult->fetch_assoc()) {
+    $timesResult = $conn->prepare("SELECT timeslot FROM timeslot WHERE schedule='MW' AND dept_id = ? ORDER BY time_id");
+    $timesResult->bind_param("i", $dept_id);
+    $timesResult->execute();
+    $result = $timesResult->get_result();
+    while ($time = $result->fetch_assoc()) {
         $times[] = $time['timeslot'];
     }
 
@@ -32,8 +47,11 @@ function generateTableContent($conn) {
     foreach ($times as $time) {
         $content .= '<tr><td>' . htmlspecialchars($time) . '</td>';
         foreach ($rooms as $room) {
-            $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='TTH'";
-            $result = $conn->query($query);
+            $query = "SELECT * FROM loading WHERE timeslot=? AND room_name=? AND days='TTH' AND dept_id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ssi", $time, $room, $dept_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
@@ -43,8 +61,13 @@ function generateTableContent($conn) {
                 $load_id = $row['id'];
                 $scheds = $subject . " " . $course;
 
-                $facultyQuery = "SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=$faculty";
-                $facultyData = $conn->query($facultyQuery);
+                $facultyQuery = "SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
+                FROM faculty 
+                WHERE id = ? AND dept_id = ?";
+                $facultyStmt = $conn->prepare($facultyQuery);
+                $facultyStmt->bind_param("ii", $faculty, $dept_id);
+                $facultyStmt->execute();
+                $facultyData = $facultyStmt->get_result();
                 $instname = ($facultyData->num_rows > 0) ? $facultyData->fetch_assoc()['name'] : '';
                 $content .= '<td class="text-center" data-id="' . $load_id . '" data-scode="' . $subject . '">' . htmlspecialchars($scheds . " " . $instname) . '</td>';
             } else {
@@ -58,8 +81,8 @@ function generateTableContent($conn) {
     return $content;
 }
 
-function printPage($conn) {
-    $content = generateTableContent($conn);
+function printPage($conn, $dept_id) {
+    $content = generateTableContent($conn, $dept_id);
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -80,8 +103,9 @@ function printPage($conn) {
                 align-items: center;
                 margin-bottom: 20px;
             }
-            .header i {
-                margin-right: 10px;
+            .header img {
+                width: 100%;
+                height: 20%;
             }
             table {
                 width: 100%;
@@ -102,17 +126,12 @@ function printPage($conn) {
             tr:hover {
                 background-color: #e2e2e2;
             }
-            .header img {
-            width: 100%;
-            height: 20%;
-        }
         </style>
     </head>
     <body onload="window.print()">
     <div class="header">
-  <img src="assets/uploads/end.png"  >
-</div>
-
+        <img src="assets/uploads/end.png">
+    </div>
         <?php echo $content; ?>
     </body>
     </html>
@@ -120,5 +139,5 @@ function printPage($conn) {
 }
 
 // Call the function to display the print page
-printPage($conn);
+printPage($conn, $dept_id);
 ?>
