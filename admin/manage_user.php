@@ -81,7 +81,7 @@ if (isset($_GET['id'])) {
             <select class="form-control" name="course" id="course" required>
                 <option value="0" disabled selected>Select Course</option>
                 <?php 
-                    $sql = "SELECT * FROM courses";
+                    $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id' ";
                     $query = $conn->query($sql);
                     while($row= $query->fetch_array()):
                         $course = $row['course'];
