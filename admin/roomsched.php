@@ -1,7 +1,7 @@
 <?php 
 session_start();
 include('db_connect.php');
-
+include 'includes/header.php';
 // Handle the AJAX request to fetch schedule data
 if (isset($_POST['room_id'])) {
     $room_id = $_POST['room_id'];
@@ -88,7 +88,7 @@ if (isset($_POST['room_id'])) {
                             <select name="room_name" id="room_name" class="custom-select select2" onchange="fetchRoomSchedule(this.value)">
                                 <option value="">Select Room</option>
                                 <?php
-                                $stmt = $conn->prepare("SELECT id, room_name FROM roomlist ORDER BY id ASC");
+                                $stmt = $conn->prepare("SELECT id, room_name FROM roomlist WHERE dept_id = '$dept_id'ORDER BY id ASC");
                                 $stmt->execute();
                                 $result = $stmt->get_result();
 
