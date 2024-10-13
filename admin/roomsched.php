@@ -89,7 +89,7 @@ if (isset($_POST['room_id'])) {
                                 <option value="">Select Room</option>
                           <?php
 // Prepare the SQL statement to fetch room names based on dept_id
-$stmt = $conn->prepare("SELECT id, room_name FROM roomlist WHERE dept_id = ? ORDER BY id ASC");
+$stmt = $conn->prepare("SELECT * FROM roomlist WHERE dept_id = '$dept_id' ORDER BY id ASC");
 
 // Bind the dept_id parameter to the statement
 $stmt->bind_param("i", $dept_id); // Assuming dept_id is an integer
