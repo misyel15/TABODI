@@ -1,14 +1,15 @@
 <?php 
-include 'db_connect.php'; 
 session_start(); // Start the session
-
+include 'db_connect.php'; 
+ include 'includes/header.php';
+include 'includes/header.php'; 
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
 
-include 'includes/header.php'; 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,7 +79,7 @@ include 'includes/header.php';
             }
         }
     </style> 
-    <?php include 'includes/header.php'; ?>
+    
 
 </head>
 <body>
