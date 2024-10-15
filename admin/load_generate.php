@@ -1,6 +1,6 @@
-<?php include('db_connect.php'); ?>
-
 <?php
+include('db_connect.php');
+
 // Function to generate table rows based on the faculty id
 function generateTableContent($conn, $id) {
     $content = '';
@@ -80,14 +80,21 @@ $id = $_GET['id']; // Get faculty ID from URL parameter
 
 // Function to print the page content
 function printPage($conn, $id) {
-    $content = generateTableContent($conn, $id); // Generate the table content
+    // Fetch the instructor's name
+    $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=" . $id);
+    $frow = $faculty->fetch_assoc();
+    $instname = $frow['name'];
+
+    // Generate the table content
+    $content = generateTableContent($conn, $id); 
+
     ?>
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>.</title>
+        <title>Instructor's Load</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
             body {
@@ -124,11 +131,20 @@ function printPage($conn, $id) {
                 width: 100%;
                 height: 20%;
             }
+            .instname {
+                font-weight: bold;
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
         </style>
     </head>
     <body onload="window.print()">
         <div class="header">
             <img src="assets/uploads/end.png" alt="Logo">
+        </div>
+
+        <div class="instname">
+            Instructor's Load: <?php echo htmlspecialchars($instname); ?>
         </div>
 
         <table>
