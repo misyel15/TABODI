@@ -219,23 +219,39 @@ $dept_id = $_SESSION['dept_id']; // Assuming dept_id is set during login
     </div>
     <!-- /Table Panel -->
 </div>
-
 <script>
-$(document).ready(function() {
     $('#faculty_id').change(function() {
-        location.replace('insload.php?id=' + $(this).val());
+        window.location.href = 'index.php?page=load&id=' + $(this).val();
+    });
+
+    $('.edit_schedule').click(function() {
+        uni_modal("Manage Job Post", "manage_schedule.php?id=" + $(this).attr('data-id'), 'mid-large');
+    });
+
+    $('.delete_schedule').click(function() {
+        _conf("Are you sure to delete this schedule?", "delete_schedule", [$(this).attr('data-id')], 'mid-large');
     });
 
     $('#print').click(function() {
-        const facultyId = $(this).attr('data-id');
-        if (facultyId) {
-            const printWindow = window.open('load_generate.php?id' + facultyId, '_blank');
-            printWindow.focus();
-        }
+        window.location.href = 'load_generate.php?id=' + $(this).attr('data-id');
     });
-});
+
+    function delete_schedule($id) {
+        start_load();
+        $.ajax({
+            url: 'ajax.php?action=delete_schedule',
+            method: 'POST',
+            data: { id: $id },
+            success: function(resp) {
+                if (resp == 1) {
+                    alert_toast("Data successfully deleted", 'success');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                }
+            }
+        });
+    }
 </script>
-
-
 </body>
 </html>
