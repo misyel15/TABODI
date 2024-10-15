@@ -1,5 +1,7 @@
 <?php 
 include 'db_connect.php'; 
+ include 'notif.php';
+include 'includes/header.php';
 session_start(); // Start the session
 
 // Check if the user is logged in and has a dept_id
@@ -77,8 +79,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
             }
         }
     </style>
-     <?php include 'notif.php';
-          include 'includes/header.php';  ?>
+    
 </head>
 <body>
     <div class="container main-container" style="margin-top:100px;">
