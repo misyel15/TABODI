@@ -1,7 +1,7 @@
 <?php
 session_start();
 include('db_connect.php');
-include 'includes/header.php';
+
 
 // Assuming you store the department ID in the session during login
 // Example: $_SESSION['dept_id'] = $user['dept_id'];
