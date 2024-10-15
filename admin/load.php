@@ -221,7 +221,7 @@ $dept_id = $_SESSION['dept_id']; // Assuming dept_id is set during login
 </div>
 <script>
     $('#faculty_id').change(function() {
-        location.replace('index.php?id=' + $(this).val());
+        location.replace('load.php?id=' + $(this).val());
     });
 
     $('.edit_schedule').click(function() {
