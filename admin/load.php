@@ -53,9 +53,9 @@ if (isset($_SESSION['dept_id'])) {
                         $fid = $_GET['id'];
                         
                         // Prepare query for faculty name
-                        $stmt = $conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id = ? AND dept_id = ?");
+                        $stmt = $conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id = ?");
                         if ($stmt) {
-                            $stmt->bind_param("ii", $fid, $dept_id); // Bind both fid and dept_id as integers
+                            $stmt->bind_param("ii", $fid,); // Bind both fid and dept_id as integers
                             $stmt->execute();
                             $result = $stmt->get_result();
                             if ($result && $result->num_rows > 0) {
@@ -83,9 +83,9 @@ if (isset($_SESSION['dept_id'])) {
                             <select name="faculty_id" id="faculty_id" class="custom-select select2">
                                 <option value=""></option>
                                 <?php
-                                $stmt = $conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE dept_id = ? ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC");
+                                $stmt = $conn->prepare("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC");
                                 if ($stmt) {
-                                    $stmt->bind_param("i", $dept_id); // Bind dept_id as integer
+                                    $stmt->bind_param("i", $id); // Bind dept_id as integer
                                     $stmt->execute();
                                     $result = $stmt->get_result();
                                     if ($result) {
@@ -123,9 +123,9 @@ if (isset($_SESSION['dept_id'])) {
                                 <?php
                                 if (isset($_GET['id'])) {
                                     $faculty_id = $_GET['id'];
-                                    $stmt = $conn->prepare("SELECT * FROM loading WHERE faculty = ? AND dept_id = ? ORDER BY timeslot_sid ASC");
+                                    $stmt = $conn->prepare("SELECT * FROM loading WHERE faculty = ? ORDER BY timeslot_sid ASC");
                                     if ($stmt) {
-                                        $stmt->bind_param("ii", $faculty_id, $dept_id); // Bind faculty_id and dept_id as integers
+                                        $stmt->bind_param("ii", $faculty_id, ); // Bind faculty_id and dept_id as integers
                                         $stmt->execute();
                                         $loads = $stmt->get_result();
                                         if ($loads && $loads->num_rows > 0) {
