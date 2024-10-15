@@ -1,15 +1,19 @@
 <?php 
 session_start(); // Start the session
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include 'db_connect.php'; 
- include 'notif.php';
+include 'notif.php';
 include 'includes/header.php'; 
+
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
 
-
+$dept_id = $_SESSION['dept_id']; // Get the department ID from session
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,100 +82,50 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                 font-size: 1.5rem;
             }
         }
-    </style> 
-    
-
+    </style>
 </head>
 <body>
     <div class="container main-container" style="margin-top:100px;">
-        <h3 class="my-4"> <p>Welcome, <?php echo $_SESSION['name']; ?>!</p></h3>
+        <h3 class="my-4"> <p>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</p></h3>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-3">
-                    <div class="card" style="box-shadow: 0 0 5px black;">
-                        <div class="card-body">
-                            <div class="icon" style="text-align:right;">
-                                <i class="fa fa-4x fa-school text-secondary" aria-hidden="true"></i>
+                <?php
+                // Create an array of cards for different entities
+                $cards = [
+                    ['title' => 'Number of Rooms', 'icon' => 'fa-school', 'table' => 'roomlist'],
+                    ['title' => 'Number of Instructors', 'icon' => 'fa-user-tie', 'table' => 'faculty'],
+                    ['title' => 'Number of Subjects', 'icon' => 'fa-book-open', 'table' => 'subjects'],
+                    ['title' => 'Number of Courses', 'icon' => 'fa-graduation-cap', 'table' => 'courses']
+                ];
+                
+                foreach ($cards as $card) {
+                    $sql = "SELECT * FROM " . $card['table'] . " WHERE dept_id = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $dept_id);
+                    if ($stmt->execute()) {
+                        $query = $stmt->get_result();
+                        $num_items = $query->num_rows; // Number of items
+                    } else {
+                        echo "Error executing query: " . $stmt->error; // Display error if query fails
+                        $num_items = 0; // Fallback to 0 if there is an error
+                    }
+                    ?>
+                    <div class="col-lg-3">
+                        <div class="card" style="box-shadow: 0 0 5px black;">
+                            <div class="card-body">
+                                <div class="icon" style="text-align:right;">
+                                    <i class="fa fa-4x <?= $card['icon'] ?> text-secondary" aria-hidden="true"></i>
+                                </div>
+                                <h3><?= $num_items ?></h3>
+                                <p><?= $card['title'] ?></p>                
+                                <hr>
+                                <a class="medium text-secondary stretched-link" href="<?= strtolower(str_replace(' ', '', $card['title'])) ?>.php">View Details</a>
                             </div>
-                            <?php
-                                $dept_id = $_SESSION['dept_id']; // Get the department ID from session
-                                $sql = "SELECT * FROM roomlist WHERE dept_id = ?";
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("i", $dept_id); // Bind the dept_id parameter
-                                $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_rooms = $query->num_rows; // Number of rooms
-                                echo "<h3>".$num_rooms."</h3>";
-                            ?> 
-                            <p>Number of Rooms</p>                
-                            <hr>
-                            <a class="medium text-secondary stretched-link" href="room.php">View Details</a>
-                        </div>
-                    </div>              
-                </div>
-                <div class="col-lg-3">
-                    <div class="card" style="box-shadow: 0 0 5px black;">
-                        <div class="card-body">
-                            <div class="icon" style="text-align:right;">
-                                <i class="fa fa-4x fa-user-tie text-secondary" aria-hidden="true"></i>
-                            </div>
-                            <?php
-                                $sql = "SELECT * FROM faculty WHERE dept_id = ?";
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("i", $dept_id);
-                                $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_instructors = $query->num_rows; // Number of instructors
-                                echo "<h3>".$num_instructors."</h3>";
-                            ?>
-                            <p>Number of Instructors</p>  
-                            <hr>
-                            <a class="medium text-secondary stretched-link" href="faculty.php">View Details</a>
-                        </div>
-                    </div>              
-                </div>
-                <div class="col-lg-3">
-                    <div class="card" style="box-shadow: 0 0 5px black;">
-                        <div class="card-body">
-                            <div class="icon" style="text-align:right;">
-                                <i class="fa fa-4x fa-book-open text-secondary" aria-hidden="true"></i>
-                            </div>
-                            <?php
-                                $sql = "SELECT * FROM subjects WHERE dept_id = ?";
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("i", $dept_id);
-                                $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_subjects = $query->num_rows; // Number of subjects
-                                echo "<h3>".$num_subjects."</h3>";
-                            ?>
-                            <p>Number of Subjects</p>  
-                            <hr>
-                            <a class="medium text-secondary stretched-link" href="subjects.php">View Details</a>
-                        </div>
-                    </div>              
-                </div>
-                <div class="col-lg-3">
-                    <div class="card" style="box-shadow: 0 0 5px black;">
-                        <div class="card-body">
-                            <div class="icon" style="text-align:right;">
-                                <i class="fa fa-4x fa-graduation-cap text-secondary" aria-hidden="true"></i>
-                            </div>
-                            <?php
-                                $sql = "SELECT * FROM courses WHERE dept_id = ?";
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("i", $dept_id);
-                                $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_courses = $query->num_rows; // Number of courses
-                                echo "<h3>".$num_courses."</h3>";
-                            ?>
-                            <p>Number of Courses</p>  
-                            <hr>
-                            <a class="medium text-secondary stretched-link" href="courses.php">View Details</a>
-                        </div>
-                    </div>              
-                </div>
+                        </div>              
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <!-- Bar Chart Container -->
             <div class="row mt-4">
@@ -188,6 +142,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
             </div>
         </div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function(){
@@ -203,7 +158,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                     ],
                     datasets: [{
                         label: 'Number of Subjects',
-                        data: [12, 19, 3, 5, 2, 3, 14, 18, 12, 15, 13, 20], // Replace with actual data
+                        data: [12, 19, 3, 5, 2, 3, 14, 18, 12], // Replace with actual data if needed
                         backgroundColor: 'skyblue',
                         borderColor: 'rgba(0, 0, 0, 0)',
                         borderWidth: 1,
@@ -218,7 +173,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                         }
                     },
                     plugins: {
-                       
                         legend: {
                             position: 'bottom'
                         },
