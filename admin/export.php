@@ -42,7 +42,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 							<select name="semester" id="semester" class="form-control">
 								<option value="0" disabled selected>Select Semester</option>
 								<?php 
-										$sql = "SELECT * FROM semester WHERE dept_id = $dept_id";
+										$sql = "SELECT * FROM semester";
 										$query = $conn->query($sql);
 										while($row= $query->fetch_array()):
 											$semester = $row['sem'];
