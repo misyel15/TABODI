@@ -21,11 +21,12 @@ if(isset($_GET['course']) && isset($_GET['year']) && isset($_GET['secid']) && is
         die("Database query failed: " . $conn->error); // Debugging output
     }
 
+    // Fixed the query to avoid ambiguity with 'course'
     $query1 = $conn->query("SELECT * FROM loading 
         INNER JOIN roomlist r ON loading.rooms = r.room_id 
         INNER JOIN faculty f ON loading.faculty = f.id 
-        WHERE course = '$secid' AND semester = '$semester' 
-        ORDER BY timeslot_sid ASC"); 
+        WHERE loading.course = '$secid' AND loading.semester = '$semester' 
+        ORDER BY loading.timeslot_sid ASC"); 
 
     if ($query1 && $query1->num_rows > 0) { 
         $delimiter = ","; 
