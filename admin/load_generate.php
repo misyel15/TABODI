@@ -142,7 +142,10 @@ function printPage($conn, $id) {
         <div class="header">
             <img src="assets/uploads/end.png" alt="Logo">
         </div>
-
+    // Detect when the print dialog is closed
+            window.onafterprint = function() {
+                // Redirect back if the print dialog was canceled
+                window.history.back();
         <div class="instname">
             Instructor's Load: <?php echo htmlspecialchars($instname); ?>
         </div>
