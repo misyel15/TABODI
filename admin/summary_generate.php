@@ -1,7 +1,7 @@
 <?php
 session_start();
 include('db_connect.php');
-include 'includes/header.php';
+
 
 // Assuming you store the department ID in the session during login
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
@@ -79,7 +79,7 @@ function printPage($conn, $dept_id) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Printable Faculty Load</title>
-       
+      
         <style>
             body {
                 font-family: Arial, sans-serif;
