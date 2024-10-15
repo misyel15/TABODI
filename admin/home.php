@@ -8,7 +8,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     exit();
 }
 
-include 'includes/header.php'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,6 +77,8 @@ include 'includes/header.php';
             }
         }
     </style>
+     <?php include 'notif.php';
+          include 'includes/header.php';  ?>
 </head>
 <body>
     <div class="container main-container" style="margin-top:100px;">
