@@ -42,15 +42,15 @@ function generateTableContent($conn, $id) {
 
             // Generate the row content
             $content .= '<tr>
-                <td width="50px" align="center">' . $subject_code . '</td>
-                <td width="100px" align="center">' . $description . '</td>
-                <td width="50px" align="center">' . $days . '</td>
-                <td width="50px" align="center">' . $timeslot . '</td>
-                <td width="50px" align="center">' . $course . '</td>
-                <td width="80px" align="center">' . $lec_units . '</td>
-                <td width="50px" align="center">' . $lab_units . '</td>
-                <td width="50px" align="center">' . $units . '</td>
-                <td width="50px" align="center">' . $hours . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($subject_code) . '</td>
+                <td width="100px" align="center">' . htmlspecialchars($description) . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($days) . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($timeslot) . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($course) . '</td>
+                <td width="80px" align="center">' . htmlspecialchars($lec_units) . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($lab_units) . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($units) . '</td>
+                <td width="50px" align="center">' . htmlspecialchars($hours) . '</td>
             </tr>';
         }
 
@@ -72,7 +72,6 @@ function generateTableContent($conn, $id) {
         </tr>';
     }
 
-    $content .= '</tbody>';
     return $content;
 }
 
@@ -142,10 +141,7 @@ function printPage($conn, $id) {
         <div class="header">
             <img src="assets/uploads/end.png" alt="Logo">
         </div>
-    // Detect when the print dialog is closed
-            window.onafterprint = function() {
-                // Redirect back if the print dialog was canceled
-                window.history.back();
+
         <div class="instname">
             Instructor's Load: <?php echo htmlspecialchars($instname); ?>
         </div>
@@ -168,6 +164,14 @@ function printPage($conn, $id) {
                 <?php echo $content; ?>
             </tbody>
         </table>
+
+        <script>
+            // Detect when the print dialog is closed
+            window.onafterprint = function() {
+                // Redirect back if the print dialog was canceled
+                window.history.back();
+            };
+        </script>
     </body>
     </html>
     <?php
