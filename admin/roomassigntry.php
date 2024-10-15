@@ -330,7 +330,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
             <option value="" disabled selected>Select Days of Week</option>
             <?php 
             // Query to fetch days based on department
-            $sql = "SELECT * FROM days WHERE dept_id = '$dept_id'";
+            $sql = "SELECT * FROM days ";
             $query = $conn->query($sql);
 
             // Loop through the fetched rows and populate the dropdown
