@@ -3,7 +3,7 @@ include('db_connect.php');
 session_start();
 
 // Assume deptid is stored in session
-$deptid = $_SESSION['deptid'] ?? null; // Use null if deptid is not set
+$dept_id = $_SESSION['dept_id'] ?? null; // Use null if deptid is not set
 
 // Function to generate table content based on faculty loads and department
 function generateTableContent($conn, $deptid) {
@@ -18,7 +18,7 @@ function generateTableContent($conn, $deptid) {
     // Query to get faculty loads, filtered by department
     $loads = $conn->query("SELECT `faculty`, GROUP_CONCAT(DISTINCT `sub_description` ORDER BY `sub_description` ASC SEPARATOR ', ') AS `subject`, SUM(`total_units`) AS `totunits`
                            FROM `loading`
-                           WHERE `faculty` IN (SELECT id FROM faculty WHERE dept_id = '$deptid') 
+                           WHERE `faculty` IN (SELECT id FROM faculty WHERE dept_id = '$dept_id') 
                            GROUP BY `faculty`");
 
     // Check if the query is successful
@@ -32,7 +32,7 @@ function generateTableContent($conn, $deptid) {
             // Fetch faculty details filtered by department
             $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
                                      FROM faculty 
-                                     WHERE id='$faculty_id' AND dept_id='$deptid' 
+                                     WHERE id='$faculty_id' AND dept_id='$dept_id' 
                                      ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC");
 
             // Check if faculty query returns any rows
@@ -139,7 +139,7 @@ function printPage($conn, $deptid) {
 
 // Call the function to print the page with the department filter
 if ($deptid) {
-    printPage($conn, $deptid);
+    printPage($conn, $dept_id);
 } else {
     echo "Department ID is not set.";
 }
