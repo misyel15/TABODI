@@ -1,12 +1,13 @@
 <?php
-include('db_connect.php');
 session_start();
+include('db_connect.php');
+include 'includes/header.php';
 
-// Assume deptid is stored in session
-$dept_id = $_SESSION['dept_id'] ?? null; // Use null if deptid is not set
+// Assuming you store the department ID in the session during login
+$dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 
-// Function to generate table content based on faculty loads and department
-function generateTableContent($conn, $deptid) {
+// Function to generate table content based on faculty loads
+function generateTableContent($conn, $dept_id) {
     $content = '';
 
     $sumloads = 0;
@@ -15,11 +16,14 @@ function generateTableContent($conn, $deptid) {
     $totalloads = 0;
     $instname = '';
 
-    // Query to get faculty loads, filtered by department
-    $loads = $conn->query("SELECT `faculty`, GROUP_CONCAT(DISTINCT `sub_description` ORDER BY `sub_description` ASC SEPARATOR ', ') AS `subject`, SUM(`total_units`) AS `totunits`
-                           FROM `loading`
-                           WHERE `faculty` IN (SELECT id FROM faculty WHERE dept_id = '$dept_id') 
-                           GROUP BY `faculty`");
+    // Query to get the faculty loads for a specific department
+    $loads = $conn->query("
+        SELECT faculty, GROUP_CONCAT(DISTINCT sub_description ORDER BY sub_description ASC SEPARATOR ', ') AS subject, 
+               SUM(total_units) AS totunits 
+        FROM loading 
+        WHERE dept_id = '$dept_id' 
+        GROUP BY faculty
+    ");
 
     // Check if the query is successful
     if ($loads) {
@@ -29,11 +33,13 @@ function generateTableContent($conn, $deptid) {
             $sumloads = $lrow['totunits'];
             $totalloads = $sumloads + $sumotherl; // Total loads is the sum of sumloads and sumotherl (assuming sumotherl is calculated elsewhere)
 
-            // Fetch faculty details filtered by department
-            $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
-                                     FROM faculty 
-                                     WHERE id='$faculty_id' AND dept_id='$dept_id' 
-                                     ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC");
+            // Fetch faculty details from the selected department
+            $faculty = $conn->query("
+                SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
+                FROM faculty 
+                WHERE id='$faculty_id' AND dept_id='$dept_id' 
+                ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC
+            ");
 
             // Check if faculty query returns any rows
             if ($faculty && $faculty->num_rows > 0) {
@@ -64,8 +70,8 @@ function generateTableContent($conn, $deptid) {
 }
 
 // Function to print the page with the generated content
-function printPage($conn, $deptid) {
-    $content = generateTableContent($conn, $deptid); // Generate table content
+function printPage($conn, $dept_id) {
+    $content = generateTableContent($conn, $dept_id); // Generate table content based on department ID
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -73,7 +79,7 @@ function printPage($conn, $deptid) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Printable Faculty Load</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+       
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -109,6 +115,17 @@ function printPage($conn, $deptid) {
                 width: 100%;
                 height: 20%;
             }
+            .buttons {
+                margin-top: 20px;
+            }
+            .close-btn {
+                padding: 10px 20px;
+                background-color: #f44336;
+                color: white;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+            }
         </style>
     </head>
     <body onload="window.print()">
@@ -137,10 +154,6 @@ function printPage($conn, $deptid) {
     <?php
 }
 
-// Call the function to print the page with the department filter
-if ($deptid) {
-    printPage($conn, $dept_id);
-} else {
-    echo "Department ID is not set.";
-}
+// Call the function to print the page
+printPage($conn, $dept_id);
 ?>
