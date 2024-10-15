@@ -191,7 +191,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         var secid = $('#sec_id').val();
         var semester = $('#semester').val();
         if (secid && semester) {
-            window.location.href = 'index.php?page=class_sched&secid=' + secid + '&semester=' + semester;
+            window.location.href = 'class_sched.php?page=class_sched&secid=' + secid + '&semester=' + semester;
         }
     });
 
