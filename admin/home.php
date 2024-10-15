@@ -1,7 +1,7 @@
 <?php 
 session_start(); // Start the session
 include 'db_connect.php'; 
- include 'includes/header.php';
+ include 'notif.php';
 include 'includes/header.php'; 
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
