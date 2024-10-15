@@ -113,6 +113,9 @@ function generateTableContent($conn) {
 }
 
 function printPage($conn) {
+    $secid = $_GET['secid'] ?? 'N/A'; // Get section id
+    $semester = $_GET['semester'] ?? 'N/A'; // Get semester
+
     $content = generateTableContent($conn);
     ?>
     <!DOCTYPE html>
@@ -120,7 +123,7 @@ function printPage($conn) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Printable Table</title>
+        <title>Class Schedule</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
             body {
@@ -157,11 +160,21 @@ function printPage($conn) {
                 width: 100%;
                 height: 20%;
             }
+            .section-info {
+                font-size: 20px;
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
         </style>
     </head>
     <body onload="window.print()">
         <div class="header">
             <img src="assets/uploads/end.png" alt="Logo">
+        </div>
+
+        <div class="section-info">
+            Class Section: <?php echo htmlspecialchars($secid); ?><br>
+            Semester: <?php echo htmlspecialchars($semester); ?>
         </div>
 
         <?php echo $content; ?>
