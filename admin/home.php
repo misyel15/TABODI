@@ -77,7 +77,9 @@ include 'includes/header.php';
                 font-size: 1.5rem;
             }
         }
-    </style>
+    </style> 
+    <?php include 'includes/header.php'; ?>
+
 </head>
 <body>
     <div class="container main-container" style="margin-top:100px;">
