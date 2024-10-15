@@ -104,17 +104,6 @@ function printPage($conn, $dept_id) {
                 width: 100%;
                 height: 20%;
             }
-            .buttons {
-                margin-top: 20px;
-            }
-            .close-btn {
-                padding: 10px 20px;
-                background-color: #f44336;
-                color: white;
-                border: none;
-                cursor: pointer;
-                font-size: 16px;
-            }
         </style>
     </head>
     <body>
@@ -138,13 +127,16 @@ function printPage($conn, $dept_id) {
             </tbody>
         </table>
 
-        <div class="buttons">
-            <button class="close-btn" onclick="window.history.back();">Back</button>
-        </div>
-        
         <script>
+            // Print the page and handle cancellation
             window.onload = function() {
                 window.print();
+            };
+
+            // Detect when the print dialog is closed
+            window.onafterprint = function() {
+                // Redirect back if the print dialog was canceled
+                window.history.back();
             };
         </script>
     </body>
