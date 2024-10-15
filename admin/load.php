@@ -229,13 +229,13 @@ $(document).ready(function() {
     $('#print').click(function() {
         const facultyId = $(this).attr('data-id');
         if (facultyId) {
-            const printWindow = window.open('print_instructor_load.php?id=' + facultyId, '_blank');
+            const printWindow = window.open('load_generate.php?id' + facultyId, '_blank');
             printWindow.focus();
         }
     });
 });
 </script>
 
-<?php include 'includes/footer.php'; ?>
+
 </body>
 </html>
