@@ -130,6 +130,7 @@ function printPage($conn) {
                 font-family: Arial, sans-serif;
                 margin: 20px;
                 text-align: center;
+                font-size: 14px; /* Set the base font size */
             }
             .header {
                 display: flex;
@@ -141,6 +142,7 @@ function printPage($conn) {
                 width: 100%;
                 border-collapse: collapse;
                 margin: 0 auto;
+                font-size: 12px; /* Set the table font size */
             }
             th, td {
                 border: 1px solid #ddd;
@@ -161,9 +163,12 @@ function printPage($conn) {
                 height: 20%;
             }
             .section-info {
-                font-size: 20px;
+                font-size: 18px; /* Font size for section and semester info */
                 margin-bottom: 10px;
                 font-weight: bold;
+            }
+            .table-header {
+                font-size: 16px; /* Larger font size for the table header */
             }
         </style>
     </head>
