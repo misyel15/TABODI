@@ -2,7 +2,6 @@
 session_start();
 include('db_connect.php');
 
-
 // Assuming you store the department ID in the session during login
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 
@@ -80,7 +79,6 @@ function printPage($conn, $dept_id) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Printable Faculty Load</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-     
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -128,6 +126,11 @@ function printPage($conn, $dept_id) {
                 font-size: 16px;
             }
         </style>
+        <script>
+            function handleCancel() {
+                window.history.back(); // Navigate back to the previous page
+            }
+        </script>
     </head>
     <body onload="window.print()">
         <div class="header">
@@ -149,6 +152,10 @@ function printPage($conn, $dept_id) {
                 <?php echo $content; ?>
             </tbody>
         </table>
+
+        <div class="buttons">
+            <button class="close-btn" onclick="handleCancel()">Cancel</button>
+        </div>
 
     </body>
     </html>
