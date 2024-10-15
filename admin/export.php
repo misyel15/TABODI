@@ -213,7 +213,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 		semester = $('#semester').val();
 		course = $('#course').val();
 		year = $('#year').val();
-		window.location.href = 'index.php?page=export&secid='+secid+'&semester='+semester+'&year='+year+'&course='+course;
+		window.location.href = 'export.php?page=export&secid='+secid+'&semester='+semester+'&year='+year+'&course='+course;
 	})
 	$('.edit_schedule').click(function(){
 		uni_modal("Manage Job Post","manage_schedule.php?id="+$(this).attr('data-id'),'mid-large')
