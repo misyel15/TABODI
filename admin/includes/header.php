@@ -9,31 +9,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
 }
 
 ?>
-    <?php
-// Set X-Frame-Options to prevent clickjacking
-header("X-Frame-Options: DENY");
-
-// Set X-XSS-Protection to enable XSS filtering
-header("X-XSS-Protection: 1; mode=block");
-
-// Set X-Content-Type-Options to prevent MIME-type sniffing
-header("X-Content-Type-Options: nosniff");
-
-// Set Strict-Transport-Security (HSTS) to enforce HTTPS
-header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
-
-// Example to set a secure HttpOnly cookie
-setcookie("PHPSESSID", session_id(), [
-    'expires' => time() + 3600, // Set an expiration time
-    'path' => '/',              // Cookie available in the entire domain
-    'domain' => 'mccfacultyscheduling.com', // Change to your domain
-    'secure' => true,           // Set to true for HTTPS
-    'httponly' => true,         // Prevent JavaScript access
-    'samesite' => 'Strict'      // Optional: Helps with CSRF protection
-]);
-
-// Rest of your PHP application code here
-?>
 
 <!DOCTYPE html>
 <html lang="en">
