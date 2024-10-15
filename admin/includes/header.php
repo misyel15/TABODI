@@ -1,7 +1,7 @@
 <?php 
 include 'db_connect.php'; 
 
-
+include 'notif.php';
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
@@ -218,8 +218,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                             <div class="header-button">
                                 <div class="noti-wrap" >
                                     
-                                 
-                                
+                                                    
 <div class="noti__item js-item-menu">
     <i class="zmdi zmdi-notifications"></i>
     <span class="quantity"><?php echo htmlentities($unreadCount); ?></span>
@@ -246,7 +245,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
         </div>
     </div>
 </div>
-                                </div>
                                 <div class="account-wrap float-right">
                                     <div class="account-item clearfix js-item-menu">
                                        
