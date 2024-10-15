@@ -1,6 +1,5 @@
 <?php 
 include 'db_connect.php'; 
-
 session_start(); // Start the session
 
 // Check if the user is logged in and has a dept_id
@@ -8,8 +7,8 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
- include 'notif.php';
-include 'includes/header.php';
+
+include 'includes/header.php'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +78,6 @@ include 'includes/header.php';
             }
         }
     </style>
-    
 </head>
 <body>
     <div class="container main-container" style="margin-top:100px;">
