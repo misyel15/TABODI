@@ -133,6 +133,13 @@ function printPage($conn, $dept_id) {
         <img src="assets/uploads/end.png">
     </div>
         <?php echo $content; ?>
+     <script>
+            // Detect when the print dialog is closed
+            window.onafterprint = function() {
+                // Redirect back if the print dialog was canceled
+                window.history.back();
+            };
+        </script>
     </body>
     </html>
     <?php
