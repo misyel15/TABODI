@@ -1,7 +1,6 @@
 <?php
 session_start();
 include('db_connect.php');
-include 'includes/header.php';
 
 $dept_id = $_SESSION['dept_id'];
 
