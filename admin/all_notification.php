@@ -3,33 +3,31 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-session_start();
 include('db_connect.php');
 include("includes/header.php");
-if(strlen($_SESSION['alogin'])==0)
-    {   
-header('location:login.php');
-}
-else{
-date_default_timezone_set('Asia/Manila');// change according timezone
-$currentTime = date( 'd-m-Y h:i:s A', time () );
 
+if (strlen($_SESSION['alogin']) == 0) {   
+    header('location:login.php');
+    exit; // Use exit after a header redirect
 }
+
+date_default_timezone_set('Asia/Manila'); // Change according to timezone
+$currentTime = date('d-m-Y h:i:s A', time());
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-
     <!-- Include necessary files -->
     <?php include 'includes/head.php'; ?>
-  
 </head>
 <body class="animsition">
     <div class="wrapper">
         <!-- Navigation -->
-        <
+        <!-- Add your navigation here if needed -->
         <!-- Main content -->
         <div class="content-wrapper">
             <section class="container-fluid">
