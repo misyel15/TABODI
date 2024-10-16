@@ -3,24 +3,18 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-// Check if the session is active, otherwise redirect to login page
-if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
-    header('location:index.php');
-    exit();  // Exit after the header redirection
+session_start();
+include('include/config.php');
+include("include/header.php");
+if(strlen($_SESSION['alogin'])==0)
+    {   
+header('location:index.php');
 }
+else{
+date_default_timezone_set('Asia/Manila');// change according timezone
+$currentTime = date( 'd-m-Y h:i:s A', time () );
 
-// Database connection (ensure correct credentials and that $bd is set in db_connect.php)
-include 'db_connect.php';
-
-// Include header after session check
-include 'includes/header.php';
-
-// Set timezone and get the current time
-date_default_timezone_set('Asia/Manila');
-$currentTime = date('d-m-Y h:i:s A', time());
-
-?>
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
