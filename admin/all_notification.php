@@ -24,16 +24,11 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-    <?php include 'include/head.php'; // Check if this file exists ?>
+    <?php include 'includes/header.php'; // Check if this file exists ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
-        <nav class="main-header">
-            <?php include 'include/header.php'; // Check if this file exists ?>
-        </nav>
-        <aside class="main-sidebar">
-            <?php include 'include/sidebar.php'; // Check if this file exists ?>
-        </aside>
+      
         <br><br><br>
 
         <div class="content-wrapper">
