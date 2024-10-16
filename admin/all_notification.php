@@ -3,7 +3,7 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
- 
+
 include 'db_connect.php'; 
 include 'notif.php';
 
@@ -12,7 +12,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
-
 
 // Set timezone and get the current time
 date_default_timezone_set('Asia/Manila');
@@ -25,16 +24,15 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-    <?php include 'include/head.php'; ?>
-    <?php include 'notif.php'; ?>
+    <?php include 'include/head.php'; // Check if this file exists ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
         <nav class="main-header">
-            <?php include 'include/header.php'; ?>
+            <?php include 'include/header.php'; // Check if this file exists ?>
         </nav>
         <aside class="main-sidebar">
-            <?php include 'include/sidebar.php'; ?>    
+            <?php include 'include/sidebar.php'; // Check if this file exists ?>
         </aside>
         <br><br><br>
 
@@ -49,12 +47,12 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <?php
                                 // Count the number of unread notifications
                                 $unreadQuery = "SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'";
-                                $unreadResult = mysqli_query($bd, $unreadQuery);
+                                $unreadResult = mysqli_query($bd, $unreadQuery); // Ensure $bd is defined
                                 $unreadData = mysqli_fetch_assoc($unreadResult);
                                 $unreadCount = $unreadData['unread_count'];
 
                                 // Fetch all notifications ordered by timestamp
-                                $rt = mysqli_query($bd, "SELECT * FROM notifications ORDER BY timestamp DESC");
+                                $rt = mysqli_query($bd, "SELECT * FROM notifications ORDER BY timestamp DESC"); // Ensure $bd is defined
                                 ?>
                                 <h3>
                                     <i class="zmdi zmdi-account-calendar"></i> You have <?php echo htmlentities($unreadCount); ?> Notifications
