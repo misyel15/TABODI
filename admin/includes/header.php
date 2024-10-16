@@ -51,6 +51,14 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
 </head>
 
 <style>
+    .header-desktop {
+    position: fixed;
+    margin-top: 0px;
+    justify-content: flex-end; /* Align elements to the right */
+    align-items: center; /* Vertically center elements */
+    padding: 0 15px; /* Add some padding */
+    background-color: #f8f9fa; /* Background color for the header */
+}
 .header-mobile {
     position: fixed; /* Fixes the header at the top */
     top: 0;
