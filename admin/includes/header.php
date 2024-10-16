@@ -253,7 +253,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
         <?php endwhile; ?>
 
         <div class="notifi__footer">
-            <a href="all_notifications.php">All notifications</a>
+            <a href="view_notif.php">All notifications</a>
         </div>
     </div>
 </div>
