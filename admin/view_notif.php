@@ -43,7 +43,7 @@ if(strlen($_SESSION['alogin'])==0) {
 
                             <?php
                             $id = intval($_GET['id']);
-                            include 'include/config.php';
+                         include('db_connect.php');
 
                             // Adjust the SQL query according to your notification table structure
                             $query = mysqli_prepare($bd, "SELECT p.lastname, p.firstname, p.middlename, n.message, n.timestamp, p.barangay 
