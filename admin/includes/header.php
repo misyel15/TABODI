@@ -355,6 +355,25 @@ document.addEventListener('keydown', function (e) {
     }
 }, false);
 </script>
+     <script>
+function markAsRead(notificationId) {
+    // Send AJAX request to mark notification as read
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'mark_as_read.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // Reload the notification bell or redirect to all notifications page after marking as read
+                window.location.href = 'view_notif.php?id=' + encodeURIComponent(notificationId); // Properly handled redirection
+            } else {
+                console.error('Error marking notification as read');
+            }
+        }
+    };
+    xhr.send('notification_id=' + encodeURIComponent(notificationId)); // Properly encoded data
+}
+</script>                               
 </body>
 
 </html>
