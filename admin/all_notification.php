@@ -24,7 +24,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-    <?php include 'includes/header.php'; // Check if this file exists ?>
+    <?php include 'include/header.php'; // Check if this file exists ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
