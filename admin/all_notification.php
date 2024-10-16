@@ -22,7 +22,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
     <!-- Include necessary files -->
-    <?php include 'includes/header.php'; ?>
+    <?php include 'include/header.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
