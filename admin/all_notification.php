@@ -1,17 +1,22 @@
 <?php
 session_start();
-include 'db_connect.php';
-include 'includes/header.php';
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if(strlen($_SESSION['alogin']) == 0) {   
+if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
+    // Redirect to login page if session is not active
     header('location:index.php');
-} else {
-    date_default_timezone_set('Asia/Manila'); // change according to timezone
-    $currentTime = date('d-m-Y h:i:s A', time());
+    exit();  // Always use exit after header to prevent further code execution
+}
+
+include 'db_connect.php';
+include 'includes/header.php'; // Safe to include here after session check
+
+// Set timezone and get the current time
+date_default_timezone_set('Asia/Manila');
+$currentTime = date('d-m-Y h:i:s A', time());
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,9 +52,8 @@ if(strlen($_SESSION['alogin']) == 0) {
                                 $unreadData = mysqli_fetch_assoc($unreadResult);
                                 $unreadCount = $unreadData['unread_count'];
 
-                                // Fetch all notifications
+                                // Fetch all notifications ordered by timestamp
                                 $rt = mysqli_query($bd, "SELECT * FROM notifications ORDER BY timestamp DESC");
-                                $num1 = mysqli_num_rows($rt);
                                 ?>
                                 <h3>
                                     <i class="zmdi zmdi-account-calendar"></i> You have <?php echo htmlentities($unreadCount); ?> Notifications
@@ -91,12 +95,12 @@ if(strlen($_SESSION['alogin']) == 0) {
 
     <style type="text/css">
         .unread {
-            background-color: antiquewhite; /* Example background color for unread notifications */
+            background-color: antiquewhite; /* Background color for unread notifications */
         }
     </style>
 
     <script>
-        function markAsRead(notificationId, agentsId) {
+        function markAsRead(notificationId) {
             // Send AJAX request to mark notification as read
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'mark_as_read.php', true);
@@ -104,8 +108,8 @@ if(strlen($_SESSION['alogin']) == 0) {
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Redirect to message_notiform.php with notificationId and agentsId
-                        window.location.href = 'message_notiform.php?id=' + notificationId + '&main_id=' + agentsId;
+                        // Optionally handle successful read marking, e.g., change UI
+                        console.log('Notification marked as read');
                     } else {
                         console.error('Error marking notification as read');
                     }
@@ -116,6 +120,3 @@ if(strlen($_SESSION['alogin']) == 0) {
     </script>
 </body>
 </html>
-<?php
-} // Close the else block
-?>
