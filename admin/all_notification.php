@@ -30,7 +30,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
 
     <!-- Include necessary files -->
     <?php include 'includes/head.php'; ?>
-    <?php include 'notif.php'; ?>
+  
 </head>
 <body class="animsition">
     <div class="wrapper">
