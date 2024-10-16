@@ -2,6 +2,7 @@
 session_start();
 include 'db_connect.php'; 
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize user input to prevent XSS attacks
     $username = htmlspecialchars(trim($_POST['username']));
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Title Page-->
     <title>Login</title>
     <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
-
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
     <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
@@ -99,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     cursor: pointer;
 }
 </style>
-
 <body class="animsition">
     <div class="page-wrapper">
         <div class="page-content--bge5">
@@ -147,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                     <label>
                                         <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
@@ -222,13 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         Swal.fire({
                             icon: 'success',
                             title: 'Login Successful',
-                            text: 'Welcome back!',
-                            showConfirmButton: false, // Auto-close without needing a button press
-                            timer: 2000, // Close the notification after 2 seconds
-                            toast: true, // Make it a toast notification (small notification)
-                            position: 'top-end' // Position at the top right corner of the screen
+                            text: 'Redirecting...',
+                            showConfirmButton: true
                         }).then(() => {
-                            location.href = 'home.php'; // Redirect to the homepage after the notification
+                            location.href = 'home.php'; // Redirect to the homepage
                         });
                     } else if (resp == 2) {
                         // Display SweetAlert for access denied
@@ -253,5 +251,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
     </script>
 
+    <!-- Anti-inspect JavaScript -->
+    <script>
+    // Disable right-click
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    }, false);
+
+    // Disable F12 (Inspect Element) and Ctrl+Shift+I
+    document.addEventListener('keydown', function (e) {
+        // F12
+        if (e.keyCode === 123) {
+            e.preventDefault();
+        }
+        // Ctrl + Shift + I
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+            e.preventDefault();
+        }
+    }, false);
+
+    // Disable Ctrl+U (View Source)
+    document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+        }
+    }, false);
+    </script>
 </body>
-</html>
+</html> 
