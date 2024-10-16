@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 // Check if the session is active, otherwise redirect to login page
 if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
-    header('location:login.php');
+    header('location:index.php');
     exit();  // Exit after the header redirection
 }
 
