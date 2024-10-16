@@ -22,13 +22,13 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
     <!-- Include necessary files -->
-    <?php include 'include/header.php'; ?>
+    <?php include 'includes/header.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
-      <br>
-    <br>
-    <br>
+        <br>
+        <br>
+        <br>
         <div class="content-wrapper">
             <section class="container-fluid">
                 <div class="row justify-content-center">
@@ -40,22 +40,22 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <?php
                                 // Fetch unread notifications count
                                 $unreadQuery = "SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'";
-                                $unreadResult = mysqli_query($bd, $unreadQuery);
-                                
+                                $unreadResult = mysqli_query($conn, $unreadQuery); // Corrected here
+
                                 // Check for query errors
                                 if (!$unreadResult) {
-                                    die("Error in unread notifications query: " . mysqli_error($bd));
+                                    die("Error in unread notifications query: " . mysqli_error($conn)); // Corrected here
                                 }
 
                                 $unreadData = mysqli_fetch_assoc($unreadResult);
                                 $unreadCount = $unreadData['unread_count'];
 
                                 // Fetch all notifications ordered by timestamp
-                                $rt = mysqli_query($bd, "SELECT * FROM notifications ORDER BY timestamp DESC");
+                                $rt = mysqli_query($conn, "SELECT * FROM notifications ORDER BY timestamp DESC"); // Corrected here
 
                                 // Check for query errors
                                 if (!$rt) {
-                                    die("Error in fetching notifications: " . mysqli_error($bd));
+                                    die("Error in fetching notifications: " . mysqli_error($conn)); // Corrected here
                                 }
                                 ?>
 
