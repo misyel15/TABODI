@@ -42,7 +42,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <div class="bg-overlay bg-overlay--blue"></div>
 
                                 <?php
-                                include 'db_connect.php';
+                           
                                 // Count the number of unread notifications
                                 $unreadQuery = "SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'";
                                 $unreadResult = mysqli_query($bd, $unreadQuery);  // Ensure $bd is defined here
