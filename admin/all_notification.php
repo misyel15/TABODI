@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include('db_connect.php');
-include("include/header.php");
+include("includes/header.php");
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     header("Location: login.php"); // Redirect to login page if not logged in
@@ -22,7 +22,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
     <!-- Include necessary files -->
-    <?php include 'includes/head.php'; ?>
+    <?php include 'include/head.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
