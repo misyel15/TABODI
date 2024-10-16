@@ -3,15 +3,16 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+ 
+include 'db_connect.php'; 
+include 'notif.php';
 
-if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
-    // Redirect to login page if session is not active
-    header('location:index.php');
-    exit();  // Always use exit after header to prevent further code execution
+// Check if the user is logged in and has a dept_id
+if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
 }
 
-include 'db_connect.php';
-include 'includes/header.php'; // Safe to include here after session check
 
 // Set timezone and get the current time
 date_default_timezone_set('Asia/Manila');
