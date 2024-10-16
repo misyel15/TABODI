@@ -13,10 +13,6 @@ if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
 // Include database connection
 include 'db_connect.php';  // Ensure this is correctly included
 
-// Check if the database connection is established
-if (!$bd) {
-    die("Connection failed: " . mysqli_connect_error());
-}
 
 // Set timezone and get the current time
 date_default_timezone_set('Asia/Manila');
