@@ -21,12 +21,17 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'include/head.php'; ?>
     <?php include 'notif.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
-        
+        <nav class="main-header">
+            <?php include 'include/header.php'; ?>
+        </nav>
+        <aside class="main-sidebar">
+            <?php include 'include/sidebar.php'; ?>    
+        </aside>
         <br><br><br>
 
         <div class="content-wrapper">
@@ -47,10 +52,13 @@ $currentTime = date('d-m-Y h:i:s A', time());
 
                             <?php
                             // Ensure 'id' is present in the URL
-                            if (isset($_GET['id'])) {
+                            if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                                 $id = intval($_GET['id']);
                             } else {
-                                die("Notification ID is missing.");
+                                echo "<p style='color:red;'>Notification ID is missing or invalid.</p>";
+                                // Optionally, redirect the user or provide a link back to notifications
+                                echo "<p><a href='notifications_list.php'>Go back to notifications list</a></p>";
+                                exit; // Stop further execution
                             }
 
                             // Use the correct connection variable
