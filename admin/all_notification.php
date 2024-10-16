@@ -3,15 +3,13 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-// Check if the session variable 'alogin' is set
-if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
-    header('location:login.php');
-    exit; // Ensure no further code is executed after the redirect
-}
-
 include('db_connect.php');
 include("includes/header.php");
+// Check if the user is logged in and has a dept_id
+if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
+}
 
 date_default_timezone_set('Asia/Manila'); // Change according to timezone
 $currentTime = date('d-m-Y h:i:s A', time());
@@ -29,7 +27,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
 <body class="animsition">
     <div class="wrapper">
         <!-- Navigation -->
-        <!-- Your navigation code here -->
+        <!-- Add your navigation here if needed -->
         <!-- Main content -->
         <div class="content-wrapper">
             <section class="container-fluid">
