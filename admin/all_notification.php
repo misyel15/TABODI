@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include 'db_connect.php'; 
-include 'notif.php';
+
 
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
@@ -25,7 +25,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
     <?php include 'includes/head.php'; ?>
- 
+ <?php include 'notif.php';?>
 </head>
 <body class="animsition">
     <div class="wrapper">
@@ -42,7 +42,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <div class="bg-overlay bg-overlay--blue"></div>
 
                                 <?php
-include 'db_connect.php';
+                                include 'db_connect.php';
                                 // Count the number of unread notifications
                                 $unreadQuery = "SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'";
                                 $unreadResult = mysqli_query($bd, $unreadQuery);  // Ensure $bd is defined here
