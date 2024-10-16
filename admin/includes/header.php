@@ -139,7 +139,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                         <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
 <li><a href="courses.php"><i class="fas fa-book"></i>Course</a></li>
 <li><a href="subjects.php"><i class="fas fa-book-open"></i>Subject</a></li>
-<li><a href="faculty.php"><i class="fas fa-chalkboard-teacher"></i>Faculty</a></li>
+<li><a href="faculty.php"><i class="fa fa fa-user-tie"></i>Faculty</a></li>
 <li><a href="room.php"><i class="fas fa-door-open"></i>Room</a></li>
 <li><a href="timeslot.php"><i class="fas fa-clock"></i>Timeslot</a></li>
 <li><a href="section.php"><i class="fas fa-users"></i>Section</a></li>
@@ -182,7 +182,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                    <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
 <li><a href="courses.php"><i class="fas fa-book"></i>Course</a></li>
 <li><a href="subjects.php"><i class="fas fa-book-open"></i>Subject</a></li>
-<li><a href="faculty.php"><i class="fas fa-chalkboard-teacher"></i>Faculty</a></li>
+<li><a href="faculty.php"><i class="fa fa fa-user-tie"></i>Faculty</a></li>
 <li><a href="room.php"><i class="fas fa-door-open"></i>Room</a></li>
 <li><a href="timeslot.php"><i class="fas fa-clock"></i>Timeslot</a></li>
 <li><a href="section.php"><i class="fas fa-users"></i>Section</a></li>
