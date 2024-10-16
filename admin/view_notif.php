@@ -1,14 +1,18 @@
 <?php
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include('db_connect.php');
-include 'includes/header.php';
 
-if(strlen($_SESSION['alogin'])==0) {   
-    header('location:index.php');
-} else {
-    date_default_timezone_set('Asia/Manila');// change according to timezone
-    $currentTime = date('d-m-Y h:i:s A', time());
+// Check if the user is logged in and has a dept_id
+if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
 }
+
+date_default_timezone_set('Asia/Manila'); // Change according to timezone
+$currentTime = date('d-m-Y h:i:s A', time());
 ?>
 <!DOCTYPE html>
 <html lang="en">
