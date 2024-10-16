@@ -21,17 +21,12 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-    <?php include 'include/head.php'; ?>
+    <?php include 'includes/head.php'; ?>
     <?php include 'notif.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
-        <nav class="main-header">
-            <?php include 'include/header.php'; ?>
-        </nav>
-        <aside class="main-sidebar">
-            <?php include 'include/sidebar.php'; ?>    
-        </aside>
+     
         <br><br><br>
 
         <div class="content-wrapper">
