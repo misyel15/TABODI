@@ -52,13 +52,10 @@ $currentTime = date('d-m-Y h:i:s A', time());
 
                             <?php
                             // Ensure 'id' is present in the URL
-                            if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+                            if (isset($_GET['id'])) {
                                 $id = intval($_GET['id']);
                             } else {
-                                echo "<p style='color:red;'>Notification ID is missing or invalid.</p>";
-                                // Optionally, redirect the user or provide a link back to notifications
-                                echo "<p><a href='notifications_list.php'>Go back to notifications list</a></p>";
-                                exit; // Stop further execution
+                                die("Notification ID is missing.");
                             }
 
                             // Use the correct connection variable
