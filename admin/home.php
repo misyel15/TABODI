@@ -9,7 +9,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
     exit();
 }
 
-include 'includes/header.php'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
