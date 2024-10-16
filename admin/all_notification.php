@@ -4,11 +4,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
-include('include/config.php');
-include("include/header.php");
+include('db_connect.php');
+include("includes/header.php");
 if(strlen($_SESSION['alogin'])==0)
     {   
-header('location:index.php');
+header('location:login.php');
 }
 else{
 date_default_timezone_set('Asia/Manila');// change according timezone
