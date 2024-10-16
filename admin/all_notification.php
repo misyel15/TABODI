@@ -26,9 +26,9 @@ $currentTime = date('d-m-Y h:i:s A', time());
 </head>
 <body class="animsition">
     <div class="wrapper">
-        <!-- Navigation -->
-        <!-- Add your navigation here if needed -->
-        <!-- Main content -->
+      <br>
+    <br>
+    <br>
         <div class="content-wrapper">
             <section class="container-fluid">
                 <div class="row justify-content-center">
