@@ -136,28 +136,29 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                 <div class="container-fluid">
                     <ul class="navbar-mobile__list list-unstyled">
                         <li class="has-sub">
-                        
                         <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-                        <li><a href="courses.php"><i class="fas fa-chart-bar"></i>Course</a></li>
-                        <li><a href="subjects.php"><i class="fas fa-table"></i>Subject</a></li>
-                        <li><a href="faculty.php"><i class="far fa-check-square"></i>Faculty</a></li>
-                        <li><a href="room.php"><i class="fas fa-calendar-alt"></i>Room</a></li>
-                        <li><a href="timeslot.php"><i class="fas fa-map-marker-alt"></i>Timeslot</a></li>
-                        <li><a href="section.php"><i class="fas fa-map-marker-alt"></i>Section</a></li>
-                        <li><a href="roomassigntry.php"><i class="fas fa-map-marker-alt"></i>Room Assigment</a></li>
-                        <li><a href="roomsched.php"><i class="fas fa-map-marker-alt"></i>Room Schedule</a></li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Other Reports</a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li><a href="class_sched.php"><i class="fas fa-table"></i>Class Schedule</a></li>
-                                <li><a href="load.php"><i class="fas fa-table"></i>Instructor's Load</a></li>
-                                <li><a href="summary.php"><i class="fas fa-table"></i>Summary</a></li>
-                                <li><a href="export.php"><i class="fas fa-table"></i>Export CSV</a></li>
-                               
-                            </ul>
-                            <li><a href="users.php"><i class="fas fa-map-marker-alt"></i>User</a></li>
-                       
+<li><a href="courses.php"><i class="fas fa-book"></i>Course</a></li>
+<li><a href="subjects.php"><i class="fas fa-book-open"></i>Subject</a></li>
+<li><a href="faculty.php"><i class="fas fa-chalkboard-teacher"></i>Faculty</a></li>
+<li><a href="room.php"><i class="fas fa-door-open"></i>Room</a></li>
+<li><a href="timeslot.php"><i class="fas fa-clock"></i>Timeslot</a></li>
+<li><a href="section.php"><i class="fas fa-users"></i>Section</a></li>
+<li><a href="roomassigntry.php"><i class="fas fa-clipboard-list"></i>Room Assignment</a></li>
+<li><a href="roomsched.php"><i class="fas fa-calendar-alt"></i>Room Schedule</a></li>
+
+<li class="has-sub">
+    <a class="js-arrow" href="#">
+        <i class="fas fa-copy"></i>Other Reports</a>
+    <ul class="list-unstyled navbar__sub-list js-sub-list">
+        <li><a href="class_sched.php"><i class="fas fa-calendar"></i>Class Schedule</a></li>
+        <li><a href="load.php"><i class="fas fa-tasks"></i>Instructor's Load</a></li>
+        <li><a href="summary.php"><i class="fas fa-file-alt"></i>Summary</a></li>
+        <li><a href="export.php"><i class="fas fa-file-export"></i>Export CSV</a></li>
+    </ul>
+</li>
+
+<li><a href="users.php"><i class="fas fa-user"></i>User</a></li>
+
                         </li>
                        
                     </ul>
@@ -178,27 +179,29 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                 <nav class="navbar-sidebar">
                     <ul class="list-unstyled navbar__list">
                         
-                        <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-                        <li><a href="courses.php"><i class="fas fa-chart-bar"></i>Course</a></li>
-                        <li><a href="subjects.php"><i class="fas fa-table"></i>Subject</a></li>
-                        <li><a href="faculty.php"><i class="far fa-check-square"></i>Faculty</a></li>
-                        <li><a href="room.php"><i class="fas fa-calendar-alt"></i>Room</a></li>
-                        <li><a href="timeslot.php"><i class="fas fa-map-marker-alt"></i>Timeslot</a></li>
-                        <li><a href="section.php"><i class="fas fa-map-marker-alt"></i>Section</a></li>
-                        <li><a href="roomassigntry.php"><i class="fas fa-map-marker-alt"></i>Room Assigment</a></li>
-                        <li><a href="roomsched.php"><i class="fas fa-map-marker-alt"></i>Room Schedule</a></li>
-                        <li class="has-sub">
-                            <a class="js-arrow" href="#">
-                                <i class="fas fa-copy"></i>Other Reports</a>
-                            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                                <li><a href="class_sched.php"><i class="fas fa-table"></i>Class Schedule</a></li>
-                                <li><a href="load.php"><i class="fas fa-table"></i>Instructor's Load</a></li>
-                                <li><a href="summary.php"><i class="fas fa-table"></i>Summary</a></li>
-                                <li><a href="export.php"><i class="fas fa-table"></i>Export CSV</a></li>
-                               
-                            </ul>
-                            <li><a href="users.php"><i class="fas fa-map-marker-alt"></i>User</a></li>
-                       
+                   <li><a href="home.php"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+<li><a href="courses.php"><i class="fas fa-book"></i>Course</a></li>
+<li><a href="subjects.php"><i class="fas fa-book-open"></i>Subject</a></li>
+<li><a href="faculty.php"><i class="fas fa-chalkboard-teacher"></i>Faculty</a></li>
+<li><a href="room.php"><i class="fas fa-door-open"></i>Room</a></li>
+<li><a href="timeslot.php"><i class="fas fa-clock"></i>Timeslot</a></li>
+<li><a href="section.php"><i class="fas fa-users"></i>Section</a></li>
+<li><a href="roomassigntry.php"><i class="fas fa-clipboard-list"></i>Room Assignment</a></li>
+<li><a href="roomsched.php"><i class="fas fa-calendar-alt"></i>Room Schedule</a></li>
+
+<li class="has-sub">
+    <a class="js-arrow" href="#">
+        <i class="fas fa-copy"></i>Other Reports</a>
+    <ul class="list-unstyled navbar__sub-list js-sub-list">
+        <li><a href="class_sched.php"><i class="fas fa-calendar"></i>Class Schedule</a></li>
+        <li><a href="load.php"><i class="fas fa-tasks"></i>Instructor's Load</a></li>
+        <li><a href="summary.php"><i class="fas fa-file-alt"></i>Summary</a></li>
+        <li><a href="export.php"><i class="fas fa-file-export"></i>Export CSV</a></li>
+    </ul>
+</li>
+
+<li><a href="users.php"><i class="fas fa-user"></i>User</a></li>
+
                         </li>
                        
                     </ul>
