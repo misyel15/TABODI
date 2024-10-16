@@ -13,11 +13,6 @@ if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
 // Database connection (ensure correct credentials and that $bd is set in db_connect.php)
 include 'db_connect.php';
 
-// Check the database connection
-if (mysqli_connect_errno()) {
-    die("Failed to connect to MySQL: " . mysqli_connect_error());
-}
-
 // Include header after session check
 include 'includes/header.php';
 
@@ -34,21 +29,13 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <title>Notifications</title>
 
     <!-- Include necessary files -->
-    <?php include 'include/head.php'; ?>
+    <?php include 'includes/head.php'; ?>
     <?php include 'notif.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
         <!-- Navigation -->
-        <nav class="main-header">
-            <?php include 'include/header.php'; ?>
-        </nav>
-
-        <!-- Sidebar -->
-        <aside class="main-sidebar">
-            <?php include 'include/sidebar.php'; ?>
-        </aside>
-
+        <
         <!-- Main content -->
         <div class="content-wrapper">
             <section class="container-fluid">
