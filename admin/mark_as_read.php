@@ -24,3 +24,4 @@ if (isset($_POST['notification_id'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid request.']);
 }
 ?>
+
