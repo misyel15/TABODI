@@ -21,7 +21,9 @@ if(strlen($_SESSION['alogin'])==0) {
 </head>
 <body class="animsition">
     <div class="wrapper">
-
+<br>
+    <br>
+    <br>
         <div class="content-wrapper">
             <br>
             <section class="container-fluid">
