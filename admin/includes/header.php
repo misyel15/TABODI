@@ -1,6 +1,6 @@
 <?php 
 include 'db_connect.php'; 
-
+include 'notif.php';
 
 // Check if the user is logged in and has a dept_id
 if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
@@ -219,47 +219,33 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                             <div class="header-button">
                                 <div class="noti-wrap" >
                                     
-                                 
-                                    <div class="noti__item js-item-menu" style="fixed;">
-                                        <i class="zmdi zmdi-notifications"></i>
-                                        <span class="quantity">3</span>
-                                        <div class="notifi-dropdown js-dropdown">
-                                            <div class="notifi__title">
-                                                <p>You have 3 Notifications</p>
-                                            </div>
-                                            <div class="notifi__item">
-                                                <div class="bg-c1 img-cir img-40">
-                                                    <i class="zmdi zmdi-email-open"></i>
-                                                </div>
-                                                <div class="content">
-                                                    <p>You got a email notification</p>
-                                                    <span class="date">April 12, 2018 06:50</span>
-                                                </div>
-                                            </div>
-                                            <div class="notifi__item">
-                                                <div class="bg-c2 img-cir img-40">
-                                                    <i class="zmdi zmdi-account-box"></i>
-                                                </div>
-                                                <div class="content">
-                                                    <p>Your account has been blocked</p>
-                                                    <span class="date">April 12, 2018 06:50</span>
-                                                </div>
-                                            </div>
-                                            <div class="notifi__item">
-                                                <div class="bg-c3 img-cir img-40">
-                                                    <i class="zmdi zmdi-file-text"></i>
-                                                </div>
-                                                <div class="content">
-                                                    <p>You got a new file</p>
-                                                    <span class="date">April 12, 2018 06:50</span>
-                                                </div>
-                                            </div>
-                                            <div class="notifi__footer">
-                                                <a href="#">All notifications</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                                               
+<div class="noti__item js-item-menu">
+    <i class="zmdi zmdi-notifications"></i>
+    <span class="quantity"><?php echo htmlentities($unreadCount); ?></span>
+    <div class="notifi-dropdown js-dropdown" style="max-height: 300px; overflow-y: auto;">
+        <div class="notifi__title">
+            <p>You have <?php echo htmlentities($unreadCount); ?> Notifications</p>
+        </div>
+
+        <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
+            <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
+            <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" onclick="markAsRead(<?php echo (int) $notification['id']; ?>)">
+                <div class="bg-c1 img-cir img-40">
+                    <i class="zmdi zmdi-notifications"></i>
+                </div>
+                <div class="content">
+                    <p><?php echo htmlentities($notification['message']); ?></p>
+                    <span class="date"><?php echo date('F j, Y g:ia', strtotime($notification['timestamp'])); ?></span>
+                </div>
+            </div>
+        <?php endwhile; ?>
+
+        <div class="notifi__footer">
+            <a href="all_notifications.php">All notifications</a>
+        </div>
+    </div>
+</div>
                                 <div class="account-wrap float-right">
                                     <div class="account-item clearfix js-item-menu">
                                        
