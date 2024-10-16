@@ -56,11 +56,11 @@ $currentTime = date( 'd-m-Y h:i:s A', time () );
                                     </div>
                                     <?php
 $id = intval($_GET['id']);
-include 'include/config.php';
+include 'db_connect.php';
 
 // Correct the SQL query to avoid ambiguity and ensure all required columns are selected
-$query = mysqli_prepare($bd, "SELECT p.lastname, p.firstname, p.middlename, n.message, n.timestamp, p.barangay
-                              FROM users p 
+$query = mysqli_prepare($bd, "SELECT s.name, s.username, s.message, n.timestamp, s.course
+                              FROM users s 
                               INNER JOIN notifications n ON p.id = n.user_id
                               WHERE n.id = ?");
 mysqli_stmt_bind_param($query, 'i', $id);
@@ -79,10 +79,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <h5 class="name"><?php echo htmlentities($row['message']); ?></h5>
                         <br>
                         <strong><p>Awardee Name:</p></strong>
-                        <strong><p><?php echo htmlentities($row['name']); ?> <?php echo htmlentities($row['middlename']); ?> <?php echo htmlentities($row['lastname']); ?></p></strong>
+                        <strong><p><?php echo htmlentities($row['name']); ?> <?php echo htmlentities($row['username']); ?></p></strong>
                         <br>
                         <strong><p>Address:</p></strong>
-                        <p><?php echo htmlentities($row['barangay']); ?></p>
+                        <p><?php echo htmlentities($row['course']); ?></p>
                         <span class="date"><?php echo date('F j, Y g:ia', strtotime($row['timestamp'])); ?></span>
                     </div>
                 </div>
