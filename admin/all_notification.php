@@ -4,14 +4,22 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include 'db_connect.php'; 
-
-
-// Check if the user is logged in and has a dept_id
-if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
-    header("Location: login.php"); // Redirect to login page if not logged in
-    exit();
+// Check if the session is active, otherwise redirect to login page
+if (!isset($_SESSION['alogin']) || strlen($_SESSION['alogin']) == 0) {
+    header('location:login.php');
+    exit();  // Exit after the header redirection
 }
+
+// Database connection (ensure correct credentials and that $bd is set in db_connect.php)
+include 'db_connect.php';
+
+// Check the database connection
+if (mysqli_connect_errno()) {
+    die("Failed to connect to MySQL: " . mysqli_connect_error());
+}
+
+// Include header after session check
+include 'includes/header.php';
 
 // Set timezone and get the current time
 date_default_timezone_set('Asia/Manila');
@@ -24,16 +32,25 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notifications</title>
-    <?php include 'includes/head.php'; ?>
- <?php include 'notif.php';?>
+
+    <!-- Include necessary files -->
+    <?php include 'include/head.php'; ?>
+    <?php include 'notif.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
-        
-        <br><br><br>
+        <!-- Navigation -->
+        <nav class="main-header">
+            <?php include 'include/header.php'; ?>
+        </nav>
 
+        <!-- Sidebar -->
+        <aside class="main-sidebar">
+            <?php include 'include/sidebar.php'; ?>
+        </aside>
+
+        <!-- Main content -->
         <div class="content-wrapper">
-            <br>
             <section class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
@@ -42,24 +59,27 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <div class="bg-overlay bg-overlay--blue"></div>
 
                                 <?php
-                           
-                                // Count the number of unread notifications
+                                // Fetch unread notifications count
                                 $unreadQuery = "SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'";
-                                $unreadResult = mysqli_query($bd, $unreadQuery);  // Ensure $bd is defined here
-                                if ($unreadResult) {
-                                    $unreadData = mysqli_fetch_assoc($unreadResult);
-                                    $unreadCount = $unreadData['unread_count'];
-                                } else {
-                                    echo "Error: " . mysqli_error($bd);  // Optionally handle query error
-                                    $unreadCount = 0;  // Fallback if error occurs
+                                $unreadResult = mysqli_query($bd, $unreadQuery);
+                                
+                                // Check for query errors
+                                if (!$unreadResult) {
+                                    die("Error in unread notifications query: " . mysqli_error($bd));
                                 }
+
+                                $unreadData = mysqli_fetch_assoc($unreadResult);
+                                $unreadCount = $unreadData['unread_count'];
 
                                 // Fetch all notifications ordered by timestamp
                                 $rt = mysqli_query($bd, "SELECT * FROM notifications ORDER BY timestamp DESC");
+
+                                // Check for query errors
                                 if (!$rt) {
-                                    echo "Error fetching notifications: " . mysqli_error($bd);  // Handle query error
+                                    die("Error in fetching notifications: " . mysqli_error($bd));
                                 }
                                 ?>
+
                                 <h3>
                                     <i class="zmdi zmdi-account-calendar"></i> You have <?php echo htmlentities($unreadCount); ?> Notifications
                                 </h3>
@@ -72,25 +92,23 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <div class="au-task-list js-scrollbar3">
                                     <div class="au-task__item au-task__item--primary">
                                         <div class="au-task__item-inner">
-                                            <?php if ($rt): ?>
-                                                <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
-                                                    <?php $class = $notification['status'] == 'read' ? 'read' : 'unread'; ?>
-                                                    <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo $notification['id']; ?>" onclick="markAsRead(<?php echo $notification['id']; ?>)">
-                                                        <div class="bg-c1 img-cir img-40">
-                                                            <i class="zmdi zmdi-account-box"></i>
-                                                        </div>
-                                                        <div class="content">
-                                                            <p><?php echo htmlentities($notification['message']); ?>&nbsp;<?php echo htmlentities($notification['user_id']); ?></p>
-                                                            <span class="date"><?php echo htmlentities($notification['timestamp']); ?></span>
-                                                        </div>
+                                            <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
+                                                <?php $class = $notification['status'] == 'read' ? 'read' : 'unread'; ?>
+                                                <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo $notification['id']; ?>" onclick="markAsRead(<?php echo $notification['id']; ?>)">
+                                                    <div class="bg-c1 img-cir img-40">
+                                                        <i class="zmdi zmdi-account-box"></i>
                                                     </div>
-                                                <?php endwhile; ?>
-                                            <?php else: ?>
-                                                <p>No notifications found.</p>
-                                            <?php endif; ?>
+                                                    <div class="content">
+                                                        <p><?php echo htmlentities($notification['message']); ?>&nbsp;<?php echo htmlentities($notification['user_id']); ?></p>
+                                                        <span class="date"><?php echo htmlentities($notification['timestamp']); ?></span>
+                                                    </div>
+                                                </div>
+                                            <?php endwhile; ?>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Load more button -->
                                 <div class="au-task__footer">
                                     <button class="au-btn au-btn-load js-load-btn">View All</button>
                                 </div>
@@ -102,12 +120,14 @@ $currentTime = date('d-m-Y h:i:s A', time());
         </div>
     </div>
 
+    <!-- Styles for unread notifications -->
     <style type="text/css">
         .unread {
             background-color: antiquewhite; /* Background color for unread notifications */
         }
     </style>
 
+    <!-- JavaScript to mark notifications as read -->
     <script>
         function markAsRead(notificationId) {
             // Send AJAX request to mark notification as read
@@ -118,8 +138,9 @@ $currentTime = date('d-m-Y h:i:s A', time());
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         // Optionally handle successful read marking, e.g., change UI
-                        console.log('Notification marked as read');
                         document.getElementById('notification_' + notificationId).classList.remove('unread');
+                        document.getElementById('notification_' + notificationId).classList.add('read');
+                        console.log('Notification marked as read');
                     } else {
                         console.error('Error marking notification as read');
                     }
