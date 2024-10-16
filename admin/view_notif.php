@@ -60,7 +60,7 @@ include 'include/config.php';
 
 // Correct the SQL query to avoid ambiguity and ensure all required columns are selected
 $query = mysqli_prepare($bd, "SELECT p.lastname, p.firstname, p.middlename, n.message, n.timestamp, p.barangay
-                              FROM profiling p 
+                              FROM users p 
                               INNER JOIN notifications n ON p.id = n.user_id
                               WHERE n.id = ?");
 mysqli_stmt_bind_param($query, 'i', $id);
@@ -79,7 +79,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <h5 class="name"><?php echo htmlentities($row['message']); ?></h5>
                         <br>
                         <strong><p>Awardee Name:</p></strong>
-                        <strong><p><?php echo htmlentities($row['firstname']); ?> <?php echo htmlentities($row['middlename']); ?> <?php echo htmlentities($row['lastname']); ?></p></strong>
+                        <strong><p><?php echo htmlentities($row['name']); ?> <?php echo htmlentities($row['middlename']); ?> <?php echo htmlentities($row['lastname']); ?></p></strong>
                         <br>
                         <strong><p>Address:</p></strong>
                         <p><?php echo htmlentities($row['barangay']); ?></p>
@@ -105,9 +105,7 @@ mysqli_stmt_close($query);
 
   
  </div>
-  <footer class="main-footer">
-    <?php include 'include/footer.php'; ?>
-  </footer>
+
 
 <!-- ./wrapper -->
 
