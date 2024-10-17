@@ -23,6 +23,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <title>Notifications</title>
     <?php include 'includes/header.php'; ?>
     <?php include 'notif.php'; ?>
+ <?php include 'view_notif.php'; ?>
 </head>
 <body class="animsition">
     <div class="wrapper">
