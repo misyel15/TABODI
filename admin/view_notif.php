@@ -23,13 +23,12 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <title>Notifications</title>
     <?php include 'includes/header.php'; ?>
     <?php include 'notif.php'; ?>
- <?php include 'mark_as_read.php'; ?>
+    <?php include 'mark_as_read.php'; ?>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="animsition">
     <div class="wrapper">
-     
         <br><br><br>
-
         <div class="content-wrapper">
             <br>
             <section class="container-fluid">
@@ -47,47 +46,42 @@ $currentTime = date('d-m-Y h:i:s A', time());
                             </div>
 
                             <?php
-                            // Ensure 'id' is present in the URL
-                            if (isset($_GET['id'])) {
-                                $id = intval($_GET['id']);
-                            } else {
-                                die("Notification ID is missing.");
-                            }
+                            // Fetch notifications from the database
+                            $query = "SELECT n.id, s.name, s.username, n.message, n.timestamp, s.course 
+                                      FROM users s 
+                                      INNER JOIN notifications n ON s.id = n.user_id 
+                                      ORDER BY n.timestamp DESC"; // Fetch all notifications
+                            $result = mysqli_query($conn, $query);
 
-                            // Use the correct connection variable
-                            $query = mysqli_prepare($conn, "SELECT s.name, s.username, n.message, n.timestamp, s.course
-                                                            FROM users s
-                                                            INNER JOIN notifications n ON s.id = n.user_id
-                                                            WHERE n.id = ?");
-                            mysqli_stmt_bind_param($query, 'i', $id);
-                            mysqli_stmt_execute($query);
-                            $result = mysqli_stmt_get_result($query);
-
-                            // Fetch and display the results
-                            while ($row = mysqli_fetch_assoc($result)) {
+                            // Check if there are notifications
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
                             ?>
-                                <div class="au-task js-list-load">
-                                    <div class="au-task-list js-scrollbar3">
-                                        <div class="au-task__item au-task__item--primary">
-                                            <div class="au-task__item-inner">
-                                                <div class="text">
-                                                    <strong><p>Information:</p></strong>
-                                                    <h5 class="name"><?php echo htmlentities($row['message']); ?></h5>
-                                                    <br>
-                                                    <strong><p>Awardee Name:</p></strong>
-                                                    <strong><p><?php echo htmlentities($row['name']); ?> <?php echo htmlentities($row['username']); ?></p></strong>
-                                                    <br>
-                                                    <strong><p>Course:</p></strong>
-                                                    <p><?php echo htmlentities($row['course']); ?></p>
-                                                    <span class="date"><?php echo date('F j, Y g:ia', strtotime($row['timestamp'])); ?></span>
+                                    <div class="au-task js-list-load">
+                                        <div class="au-task-list js-scrollbar3">
+                                            <div class="au-task__item au-task__item--primary">
+                                                <div class="au-task__item-inner">
+                                                    <div class="text">
+                                                        <strong><p>Information:</p></strong>
+                                                        <h5 class="name"><?php echo htmlentities($row['message']); ?></h5>
+                                                        <br>
+                                                        <strong><p>Awardee Name:</p></strong>
+                                                        <strong><p><?php echo htmlentities($row['name']); ?> <?php echo htmlentities($row['username']); ?></p></strong>
+                                                        <br>
+                                                        <strong><p>Course:</p></strong>
+                                                        <p><?php echo htmlentities($row['course']); ?></p>
+                                                        <span class="date"><?php echo date('F j, Y g:ia', strtotime($row['timestamp'])); ?></span>
+                                                        <button class="mark-as-read" data-id="<?php echo htmlentities($row['id']); ?>">Mark as Read</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             <?php
+                                }
+                            } else {
+                                echo "<p>No notifications available.</p>";
                             }
-                            mysqli_stmt_close($query);
                             ?>
                         </div>
                     </div>
@@ -95,6 +89,33 @@ $currentTime = date('d-m-Y h:i:s A', time());
             </section>
         </div>
     </div>
+
+    <script>
+    $(document).ready(function() {
+        $('.mark-as-read').on('click', function() {
+            var notificationId = $(this).data('id'); // Get the notification ID
+
+            $.ajax({
+                type: 'POST',
+                url: 'mark_as_read.php',
+                data: { notification_id: notificationId },
+                success: function(response) {
+                    var data = JSON.parse(response);
+                    if (data.success) {
+                        alert("Notification marked as read.");
+                        // Optionally, refresh the page or update the UI
+                        location.reload(); // Refresh to show updated notifications
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while marking the notification as read.");
+                }
+            });
+        });
+    });
+    </script>
 
     <style type="text/css">
         .unread {
