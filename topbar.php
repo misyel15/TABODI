@@ -62,7 +62,7 @@ include '../db_connect.php';
           <i class="fa fa-user text-secondary" aria-hidden="true"></i> <?php echo $_SESSION['login_name'] ?>
         </a>
         <div class="dropdown-menu" aria-labelledby="account_settings">
-          <a class="dropdown-item" href="admin/ajax.php?action=login2"><i class="fa fa-power-off"></i> Logout</a>
+          <a class="dropdown-item" href="admin/ajax.php?action=logout2"><i class="fa fa-power-off"></i> Logout</a>
         </div>
       </li>
     </ul>
