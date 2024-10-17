@@ -208,7 +208,7 @@ class Action {
 			return 1;
 				}
 	}
-       function save_course() {
+  function save_course() {
     extract($_POST);
     
     // Ensure that $dept_id, $course, and $description are properly set
@@ -227,27 +227,43 @@ class Action {
     if (empty($id)) {
         // Insert new course
         $save = $this->db->query("INSERT INTO courses SET $data");
-
-        // Insert notification for course creation
+        
         if ($save) {
+            // Insert notification for course creation
             $message = "A new course '$course' was added successfully.";
-            $this->db->query("INSERT INTO notifications (message, type) VALUES ('$message', 'success')");
+            $insert_notification = $this->db->query("INSERT INTO notifications (message, type) VALUES ('$message', 'success')");
+            
+            // Check if the notification query was successful
+            if (!$insert_notification) {
+                echo "Notification Error: " . $this->db->error;
+            }
         }
 
     } else {
         // Update existing course
         $save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
-
-        // Insert notification for course update
+        
         if ($save) {
+            // Insert notification for course update
             $message = "The course '$course' was updated successfully.";
-            $this->db->query("INSERT INTO notifications (message, type) VALUES ('$message', 'success')");
+            $insert_notification = $this->db->query("INSERT INTO notifications (message, type) VALUES ('$message', 'success')");
+            
+            // Check if the notification query was successful
+            if (!$insert_notification) {
+                echo "Notification Error: " . $this->db->error;
+            }
         }
+    }
+
+    // Error handling for notifications
+    if ($this->db->error) {
+        error_log("Database Error: " . $this->db->error);
     }
 
     // Return success status
     return $save ? 1 : 2; // Return 2 in case of failure
 }
+
 
 	
 	function delete_course(){
