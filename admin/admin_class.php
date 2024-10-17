@@ -209,61 +209,32 @@ class Action {
 				}
 	}
   function save_course() {
-    extract($_POST);
-    
-    // Ensure that $dept_id, $course, and $description are properly set
-    $data = "dept_id = '$dept_id', "; // Start with dept_id
-    $data .= "course = '$course', "; // Append course
-    $data .= "description = '$description' "; // Append description
-
-    // Check for duplicate course
-    $check_duplicate = $this->db->query("SELECT * FROM courses WHERE course = '$course' AND id != '$id'");
-    if ($check_duplicate->num_rows > 0) {
-        // Duplicate course found, return error
-        return 0;
-    }
-    
-    // Check if the ID is empty to determine whether to insert or update
-    if (empty($id)) {
-        // Insert new course
-        $save = $this->db->query("INSERT INTO courses SET $data");
-        
-        if ($save) {
-            // Insert notification for course creation
-            $message = "A new course '$course' was added successfully.";
-            $insert_notification = $this->db->query("INSERT INTO notifications (message, type) VALUES ('$message', 'success')");
-            
-            // Check if the notification query was successful
-            if (!$insert_notification) {
-                echo "Notification Error: " . $this->db->error;
-            }
-        }
-
-    } else {
-        // Update existing course
-        $save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
-        
-        if ($save) {
-            // Insert notification for course update
-            $message = "The course '$course' was updated successfully.";
-            $insert_notification = $this->db->query("INSERT INTO notifications (message, type) VALUES ('$message', 'success')");
-            
-            // Check if the notification query was successful
-            if (!$insert_notification) {
-                echo "Notification Error: " . $this->db->error;
-            }
-        }
-    }
-
-    // Error handling for notifications
-    if ($this->db->error) {
-        error_log("Database Error: " . $this->db->error);
-    }
-
-    // Return success status
-    return $save ? 1 : 2; // Return 2 in case of failure
-}
-
+		extract($_POST);
+		
+		// Ensure that $dept_id, $course, and $description are properly set
+		$data = "dept_id = '$dept_id', "; // Start with dept_id
+		$data .= "course = '$course', "; // Append course
+		$data .= "description = '$description' "; // Append description
+	
+		// Check for duplicate course
+		$check_duplicate = $this->db->query("SELECT * FROM courses WHERE course = '$course' AND id != '$id'");
+		if ($check_duplicate->num_rows > 0) {
+			// Duplicate course found, return error
+			return 0;
+		}
+		
+		// Check if the ID is empty to determine whether to insert or update
+		if (empty($id)) {
+			// Insert new course
+			$save = $this->db->query("INSERT INTO courses SET $data");
+		} else {
+			// Update existing course
+			$save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
+		}
+	
+		// Return success status
+		return $save ? 1 : 2; // Return 2 in case of failure
+	}
 
 	
 	function delete_course(){
