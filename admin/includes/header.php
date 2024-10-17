@@ -230,8 +230,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                             <div class="header-button">
                                 <div class="noti-wrap" >
                                     
-                                                               
-<div class="noti__item js-item-menu">
+             <div class="noti__item js-item-menu">
     <i class="zmdi zmdi-notifications"></i>
     <span class="quantity"><?php echo htmlentities($unreadCount); ?></span>
     <div class="notifi-dropdown js-dropdown" style="max-height: 300px; overflow-y: auto;">
@@ -257,6 +256,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
         </div>
     </div>
 </div>
+
                                 <div class="account-wrap float-right">
                                     <div class="account-item clearfix js-item-menu">
                                        
