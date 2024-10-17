@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit" a href="https://mccfacultyscheduling.com/login.php">Home</button>
+                                 <button class="au-btn au-btn--block au-btn--green m-b-20" a href="https://mccfacultyscheduling.com/login.php">Home</button>
                             </form>
                         </div>
                     </div>
