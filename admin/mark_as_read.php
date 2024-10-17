@@ -1,6 +1,6 @@
 <?php
 include 'db_connect.php'; // Database connection
-include 'view_notif.php';
+
 // Check if the notification_id is provided in the POST request
 if (isset($_POST['notification_id'])) {
     $notification_id = intval($_POST['notification_id']); // Sanitize input
