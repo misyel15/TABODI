@@ -93,12 +93,26 @@ class Action {
 			return 1;
 		}
 	}
-	function delete_user(){
-		extract($_POST);
-		$delete = $this->db->query("DELETE FROM users where id = ".$id);
-		if($delete)
-			return 1;
-	}
+	function delete_course(){
+    extract($_POST);
+    
+    // Attempt to delete the course
+    $delete = $this->db->query("DELETE FROM courses WHERE id = ".$id);
+    
+    // Prepare notification variables
+    $user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+    $message = 'Course deleted: ID ' . $id; // Message indicating which course was deleted
+    $status = $delete ? 'success' : 'failure'; // Status based on success of delete operation
+    $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
+    // Insert notification record
+    $this->db->query("INSERT INTO notifications (user_id, message, status, timestamp) 
+                      VALUES ('$user_id', '$message', '$status', '$timestamp')");
+
+    // Return success status
+    return $delete ? 1 : 2; // Return 1 for success, 2 for failure
+}
+
 	function signup(){
 		extract($_POST);
 		$data = " name = '".$firstname.' '.$lastname."' ";
