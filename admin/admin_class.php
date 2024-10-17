@@ -208,33 +208,43 @@ class Action {
 			return 1;
 				}
 	}
-  function save_course() {
-		extract($_POST);
-		
-		// Ensure that $dept_id, $course, and $description are properly set
-		$data = "dept_id = '$dept_id', "; // Start with dept_id
-		$data .= "course = '$course', "; // Append course
-		$data .= "description = '$description' "; // Append description
-	
-		// Check for duplicate course
-		$check_duplicate = $this->db->query("SELECT * FROM courses WHERE course = '$course' AND id != '$id'");
-		if ($check_duplicate->num_rows > 0) {
-			// Duplicate course found, return error
-			return 0;
-		}
-		
-		// Check if the ID is empty to determine whether to insert or update
-		if (empty($id)) {
-			// Insert new course
-			$save = $this->db->query("INSERT INTO courses SET $data");
-		} else {
-			// Update existing course
-			$save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
-		}
-	
-		// Return success status
-		return $save ? 1 : 2; // Return 2 in case of failure
-	}
+ function save_course() {
+    extract($_POST);
+
+    // Ensure that $dept_id, $course, and $description are properly set
+    $data = "dept_id = '$dept_id', "; // Start with dept_id
+    $data .= "course = '$course', "; // Append course
+    $data .= "description = '$description' "; // Append description
+
+    // Check for duplicate course
+    $check_duplicate = $this->db->query("SELECT * FROM courses WHERE course = '$course' AND id != '$id'");
+    if ($check_duplicate->num_rows > 0) {
+        // Duplicate course found, return error
+        return 0;
+    }
+
+    // Check if the ID is empty to determine whether to insert or update
+    if (empty($id)) {
+        // Insert new course
+        $save = $this->db->query("INSERT INTO courses SET $data");
+    } else {
+        // Update existing course
+        $save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
+    }
+
+    // Prepare notification variables
+    $user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+    $message = empty($id) ? 'New course added: ' . $course : 'Course updated: ' . $course;
+    $status = $save ? 'success' : 'failure'; // Status based on success of save operation
+    $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
+    // Insert notification record
+    $this->db->query("INSERT INTO notifications (user_id, message, status, timestamp) 
+                      VALUES ('$user_id', '$message', '$status', '$timestamp')");
+
+    // Return success status
+    return $save ? 1 : 2; // Return 2 in case of failure
+}
 
 	
 	function delete_course(){
