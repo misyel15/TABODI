@@ -1,4 +1,5 @@
-include 'db_connect.php'; // Ensure this is correct
+<?php
+include 'db_connect.php'; // Database connection
 
 // Check if the notification_id is provided in the POST request
 if (isset($_POST['notification_id'])) {
@@ -6,7 +7,7 @@ if (isset($_POST['notification_id'])) {
 
     // Prepare the SQL query to update the notification status
     $update_query = "UPDATE notifications SET status = 'read' WHERE id = ?";
-    $update_stmt = $conn->prepare($update_query); // Changed from $bd to $conn
+    $update_stmt = $conn->prepare($update_query); // Make sure to use the correct connection variable
     $update_stmt->bind_param('i', $notification_id);
     $update_stmt->execute();
 
@@ -22,3 +23,4 @@ if (isset($_POST['notification_id'])) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request.']);
 }
+?>
