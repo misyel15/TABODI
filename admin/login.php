@@ -151,6 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
+                                   <label>
+                                        <a href="https://mccfacultyscheduling.com/login.php" class="forgot-password-btn">Home</a>
+
+                                    </label>
                             </form>
                         </div>
                     </div>
