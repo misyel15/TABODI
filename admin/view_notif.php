@@ -65,7 +65,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                                         <strong><p>Information:</p></strong>
                                                         <h5 class="name"><?php echo htmlentities($row['message']); ?></h5>
                                                         <br>
-                                                        <strong><p>Awardee Name:</p></strong>
+                                                        <strong><p> User Name:</p></strong>
                                                         <strong><p><?php echo htmlentities($row['name']); ?> <?php echo htmlentities($row['username']); ?></p></strong>
                                                         <br>
                                                         <strong><p>Course:</p></strong>
