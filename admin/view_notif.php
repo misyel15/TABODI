@@ -23,7 +23,7 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <title>Notifications</title>
     <?php include 'includes/header.php'; ?>
     <?php include 'notif.php'; ?>
-    <?php include 'mark_as_read.php'; ?>
+   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="animsition">
