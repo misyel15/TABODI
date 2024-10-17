@@ -1,3 +1,6 @@
+<?php
+include '../db_connect.php';
+?>
 <style>
   .logo {
     margin: auto;
