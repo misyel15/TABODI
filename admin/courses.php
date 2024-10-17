@@ -51,19 +51,11 @@ if (!$dept_id) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                 <?php 
-    $i = 1;
-    $course = $conn->query("SELECT * FROM courses WHERE dept_id = '$dept_id' ORDER BY id ASC");
-    while($row = $course->fetch_assoc()):
-        $course_name = $row['course_name']; // Assuming course_name is a column in your courses table
-        $message = "Course $course_name has been updated.";
-
-        // Insert message into notifications table
-        $sql = "INSERT INTO notifications (message) VALUES ('$message')";
-        $conn->query($sql);
-
-    endwhile;
-?>
+                         <?php 
+                                    $i = 1;
+                                    $course = $conn->query("SELECT * FROM courses WHERE dept_id = '$dept_id' ORDER BY id ASC");
+                                    while($row = $course->fetch_assoc()):
+                                    ?>
 
                                     <tr>
                                         <td class="text-center"><?php echo $i++ ?></td>
