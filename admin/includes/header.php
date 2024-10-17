@@ -148,7 +148,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
 <li><a href="courses.php"><i class="fas fa-book"></i>Course</a></li>
 <li><a href="subjects.php"><i class="fas fa-book"></i>Subject</a></li>
 <li><a href="faculty.php"><i class="fas fa-users"></i>Faculty</a></li>
-<li><a href="room.php"><i class="fas fa-door-open"></i>Room</a></li>
+<li><a href="room.php"><i class="fas fa-school"></i>Room</a></li>
 <li><a href="timeslot.php"><i class="fas fa-clock"></i>Timeslot</a></li>
 <li><a href="section.php"><i class="fas fa-users"></i>Section</a></li>
 <li><a href="roomassigntry.php"><i class="fas fa-clipboard-list"></i>Room Assignment</a></li>
