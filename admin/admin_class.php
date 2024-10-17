@@ -236,7 +236,7 @@ class Action {
     // Prepare notification variables
     $user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
     $message = empty($id) ? 'New course added: ' . $course : 'Course updated: ' . $course;
-    $status = $save ? 'success' : 'failure'; // Status based on success of save operation
+    $status = $save ? 'read' : 'unread'; // Status based on success of save operation
     $timestamp = date('Y-m-d H:i:s'); // Current timestamp
 
     // Insert notification record
@@ -256,7 +256,7 @@ class Action {
     // Prepare notification variables
     $user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
     $message = 'Course deleted: ID ' . $id; // Message indicating which course was deleted
-    $status = $delete ? 'success' : 'failure'; // Status based on success of delete operation
+    $status = $delete ? 'read' : 'unread'; // Status based on success of delete operation
     $timestamp = date('Y-m-d H:i:s'); // Current timestamp
 
     // Insert notification record
@@ -307,31 +307,6 @@ class Action {
 	}
 	
 	
-	function save_fees(){
-		extract($_POST);
-		$data = " year = '$year' ";
-		$data .= ", library = '$library' ";
-		$data .= ", computer = '$computer' ";
-		$data .= ", school_id = '$school_id' ";
-		$data .= ", athletic = '$athletic' ";
-		$data .= ", admission = '$admission' ";
-		$data .= ", development = '$development' ";
-		$data .= ", guidance = '$guidance' ";
-		$data .= ", handbook = '$handbook' ";
-		$data .= ", entrance = '$entrance' ";
-		$data .= ", registration = '$registration' ";
-		$data .= ", medical = '$medical' ";
-		$data .= ", cultural = '$cultural' ";
-		$data .= ", semester = '$semester' ";
-		$data .= ", course = '$course' ";
-			if(empty($id)){
-				$save = $this->db->query("INSERT INTO fees set $data");
-			}else{
-				$save = $this->db->query("UPDATE fees set $data where id = $id");
-			}
-		if($save)
-			return 1;
-	}
 	function save_room() {
 		extract($_POST);
 		$data = " room_name = '$room' ";
