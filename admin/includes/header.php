@@ -231,21 +231,18 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                                 <div class="noti-wrap" >
                            
                                  
-
-
-
-
-
-<!-- Frontend to display notification bell and list -->
+                           
+                                 
+                                
 <div class="noti__item js-item-menu">
     <i class="zmdi zmdi-notifications"></i>
-    <span class="quantity"><?php echo htmlentities($unreadCount); ?></span> <!-- Display unread count -->
+    <span class="quantity"><?php echo htmlentities($unreadCount); ?></span>
     <div class="notifi-dropdown js-dropdown" style="max-height: 300px; overflow-y: auto;">
         <div class="notifi__title">
             <p>You have <?php echo htmlentities($unreadCount); ?> Notifications</p>
         </div>
 
-        <?php while ($notification = mysqli_fetch_assoc($notificationsQuery)): ?>
+        <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
             <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
             <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" onclick="markAsRead(<?php echo (int) $notification['id']; ?>)">
                 <div class="bg-c1 img-cir img-40">
