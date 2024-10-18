@@ -18,4 +18,4 @@
     if (!$rt) {
         die('Error fetching notifications: ' . mysqli_error($conn));
     }
-?> fix the code here not count
+?> 
