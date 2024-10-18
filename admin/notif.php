@@ -1,4 +1,8 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
     // Start session to access user ID
     session_start();
     include 'db_connect.php'; // Include your database connection
