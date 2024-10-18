@@ -231,16 +231,27 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                                 <div class="noti-wrap" >
                            
                                  
-                                
+<?php
+
+$user_id = $_SESSION['user_id'];
+$unreadQuery = $this->db->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND status = 'unread'");
+$unreadCount = $unreadQuery->fetch_assoc()['count'];
+
+// Fetch all notifications for display (both read and unread)
+$notificationsQuery = $this->db->query("SELECT * FROM notifications WHERE user_id = $user_id ORDER BY timestamp DESC");
+
+?>
+
+<!-- Frontend to display notification bell and list -->
 <div class="noti__item js-item-menu">
     <i class="zmdi zmdi-notifications"></i>
-    <span class="quantity"><?php echo htmlentities($unreadCount); ?></span>
+    <span class="quantity"><?php echo htmlentities($unreadCount); ?></span> <!-- Display unread count -->
     <div class="notifi-dropdown js-dropdown" style="max-height: 300px; overflow-y: auto;">
         <div class="notifi__title">
             <p>You have <?php echo htmlentities($unreadCount); ?> Notifications</p>
         </div>
 
-        <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
+        <?php while ($notification = mysqli_fetch_assoc($notificationsQuery)): ?>
             <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
             <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" onclick="markAsRead(<?php echo (int) $notification['id']; ?>)">
                 <div class="bg-c1 img-cir img-40">
@@ -258,6 +269,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
         </div>
     </div>
 </div>
+
                                 <div class="account-wrap float-right">
                                     <div class="account-item clearfix js-item-menu">
                                        
