@@ -229,12 +229,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                                        </form>
                             <div class="header-button">
                                 <div class="noti-wrap" >
-    <?php 
-// Fetch only unread notifications
-$unread_notifications_query = "SELECT * FROM notifications WHERE status = 'unread'"; 
-$rt = $this->db->query($unread_notifications_query);
-?>
-
+ 
 <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
     <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
     <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" 
