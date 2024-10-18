@@ -229,8 +229,18 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                                        </form>
                             <div class="header-button">
                                 <div class="noti-wrap" >
- 
-<?php while ($notification = mysqli_fetch_assoc($rt)): ?>
+                           
+                                 
+                                
+<div class="noti__item js-item-menu">
+    <i class="zmdi zmdi-notifications"></i>
+    <span class="quantity"><?php echo htmlentities($unreadCount); ?></span>
+    <div class="notifi-dropdown js-dropdown" style="max-height: 300px; overflow-y: auto;">
+        <div class="notifi__title">
+            <p>You have <?php echo htmlentities($unreadCount); ?> Notifications</p>
+        </div>
+
+        <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
             <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
             <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" onclick="markAsRead(<?php echo (int) $notification['id']; ?>)">
                 <div class="bg-c1 img-cir img-40">
@@ -244,7 +254,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
         <?php endwhile; ?>
 
         <div class="notifi__footer">
-            <a href="all_notification.php">All notifications</a>
+            <a href="all_notifications.php">All notifications</a>
         </div>
     </div>
 </div>
