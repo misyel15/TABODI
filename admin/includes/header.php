@@ -231,16 +231,10 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                                 <div class="noti-wrap" >
                            
                                  
-<?php
 
-$user_id = $_SESSION['user_id'];
-$unreadQuery = $this->db->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND status = 'unread'");
-$unreadCount = $unreadQuery->fetch_assoc()['count'];
 
-// Fetch all notifications for display (both read and unread)
-$notificationsQuery = $this->db->query("SELECT * FROM notifications WHERE user_id = $user_id ORDER BY timestamp DESC");
 
-?>
+
 
 <!-- Frontend to display notification bell and list -->
 <div class="noti__item js-item-menu">
