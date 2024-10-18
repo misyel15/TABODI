@@ -231,23 +231,23 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
                                 <div class="noti-wrap" >
  
 <?php while ($notification = mysqli_fetch_assoc($rt)): ?>
-    <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
-    <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" 
-         onclick="markAsRead(<?php echo (int) $notification['id']; ?>)">
-        <div class="bg-c1 img-cir img-40">
-            <i class="zmdi zmdi-notifications"></i>
-        </div>
-        <div class="content">
-            <p><?php echo htmlentities($notification['message']); ?></p>
-            <span class="date"><?php echo date('F j, Y g:ia', strtotime($notification['timestamp'])); ?></span>
+            <?php $class = $notification['status'] === 'read' ? 'read' : 'unread'; ?>
+            <div class="notifi__item <?php echo $class; ?>" id="notification_<?php echo (int) $notification['id']; ?>" onclick="markAsRead(<?php echo (int) $notification['id']; ?>)">
+                <div class="bg-c1 img-cir img-40">
+                    <i class="zmdi zmdi-notifications"></i>
+                </div>
+                <div class="content">
+                    <p><?php echo htmlentities($notification['message']); ?></p>
+                    <span class="date"><?php echo date('F j, Y g:ia', strtotime($notification['timestamp'])); ?></span>
+                </div>
+            </div>
+        <?php endwhile; ?>
+
+        <div class="notifi__footer">
+            <a href="all_notification.php">All notifications</a>
         </div>
     </div>
-<?php endwhile; ?>
-
-<div class="notifi__footer">
-    <a href="all_notification.php">All notifications</a>
 </div>
-
                                 <div class="account-wrap float-right">
                                     <div class="account-item clearfix js-item-menu">
                                        
