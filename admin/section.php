@@ -90,7 +90,8 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                 <div class="card">
                     <div class="card-header">
                         <b>Section List</b>
-                        <button class="btn btn-primary btn-block btn-sm col-sm-2 float-right" data-toggle="modal" data-target="#sectionModal"><i class="fa fa-user-plus"></i> New Entry</button>
+                        <button class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#sectionModal"><i class="fa fa-user-plus"></i> New Entry</button>
+                        
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-hover" id="sectionTable">
