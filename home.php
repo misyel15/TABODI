@@ -60,10 +60,9 @@
       z-index: 2; /* Place it above the overlay */
     }
     
-    .navbar {
-      background-color: red; /* Change navbar background color to red */
-    }
-
+   .navbar {
+    background-color: #e74c3c; /* Change navbar background color to Fire Engine Red */
+  }
     .navbar-brand {
       color: white; /* Change navbar text color for contrast */
       font-size: 0.9rem;
