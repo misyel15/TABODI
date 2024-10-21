@@ -45,8 +45,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 80%;
-    background-image: url('mcclogo.jpg'); /* Replace with your image URL */
+    height: 100%;
+    background-image: url('end.png'); /* Replace with your image URL */
     background-size: cover; /* Cover the entire section */
     background-position: center; /* Center the image */
     opacity: 0.5; /* Adjust transparency (0.0 to 1.0) */
