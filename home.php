@@ -30,7 +30,7 @@
   }
   
   #main {
-    width: calc(100%);
+    width: calc(80%);
     height: calc(100%);
     display: flex;
     align-items: center;
