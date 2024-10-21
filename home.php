@@ -87,10 +87,10 @@
 <main id="main" class="bg-light">
   <div id="login" class="col-md-4">
     <div class="card">
+      
       <a href="login.php" class="close" aria-label="Close" onclick="this.closest('.card').remove();">
           <span aria-hidden="true">&times;</span>
-        </a>
-      <div class="card-body">
+        </a><div class="card-body">
         
         <form id="login-form">
           <h4><b>Welcome To Faculty Scheduling System</b></h4>
