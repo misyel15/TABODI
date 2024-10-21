@@ -31,7 +31,7 @@ include 'headers.php';
  <style>
   /* Custom Styles */
   body {
-    background-color:  lightgray; /* Light gray background */
+    background-color:  darkwhite; /* Light gray background */
   }
 
   .text-gradient {
