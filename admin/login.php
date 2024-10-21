@@ -2,7 +2,6 @@
 session_start();
 include 'db_connect.php'; 
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize user input to prevent XSS attacks
     $username = htmlspecialchars(trim($_POST['username']));
@@ -41,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -82,23 +80,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <style>
-.password-container {
-    position: relative;
-    width: 100%;
-}
+    .password-container {
+        position: relative;
+        width: 100%;
+    }
 
-.au-input {
-    width: 100%;
-    padding-right: 40px; /* Adjust to make space for the icon */
-}
+    .au-input {
+        width: 100%;
+        padding-right: 40px; /* Adjust to make space for the icon */
+    }
 
-.eye-icon {
-    position: absolute;
-    right: 10px; /* Adjust according to your design */
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-}
+    .eye-icon {
+        position: absolute;
+        right: 10px; /* Adjust according to your design */
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .login-wrap {
+        background-color: #ffffff; /* Set your desired background color */
+        border-radius: 10px; /* Adjust border radius as needed */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+        padding: 30px; /* Add padding to create space inside the container */
+    }
 </style>
 <body class="animsition">
     <div class="page-wrapper">
@@ -136,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             while($row= $query->fetch_array()):
                                                 $course = $row['course'];
                                             ?>
-                                            <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
+                                            <option value="<?php echo $course ?>"><?php echo ucwords($course) ?></option>
                                             <?php endwhile; ?>
                                         </select>
                                     </div>
@@ -147,13 +152,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                     <label>
                                         <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-
                                     </label>
                                 </div>
-                             <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                              <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
-
-
+                                <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                             </form>
                         </div>
                     </div>
@@ -281,4 +282,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }, false);
     </script>
 </body>
-</html> 
+</html>
