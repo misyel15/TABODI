@@ -59,7 +59,7 @@
   }
   
   .navbar-brand {
-    color: white;
+    color: red;
     font-size: 0.9rem;
     font-weight: bold;
     height: 30%;
