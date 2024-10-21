@@ -55,7 +55,7 @@ include 'headers.php';
   }
 
   .header_section {
-    background-color: #eae6f5;
+    background-color: #990000;
   }
 
   .navbar-brand img {
