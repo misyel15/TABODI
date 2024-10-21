@@ -47,10 +47,11 @@ $currentTime = date('d-m-Y h:i:s A', time());
 
                             <?php
                             // Fetch notifications from the database
-                            $query = "SELECT n.id, s.name, s.username, n.message, n.timestamp, s.course 
-                                      FROM users s 
-                                      INNER JOIN notifications n ON s.id = n.user_id 
-                                      ORDER BY n.timestamp DESC"; // Fetch all notifications
+                            $query = "SELECT n.id, s.name, s.username, n.message, n.created_at AS timestamp, s.course 
+                            FROM users s 
+                            INNER JOIN notifications n ON s.id = n.user_id 
+                            ORDER BY n.created_at DESC"; // Use the correct timestamp column
+                  
                             $result = mysqli_query($conn, $query);
 
                             // Check if there are notifications
