@@ -75,7 +75,7 @@
     </a>
   </nav>
 
-  <main id="main" class="bg-dark">
+  <main id="main" class="bg-light">
     <div id="login" class="col-md-4">
       <div class="card">
         <div class="card-body">
