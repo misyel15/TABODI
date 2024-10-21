@@ -59,27 +59,12 @@
       position: relative; /* Required to place it above the background */
       z-index: 2; /* Place it above the overlay */
     }
-    
-   .navbar {
-    background-color: 	#990000; /* Change navbar background color to Fire Engine Red */
-  }
-    .navbar-brand {
-      color: white; /* Change navbar text color for contrast */
-      font-size: 0.9rem;
-      font-weight: bold;
-      height: 30%;
-    }
+   
   </style>
 </head>
 
 <body>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light">
-    <a class="navbar-brand" href="#">
-      <img src="mcclogo.jpg" alt="Logo" style="width: 40px; height: 30px; margin-right: 10px;">MCC Faculty Scheduling System
-    </a>
-  </nav>
 
   <main id="main" class="bg-light">
     <div id="login" class="col-md-4">
