@@ -140,25 +140,25 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <label class="control-label">Total Units</label>
-                                        <input type="text" class="form-control" name="units">
+                                        <input type="number" class="form-control" name="units">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <label class="control-label">Lec Units</label>
-                                        <input type="text" class="form-control" name="lec_units">
+                                        <input type="number" class="form-control" name="lec_units">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <label class="control-label">Lab Units</label>
-                                        <input type="text" class="form-control" name="lab_units">
+                                        <input type="number" class="form-control" name="lab_units">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
                                         <label class="control-label">Hours</label>
-                                        <input type="text" class="form-control" name="hours">
+                                        <input type="number" class="form-control" name="hours">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -200,10 +200,12 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
-                                        <label class="control-label">Specialization</label>
-                                        <input type="text" class="form-control" name="specialization">
-                                    </div>
-                                </div>
+                                        <label for="specialization" class="control-label">Specialization</label>
+                                        <select class="form-control" name="specialization" id="specialization">
+                                            <option value="" disabled selected>Select Specialization</option>
+                                            <option value="Major">Major</option>
+                                            <option value="Minor">Minor</option>
+                                        </select>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -241,108 +243,66 @@ $(document).ready(function() {
         });
     });
 
-    // Add/Edit subject
     $('#manage-subject').submit(function(e) {
         e.preventDefault();
-
-        var subject = $('[name="subject"]').val().trim();
-        var course = $('[name="course"]').val();
-        var cyear = $('[name="cyear"]').val();
-        var semester = $('[name="semester"]').val();
-        if (!subject || !course || !cyear || !semester) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Please fill in all required fields!',
-            });
-            return;
-        }
-
+        
         $.ajax({
-            url: 'ajax.php?action=save_subject', // Change to the actual PHP endpoint
+            url: 'ajax.php?action=save_subject',
             data: new FormData($(this)[0]),
-            method: 'POST',
-            processData: false,
+            cache: false,
             contentType: false,
-            success: function(resp) {
-                if (resp == 1) {
+            processData: false,
+            method: 'POST',
+            success: function(resp){
+                if(resp == 1){
                     Swal.fire({
                         icon: 'success',
-                        title: 'Subject successfully saved!',
-                        showConfirmButton: true,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            var id = $('[name="id"]').val();
-                            var isEdit = id != '';  // Check if it's an edit
-
-                            // If it's an edit, update the corresponding row in the table
-                            if (isEdit) {
-                                var row = $('.edit_subject[data-id="'+id+'"]').closest('tr'); // Find the row
-                                
-                                // Update the row content dynamically
-                                row.find('td:eq(1)').html(`
-                                    <p><b>Subject:</b> ${subject}</p>
-                                    <p><small><b>Description:</b> ${$('[name="description"]').val()}</small></p>
-                                    <p><small><b>Total Units:</b> ${$('[name="units"]').val()}</small></p>
-                                    <p><small><b>Lec Units:</b> ${$('[name="lec_units"]').val()}</small></p>
-                                    <p><small><b>Lab Units:</b> ${$('[name="lab_units"]').val()}</small></p>
-                                    <p><small><b>Hours:</b> ${$('[name="hours"]').val()}</small></p>
-                                    <p><small><b>Course:</b> ${course}</small></p>
-                                    <p><small><b>Year:</b> ${cyear}</small></p>
-                                    <p><small><b>Semester:</b> ${semester}</small></p>
-                                    <p><small><b>Specialization:</b> ${$('[name="specialization"]').val()}</small></p>
-                                `);
-
-                                // Update the row's data attributes for filtering
-                                row.attr('data-course', course);
-                                row.attr('data-semester', semester);
-
-                            } else {
-                                location.reload();  // Optionally, refresh the table for new entry
-                            }
-
-                            $('#subjectModal').modal('hide');  // Close the modal
-                        }
+                        title: 'Success!',
+                        text: 'Data successfully added!',
+                    }).then(function() {
+                        location.reload();
                     });
-                } else {
+                } else if(resp == 2){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Data successfully updated!',
+                    }).then(function() {
+                        location.reload();
+                    });
+                } else if(resp == 0){
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error saving subject!',
-                        text: resp
+                        title: 'Error!',
+                        text: 'Subject already exists!',
                     });
                 }
-            },
-            error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong with the AJAX request!',
-                });
             }
         });
     });
 
-    // Populate form for editing subject
     $('.edit_subject').click(function() {
-        var form = $('#manage-subject');
-        form.find("[name='id']").val($(this).data('id'));
-        form.find("[name='subject']").val($(this).data('subject'));
-        form.find("[name='description']").val($(this).data('description'));
-        form.find("[name='units']").val($(this).data('units'));
-        form.find("[name='lec_units']").val($(this).data('lecunits'));
-        form.find("[name='lab_units']").val($(this).data('labunits'));
-        form.find("[name='course']").val($(this).data('course'));
-        form.find("[name='cyear']").val($(this).data('year'));
-        form.find("[name='semester']").val($(this).data('semester'));
-        form.find("[name='specialization']").val($(this).data('special'));
-        form.find("[name='hours']").val($(this).data('hours'));
+        var cat = $('#manage-subject');
+        cat.get(0).reset(); // Reset the form
+
+        // Fill in the modal form with the existing subject data
+        cat.find("[name='id']").val($(this).data('id'));
+        cat.find("[name='subject']").val($(this).data('subject'));
+        cat.find("[name='description']").val($(this).data('description'));
+        cat.find("[name='units']").val($(this).data('units'));
+        cat.find("[name='lec_units']").val($(this).data('lecunits'));
+        cat.find("[name='lab_units']").val($(this).data('labunits'));
+        cat.find("[name='hours']").val($(this).data('hours'));
+        cat.find("[name='course']").val($(this).data('course'));
+        cat.find("[name='cyear']").val($(this).data('year'));
+        cat.find("[name='semester']").val($(this).data('semester'));
+        cat.find("[name='specialization']").val($(this).data('special'));
     });
 
-    // Delete subject
     $('.delete_subject').click(function() {
         var id = $(this).data('id');
         Swal.fire({
-            title: 'Are you sure you want to delete this subject?',
+            title: 'Are you sure?',
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
@@ -351,27 +311,28 @@ $(document).ready(function() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: 'ajax.php?action=delete_subject',
-                    method: 'POST',
-                    data: { id: id },
-                    success: function(resp) {
-                        if (resp == 1) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Subject successfully deleted!',
-                                showConfirmButton: true,
-                             
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    location.reload();
-                                }
-                            });
-                        }
-                    }
-                });
+                delete_subject(id);
             }
         });
     });
+
+    function delete_subject(id) {
+        $.ajax({
+            url: 'ajax.php?action=delete_subject',
+            method: 'POST',
+            data: { id: id },
+            success: function(resp) {
+                if (resp == 1) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Data successfully deleted.',
+                    }).then(function() {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
 });
 </script>
