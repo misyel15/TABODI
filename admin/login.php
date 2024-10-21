@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             while($row= $query->fetch_array()):
                                                 $course = $row['course'];
                                             ?>
-                                            <option value="<?php echo $course ?>"><?php echo ucwords($course) ?></option>
+                                            <option value="<?php echo  $course ?>"><?php echo ucwords($course) ?></option>
                                             <?php endwhile; ?>
                                         </select>
                                     </div>
@@ -152,9 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </label>
                                     <label>
                                         <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+
                                     </label>
                                 </div>
-                                <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
+                             <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                             </form>
                         </div>
                     </div>
