@@ -61,7 +61,7 @@
     }
     
    .navbar {
-    background-color: #e74c3c; /* Change navbar background color to Fire Engine Red */
+    background-color: 	#990000; /* Change navbar background color to Fire Engine Red */
   }
     .navbar-brand {
       color: white; /* Change navbar text color for contrast */
