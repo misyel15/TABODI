@@ -209,64 +209,70 @@ class Action {
 			return 1;
 				}
 	}
- function save_course() {
-    extract($_POST);
-
-    // Ensure that $dept_id, $course, and $description are properly set
-    $data = "dept_id = '$dept_id', "; // Start with dept_id
-    $data .= "course = '$course', "; // Append course
-    $data .= "description = '$description' "; // Append description
-
-    // Check for duplicate course
-    $check_duplicate = $this->db->query("SELECT * FROM courses WHERE course = '$course' AND id != '$id'");
-    if ($check_duplicate->num_rows > 0) {
-        // Duplicate course found, return error
-        return 0;
-    }
-
-    // Check if the ID is empty to determine whether to insert or update
-    if (empty($id)) {
-        // Insert new course
-        $save = $this->db->query("INSERT INTO courses SET $data");
-    } else {
-        // Update existing course
-        $save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
-    }
-
-    // Prepare notification variables
-    $user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
-    $message = empty($id) ? 'New course added: ' . $course : 'Course updated: ' . $course;
-    $status = $save ? 'read' : 'unread'; // Status based on success of save operation
-    $timestamp = date('Y-m-d H:i:s'); // Current timestamp
-
-    // Insert notification record
-    $this->db->query("INSERT INTO notifications (user_id, message, status, timestamp) 
-                      VALUES ('$user_id', '$message', '$status', '$timestamp')");
-
-    // Return success status
-    return $save ? 1 : 2; // Return 2 in case of failure
-}
-
-	function delete_course(){
-    extract($_POST);
-    
-    // Attempt to delete the course
-    $delete = $this->db->query("DELETE FROM courses WHERE id = ".$id);
-    
-    // Prepare notification variables
-    $user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
-    $message = 'Course deleted: ID ' . $id; // Message indicating which course was deleted
-    $status = $delete ? 'read' : 'unread'; // Status based on success of delete operation
-    $timestamp = date('Y-m-d H:i:s'); // Current timestamp
-
-    // Insert notification record
-    $this->db->query("INSERT INTO notifications (user_id, message, status, timestamp) 
-                      VALUES ('$user_id', '$message', '$status', '$timestamp')");
-
-    // Return success status
-    return $delete ? 1 : 2; // Return 1 for success, 2 for failure
-}
-
+	function save_course() {
+		extract($_POST);
+	
+		// Ensure that $dept_id, $course, and $description are properly set
+		$data = "dept_id = '$dept_id', "; // Start with dept_id
+		$data .= "course = '$course', "; // Append course
+		$data .= "description = '$description' "; // Append description
+	
+		// Check for duplicate course
+		$check_duplicate = $this->db->query("SELECT * FROM courses WHERE course = '$course' AND id != '$id'");
+		if ($check_duplicate->num_rows > 0) {
+			// Duplicate course found, return 0
+			return 0;
+		}
+	
+		// Check if the ID is empty to determine whether to insert or update
+		if (empty($id)) {
+			// Insert new course
+			$save = $this->db->query("INSERT INTO courses SET $data");
+		} else {
+			// Update existing course
+			$save = $this->db->query("UPDATE courses SET $data WHERE id = $id");
+		}
+	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = empty($id) ? 'New course added: ' . $course : 'Course updated: ' . $course;
+		$status = $save ? 'unread' : 'read'; // Mark notification as unread
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
+		if ($save) {
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+		}
+	
+		// Return success status
+		return $save ? 1 : 2; // Return 2 in case of failure
+	}
+	function delete_course() {
+		extract($_POST);
+	
+		// Attempt to delete the course
+		$delete = $this->db->query("DELETE FROM courses WHERE id = ".$id);
+	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = $delete ? 'Course deleted: ' . $id : 'Course deletion failed: ' . $id;
+		$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record
+		$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+						  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+	
+		// Query to count the total number of unread notifications
+		$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+		$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+	
+		// Return success or failure status
+		return $delete ? 1 : 2; // Return 1 for success, 2 for failure
+	}
+	
+	
 
 	function save_subject() {
 		extract($_POST);
@@ -301,11 +307,21 @@ class Action {
 			$save = $this->db->query("UPDATE subjects SET $data WHERE id = $id");
 		}
 		
-		if ($save) {
-			return 1; // Successfully saved
-		}
-	}
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = empty($id) ? 'New subject added: ' . $subject : 'Subject updated: ' . $subject;
+		$status = $save ? 'unread' : 'read'; // Mark notification as unread
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
 	
+		// Insert notification record if save was successful
+		if ($save) {
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+		}
+	
+		// Return success status
+		return $save ? 1 : 2; // Return 2 in case of failure
+	}
 	
 	function save_room() {
 		extract($_POST);
@@ -328,10 +344,20 @@ class Action {
 			$save = $this->db->query("UPDATE roomlist SET $data WHERE id = $id");
 		}
 	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = empty($id) ? 'New room added: ' . $room : 'Room updated: ' . $room;
+		$status = $save ? 'unread' : 'read'; // Mark notification as unread
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
 		if ($save) {
-			return 1; // Return 1 for successful save
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
 		}
-		return 0; // Return 0 if the save operation fails
+	
+		// Return success status
+		return $save ? 1 : 2; // Return 2 in case of failure
 	}
 	
 	function save_timeslot() {
@@ -353,10 +379,20 @@ class Action {
 			$save = $this->db->query("UPDATE timeslot SET $data WHERE id = $id");
 		}
 	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = empty($id) ? 'New timeslot added: ' . $timeslot : 'Timeslot updated: ' . $timeslot;
+		$status = $save ? 'unread' : 'read'; // Mark notification as unread
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
 		if ($save) {
-			return 1; // Return 1 for successful save
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
 		}
-		return 0; // Return 0 if the save operation fails
+	
+		// Return success status
+		return $save ? 1 : 2; // Return 2 in case of failure
 	}
 	
 	function save_section() {
@@ -381,17 +417,31 @@ class Action {
 			return 3; // Return a specific code for duplicate entry
 		}
 	
+		$save = false; // Initialize $save
+		$message = ''; // Initialize message for notification
+		$status = 'unread'; // Default status for the notification
+	
 		if (empty($id)) {
 			// Insert new section
 			$save = $this->db->query("INSERT INTO section SET $data");
+			$message = 'New section added: ' . $section; // Set message for new section
 		} else {
 			// Update existing section
 			$save = $this->db->query("UPDATE section SET $data WHERE id = $id");
+			$message = 'Section updated: ' . $section; // Set message for updated section
 		}
 	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
 		if ($save) {
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
 			return empty($id) ? 1 : 2; // Return 1 for insert and 2 for update
 		}
+	
 		return 0; // Return 0 if the save operation fails
 	}
 	
@@ -400,10 +450,25 @@ class Action {
 	function delete_subject(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM subjects where id = ".$id);
-		if($delete){
-			return 1;
-		}
+		
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = $delete ? 'Subject deleted: ' . $id : 'Course deletion failed: ' . $id;
+		$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record
+		$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+						  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+	
+		// Query to count the total number of unread notifications
+		$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+		$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+	
+		// Return success or failure status
+		return $delete ? 1 : 2; // Return 1 for success, 2 for failure
 	}
+	
 	function delete_fees(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM fees where id = ".$id);
@@ -414,17 +479,47 @@ class Action {
 	function delete_room(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM roomlist where id = ".$id);
-		if($delete){
-			return 1;
-		}
+		
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = $delete ? 'Room deleted: ' . $id : 'Course deletion failed: ' . $id;
+		$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record
+		$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+						  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+	
+		// Query to count the total number of unread notifications
+		$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+		$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+	
+		// Return success or failure status
+		return $delete ? 1 : 2; // Return 1 for success, 2 for failure
 	}
+	
 	function delete_timeslot(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM timeslot where id = ".$id);
-		if($delete){
-			return 1;
-		}
+		
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = $delete ? 'Timeslot deleted: ' . $id : 'Course deletion failed: ' . $id;
+		$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record
+		$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+						  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+	
+		// Query to count the total number of unread notifications
+		$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+		$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+	
+		// Return success or failure status
+		return $delete ? 1 : 2; // Return 1 for success, 2 for failure
 	}
+	
 	function delete_load(){
 		extract($_POST);
 		$scode = "";
@@ -475,10 +570,25 @@ class Action {
 	function delete_section(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM section where id = ".$id);
-		if($delete){
-			return 1;
-		}
+		
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = $delete ? 'Section deleted: ' . $id : 'Course deletion failed: ' . $id;
+		$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record
+		$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+						  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+	
+		// Query to count the total number of unread notifications
+		$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+		$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+	
+		// Return success or failure status
+		return $delete ? 1 : 2; // Return 1 for success, 2 for failure
 	}
+	
 	function save_faculty() {
 		extract($_POST);
 		$data = '';
@@ -526,6 +636,7 @@ class Action {
 				}
 			}
 			$save = $this->db->query("INSERT INTO faculty SET $data");
+			$message = 'New faculty added: ' . $firstname; // Change $name to the appropriate variable for the faculty name
 		} else {
 			if (!empty($id_no)) {
 				$chk = $this->db->query("SELECT * FROM faculty WHERE id_no = '$id_no' AND id != $id")->num_rows;
@@ -535,21 +646,46 @@ class Action {
 				}
 			}
 			$save = $this->db->query("UPDATE faculty SET $data WHERE id = " . $id);
+			$message = 'Faculty updated: ' . $firstname; // Change $name to the appropriate variable for the faculty name
 		}
 	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$status = 'unread'; // Default status for the notification
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
 		if ($save) {
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
 			return 1; // Return 1 for successful save
 		}
+	
 		return 0; // Return 0 if save operation fails
 	}
 	
 	function delete_faculty(){
 		extract($_POST);
 		$delete = $this->db->query("DELETE FROM faculty where id = ".$id);
-		if($delete){
-			return 1;
-		}
+		
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = $delete ? 'faculty deleted: ' . $id : 'Course deletion failed: ' . $id;
+		$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record
+		$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+						  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+	
+		// Query to count the total number of unread notifications
+		$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+		$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+	
+		// Return success or failure status
+		return $delete ? 1 : 2; // Return 1 for success, 2 for failure
 	}
+	
 	function save_roomschedule() {
 		extract($_POST);
 		
@@ -605,10 +741,20 @@ class Action {
 			$save = $this->db->query("UPDATE loading SET " . $data . " WHERE id=" . $id);
 		}
 	
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = empty($id) ? 'New room schedule added: ' . $timeslot : 'Room schedule updated: ' . $timeslot;
+		$status = 'unread'; // Mark notification as unread
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
 		if ($save) {
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
 			return 1; // Return 1 for successful save
 		}
-		return 0; // Return 0 if the save operation fails
+	
+		return 0; // Return 0 if save operation fails
 	}
 	
 	function save_roomscheduletth(){
