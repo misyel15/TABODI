@@ -13,6 +13,9 @@
   <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
   <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
 
+  <!-- Include SweetAlert -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+
   <?php include('./header.php'); ?>
 
   <?php 
@@ -20,56 +23,60 @@
     header("location:index.php");
   ?>
 
-</head>
-<style>
-  body {
-    width: 100%;
-    height: calc(100%);
-    position: fixed;
-    margin: 0; /* Remove default body margin */
-  }
-  
-  #main {
-    width: calc(100%);
-    height: calc(100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative; /* Required for positioning the overlay */
-    overflow: hidden; /* Prevent overflow */
-  }
-  
-  #main::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-     background-color: #eae6f5;
-    background-size: cover; /* Cover the entire section */
-    background-position: center; /* Center the image */
-    opacity: 0.5; /* Adjust transparency (0.0 to 1.0) */
-    z-index: 1; /* Place it behind the content */
-  }
+  <style>
+    body {
+      width: 100%;
+      height: calc(100%);
+      position: fixed;
+      margin: 0; /* Remove default body margin */
+    }
+    
+    #main {
+      width: calc(100%);
+      height: calc(100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative; /* Required for positioning the overlay */
+      overflow: hidden; /* Prevent overflow */
+    }
+    
+    #main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #eae6f5;
+      background-size: cover; /* Cover the entire section */
+      background-position: center; /* Center the image */
+      opacity: 0.5; /* Adjust transparency (0.0 to 1.0) */
+      z-index: 1; /* Place it behind the content */
+    }
 
-  #login {
-    position: relative; /* Required to place it above the background */
-    z-index: 2; /* Place it above the overlay */
-  }
-  
-  .navbar-brand {
-    color: red;
-    font-size: 0.9rem;
-    font-weight: bold;
-    height: 30%;
-  }
-</style>
+    #login {
+      position: relative; /* Required to place it above the background */
+      z-index: 2; /* Place it above the overlay */
+    }
+    
+    .navbar {
+      background-color: red; /* Change navbar background color to red */
+    }
+
+    .navbar-brand {
+      color: white; /* Change navbar text color for contrast */
+      font-size: 0.9rem;
+      font-weight: bold;
+      height: 30%;
+    }
+  </style>
+</head>
 
 <body>
 
   <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light">
     <a class="navbar-brand" href="#">
       <img src="mcclogo.jpg" alt="Logo" style="width: 40px; height: 30px; margin-right: 10px;">MCC Faculty Scheduling System
     </a>
@@ -99,14 +106,14 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <!-- Include SweetAlert JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
   <script>
-    $('#login-form').submit(function(e){
+    $('#login-form').submit(function(e) {
       e.preventDefault();
       $('#login-form button[type="submit"]').attr('disabled', true).html('Logging in...');
-      if ($(this).find('.alert-danger').length > 0) {
-        $(this).find('.alert-danger').remove();
-      }
       $.ajax({
         url: 'admin/ajax.php?action=login_faculty',
         method: 'POST',
@@ -119,7 +126,8 @@
           if (resp == 1) {
             location.href = 'index.php';
           } else {
-            $('#login-form').prepend('<div class="alert alert-danger">ID Number is incorrect.</div>');
+            // Use SweetAlert for the alert message
+            swal("Error!", "ID Number is incorrect.", "error");
             $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
           }
         }
