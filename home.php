@@ -65,24 +65,26 @@
 
 <body>
 
-
-  <main id="main" class="bg-light">
-    <div id="login" class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <form id="login-form">
-            <h4><b>Welcome To Faculty Scheduling System</b></h4>
-            <div class="form-group">
-              <label for="id_no" class="control-label">Please enter your Faculty ID No.</label>
-              <input type="text" id="id_no" name="id_no" class="form-control">
-            </div>
-            <center><button type="submit" class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button></center>
-          </form>
-          <br>
-        </div>
+<main id="main" class="bg-light">
+  <div id="login" class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <form id="login-form">
+          <h4><b>Welcome To Faculty Scheduling System</b></h4>
+          <div class="form-group">
+            <label for="id_no" class="control-label">Please enter your Faculty ID No.</label>
+            <input type="text" id="id_no" name="id_no" class="form-control">
+          </div>
+          <center>
+            <button type="submit" class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button>
+            <button type="button" class="btn-sm btn-block btn-wave col-md-4 btn-secondary" onclick="window.location.href='home.html'">X</button>
+          </center>
+        </form>
       </div>
     </div>
-  </main>
+  </div>
+</main>
+
 
   <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 
