@@ -12,10 +12,10 @@
     $unreadData = mysqli_fetch_assoc($unreadResult);
     $unreadCount = isset($unreadData['unread_count']) ? $unreadData['unread_count'] : 0;
 
-    // Fetch all notifications
-    $rt = mysqli_query($conn, "SELECT * FROM notifications ORDER BY timestamp DESC");
+    // Fetch all notifications, fix the column name from 'timestamp' to 'created_at'
+    $rt = mysqli_query($conn, "SELECT * FROM notifications ORDER BY created_at DESC");
 
     if (!$rt) {
         die('Error fetching notifications: ' . mysqli_error($conn));
     }
-?> 
+?>
