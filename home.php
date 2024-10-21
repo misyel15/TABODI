@@ -64,10 +64,14 @@
 </head>
 
 <body>
-
 <main id="main" class="bg-light">
   <div id="login" class="col-md-4">
     <div class="card">
+      <div class="card-header">
+        <button type="button" class="close" aria-label="Close" onclick="this.closest('.card').remove();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <div class="card-body">
         <form id="login-form">
           <h4><b>Welcome To Faculty Scheduling System</b></h4>
@@ -77,13 +81,13 @@
           </div>
           <center>
             <button type="submit" class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button>
-            <button type="button" class="btn-sm btn-block btn-wave col-md-4 btn-secondary" onclick="window.location.href='home.html'">X</button>
           </center>
         </form>
       </div>
     </div>
   </div>
 </main>
+
 
 
   <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
