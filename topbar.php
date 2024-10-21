@@ -1,6 +1,4 @@
-<?php
-include '../db_connect.php';
-?>
+
 <style>
   .logo {
     margin: auto;
@@ -54,7 +52,7 @@ include '../db_connect.php';
 <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar" style="padding: 0; min-height: 2.0rem;">
   <div class="container-fluid mt-2 mb-2">
     <a class="navbar-brand" href="#">
-      <img src="back.png" alt="Logo"> Faculty Scheduling System
+      <img src="mcclogo.jpg" alt="Logo"> Faculty Scheduling System
     </a>
     <ul class="navbar-nav ml-auto"> <!-- Aligns the nav items to the right -->
       <li class="nav-item dropdown">
