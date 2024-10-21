@@ -142,7 +142,8 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 echo '<td class="text-center content" data-id="' . $load_id . '" data-scode="' . $subject . '">' 
                                     . $newSched 
                                     . '<br>'
-                                    . '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#editModal"><i class="fa fa-edit"></i> Edit</button></span> '
+                                   . '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#newScheduleModal"><i class="fa fa-edit"></i> Edit</button></span>'
+
                                     . '<span><button class="btn btn-sm btn-danger delete_load" type="button" data-id="' . $load_id . '" data-scode="' . $subject . '"><i class="fa fa-trash-alt"></i> Delete</button></span>'
                                     . '</td>';
                             } else {
