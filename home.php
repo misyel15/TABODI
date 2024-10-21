@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Mcc Faculty Scheduling</title>
-  <link rel="icon" href="back.png" type="image/png">
+  <link rel="icon" href="mcclogo.jpg" type="image/png">
 
   <!-- Include Bootstrap for styling -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -50,7 +50,7 @@
   <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">
-  <img src="back.png" alt="Logo" style="width: 40px; height: 30px; margin-right: 10px;"> Faculty Scheduling System
+  <img src="mcclogo.jpg" alt="Logo" style="width: 40px; height: 30px; margin-right: 10px;">MCC Faculty Scheduling System
 </a>
 
 
