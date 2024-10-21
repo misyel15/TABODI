@@ -31,7 +31,7 @@ include 'headers.php';
  <style>
   /* Custom Styles */
   body {
-    background-color:  #eae6f5; /* Light gray background */
+    background-color:  lightgray; /* Light gray background */
   }
 
   .text-gradient {
@@ -55,7 +55,7 @@ include 'headers.php';
   }
 
   .header_section {
-    background-color: white;
+    background-color:  #eae6f5;
   }
 
   .navbar-brand img {
