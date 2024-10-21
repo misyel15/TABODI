@@ -30,7 +30,7 @@
   }
   
   #main {
-    width: calc(80%);
+    width: calc(100%);
     height: calc(100%);
     display: flex;
     align-items: center;
@@ -45,7 +45,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 80%;
     background-image: url('mcclogo.jpg'); /* Replace with your image URL */
     background-size: cover; /* Cover the entire section */
     background-position: center; /* Center the image */
