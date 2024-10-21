@@ -28,45 +28,47 @@ include 'headers.php';
   <link href="css/style.css" rel="stylesheet" />
   <link href="css/responsive.css" rel="stylesheet" />
 
-  <style>
-    /* Custom Styles */
-    .text-gradient {
-      background: linear-gradient(315deg, #1e30f3 0%, #e21e80 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+ <style>
+  /* Custom Styles */
+  body {
+    background-color:  #eae6f5; /* Light gray background */
+  }
 
-    /* Dropdown menu hover style */
-    .dropdown-item:hover {
-      background-color: lightgray;
-      color: #fff;
-    }
+  .text-gradient {
+    background: linear-gradient(315deg, #1e30f3 0%, #e21e80 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-    /* Carousel image adjustments */
-    .carousel-item img {
-      border-radius: 50%;
-      max-height: 420px;
-      width: 100%;
-      object-fit: cover;
-    }
+  /* Dropdown menu hover style */
+  .dropdown-item:hover {
+    background-color: lightgray;
+    color: #fff;
+  }
 
-    
+  /* Carousel image adjustments */
+  .carousel-item img {
+    border-radius: 50%;
+    max-height: 420px;
+    width: 100%;
+    object-fit: cover;
+  }
 
+  .header_section {
+    background-color: #eae6f5;
+  }
 
-    .header_section {
-      background-color: #eae6f5;
-    }
+  .navbar-brand img {
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
 
-    .navbar-brand img {
-      border-radius: 50%;
-      border: 2px solid #fff;
-    }
-
-    /* Adjust login dropdown button */
-    .nav-link.dropdown-toggle {
-      padding-right: 1rem;
-    }
-    .navbar-brand img {
+  /* Adjust login dropdown button */
+  .nav-link.dropdown-toggle {
+    padding-right: 1rem;
+  }
+  
+  .navbar-brand img {
     border: 2px solid #333; /* Adds a border around the logo */
     padding: 5px; /* Adds padding inside the border */
     background-color: #f8f9fa; /* Sets a background color behind the logo */
@@ -74,29 +76,31 @@ include 'headers.php';
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a shadow effect */
     transition: transform 0.3s ease-in-out; /* Adds a transition effect */
     margin-right: 100%;
-}
+  }
 
-.navbar-brand img:hover {
+  .navbar-brand img:hover {
     transform: scale(1.1); /* Scales up the logo on hover */
-}
-.logo-container {
+  }
+
+  .logo-container {
     display: flex;
     align-items: center;
-    margin-left:-10%;
-}
-.logo-text {
+    margin-left: -10%;
+  }
+
+  .logo-text {
     font-size: 1.0rem; /* Adjust font size as needed */
     color: #333; /* Adjust text color as needed */
     margin-left: -95%; /* Space between image and text */
     font-weight: bold; /* Make the text bold */
-}
-.navbar-nav .nav-link,
-  .navbar-nav .dropdown-item {
-    color: black !important;
-    
   }
 
-  </style>
+  .navbar-nav .nav-link,
+  .navbar-nav .dropdown-item {
+    color: black !important;
+  }
+</style>
+
 </head>
 
 <body>
