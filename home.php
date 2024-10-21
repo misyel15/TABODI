@@ -22,45 +22,65 @@
   if(isset($_SESSION['login_id']))
     header("location:index.php");
   ?>
+<style>
+  body {
+    width: 100%;
+    height: calc(100%);
+    position: fixed;
+    margin: 0; /* Remove default body margin */
+  }
 
-  <style>
-    body {
-      width: 100%;
-      height: calc(100%);
-      position: fixed;
-      margin: 0; /* Remove default body margin */
-    }
-    
-    #main {
-      width: calc(100%);
-      height: calc(100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative; /* Required for positioning the overlay */
-      overflow: hidden; /* Prevent overflow */
-    }
-    
-    #main::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #eae6f5;
-      background-size: cover; /* Cover the entire section */
-      background-position: center; /* Center the image */
-      opacity: 0.5; /* Adjust transparency (0.0 to 1.0) */
-      z-index: 1; /* Place it behind the content */
-    }
+  #main {
+    width: calc(100%);
+    height: calc(100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* Required for positioning the overlay */
+    overflow: hidden; /* Prevent overflow */
+  }
 
-    #login {
-      position: relative; /* Required to place it above the background */
-      z-index: 2; /* Place it above the overlay */
-    }
-   
-  </style>
+  #main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #eae6f5;
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    opacity: 0.5; /* Adjust transparency (0.0 to 1.0) */
+    z-index: 1; /* Place it behind the content */
+  }
+
+  #login {
+    position: relative; /* Required to place it above the background */
+    z-index: 2; /* Place it above the overlay */
+  }
+
+  /* Custom card styles */
+  .card {
+    border: none; /* Remove border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Custom shadow */
+  }
+
+  .card-body {
+    padding: 2rem; /* Add padding inside the card */
+  }
+
+  .btn-primary {
+    background-color: #007bff; /* Custom button color */
+    border: none; /* Remove button border */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3; /* Darker color on hover */
+  }
+</style>
+
 </head>
 
 <body>
