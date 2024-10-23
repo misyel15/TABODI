@@ -89,6 +89,8 @@
       <a href="home.php" class="close" aria-label="Close" onclick="this.closest('.card').remove();" style="position: absolute; top: 10px; right: 10px;"> <!-- Inline styles for positioning -->
         <span aria-hidden="true">&times;</span>
       </a>
+      <img src="mcclogo.jpg" width="45px" height="50px" alt="System Logo" class="img-thumbnail rounded-circle">
+    <span class="logo-text ms-3">MFSS</span>
       <div class="card-body">
         <form id="login-form">
           <h4><b>Welcome To Mcc Faculty Scheduling</b></h4>
