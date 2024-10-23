@@ -2,15 +2,16 @@
 session_start();
 include 'db_connect.php'; 
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize user input to prevent XSS attacks
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
+    $course = htmlspecialchars(trim($_POST['course']));
 
     // Prepare and execute the login query
     $stmt = $conn->prepare("
-        SELECT id, name, username, dept_id, type FROM users 
+        SELECT id, name, username, course, dept_id, type 
+        FROM users 
         WHERE username = ? 
         AND password = ?
     ");
@@ -22,18 +23,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $user_data = $result->fetch_assoc();
 
-        // Store only necessary user information in the session
-        $_SESSION['user_id'] = $user_data['id'];
-        $_SESSION['dept_id'] = $user_data['dept_id'];
-        $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
-        $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
-        $_SESSION['login_type'] = $user_data['type'];
+        // Check if the course matches
+        if ($user_data['course'] === $course) {
+            // Store only necessary user information in the session
+            $_SESSION['user_id'] = $user_data['id'];
+            $_SESSION['dept_id'] = $user_data['dept_id'];
+            $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
+            $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
+            $_SESSION['login_type'] = $user_data['type'];
 
-        if ($_SESSION['login_type'] != 1) {
-            session_unset();
-            echo 2; // User is not allowed
+            if ($_SESSION['login_type'] != 1) {
+                session_unset();
+                echo 2; // User is not allowed
+            } else {
+                echo 1; // Successful login
+            }
         } else {
-            echo 1; // Successful login
+            echo 4; // Course mismatch
         }
     } else {
         echo 3; // Invalid username/password
@@ -41,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -82,6 +89,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <style>
+    body.animsition {
+    background-color: #f0f2f5; /* Light gray background color */
+}
+
+.page-wrapper {
+    background-color: #eae6f5; /* White background for the page wrapper */
+    padding-top: 50px; /* Add some spacing at the top */
+}
+
+.login-wrap {
+    background-color: #ffffff; /* White background for the login card */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for the card */
+}
+
+.login-content {
+    background-color: #ffffff; /* Background for content */
+}
+
+
 .password-container {
     position: relative;
     width: 100%;
@@ -102,9 +128,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </style>
 <body class="animsition">
     <div class="page-wrapper">
-        <div class="page-content--bge5">
+        <div class="page-content--bge4">
             <div class="container">
-                <div class="login-wrap">
+                <div class="login-wrap" style="margin-top:5%; max-width: 450px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #fff;">
                     <div class="login-content">
                         <div class="login-logo">
                             <a href="#">
@@ -150,10 +176,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                     </label>
                                 </div>
-                             <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                         
-
-
+                                <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
+                                <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
                             </form>
                         </div>
                     </div>
@@ -161,6 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+</body>
+
 
     <!-- Jquery JS-->
     <script src="vendor/jquery-3.2.1.min.js"></script>
