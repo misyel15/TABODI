@@ -91,7 +91,7 @@
       </a>
       <div class="card-body">
         <form id="login-form">
-          <h4><b>Welcome To MCC Faculty Scheduling</b></h4>
+          <h4><b>Welcome To Mcc Faculty Scheduling</b></h4>
           <div class="form-group">
             <label for="id_no" class="control-label">Please enter your Faculty ID No.</label>
             <input type="text" id="id_no" name="id_no" class="form-control">
