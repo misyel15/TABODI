@@ -9,7 +9,7 @@
 
     <!-- Title Page-->
     <title>Mcc Faculty Scheduling</title>
-    <link rel="icon" href="back.png" type="image/png">
+    <link rel="icon" href="mcclogo.jpg" type="image/png">
 
   <!-- Vendor CSS Files -->
   <link href="admin/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
