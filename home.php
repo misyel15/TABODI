@@ -100,7 +100,7 @@
           </div>
           <div class="form-group">
             <label for="id_no" class="control-label">Please enter your Faculty ID No.</label>
-            <input type="text" id="id_no" name="id_no" class="form-control">
+            <input type="number" id="id_no" name="id_no" class="form-control">
           </div>
           <center><button class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button></center>
         </form>
