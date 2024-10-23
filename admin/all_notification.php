@@ -40,22 +40,20 @@ $currentTime = date('d-m-Y h:i:s A', time());
                                 <?php
                                 // Fetch unread notifications count
                                 $unreadQuery = "SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'";
-                                $unreadResult = mysqli_query($conn, $unreadQuery); // Corrected here
+                                $unreadResult = mysqli_query($conn, $unreadQuery);
 
-                                // Check for query errors
                                 if (!$unreadResult) {
-                                    die("Error in unread notifications query: " . mysqli_error($conn)); // Corrected here
+                                    die("Error in unread notifications query: " . mysqli_error($conn));
                                 }
 
                                 $unreadData = mysqli_fetch_assoc($unreadResult);
                                 $unreadCount = $unreadData['unread_count'];
 
                                 // Fetch all notifications ordered by timestamp
-                                $rt = mysqli_query($conn, "SELECT * FROM notifications ORDER BY timestamp DESC"); // Corrected here
+                                $rt = mysqli_query($conn, "SELECT * FROM notifications ORDER BY timestamp DESC");
 
-                                // Check for query errors
                                 if (!$rt) {
-                                    die("Error in fetching notifications: " . mysqli_error($conn)); // Corrected here
+                                    die("Error in fetching notifications: " . mysqli_error($conn));
                                 }
                                 ?>
 
@@ -109,19 +107,16 @@ $currentTime = date('d-m-Y h:i:s A', time());
     <!-- JavaScript to mark notifications as read -->
     <script>
         function markAsRead(notificationId) {
-            // Send AJAX request to mark notification as read
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'mark_as_read.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Optionally handle successful read marking, e.g., change UI
                         document.getElementById('notification_' + notificationId).classList.remove('unread');
                         document.getElementById('notification_' + notificationId).classList.add('read');
-                        console.log('Notification marked as read');
                     } else {
-                        console.error('Error marking notification as read');
+                        alert('Error marking notification as read');
                     }
                 }
             };
