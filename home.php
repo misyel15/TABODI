@@ -92,15 +92,19 @@
      
       <div class="card-body">
         <form id="login-form">
-          <h4><b>Welcome To Mcc Faculty Scheduling</b></h4>
+          <div class="login-logo text-center">
+            <a>
+              <img src="mcclogo.jpg" style="width:150px; height:90px;" alt="CoolAdmin">
+            </a>
+            <h3> Welcome To Mcc Faculty Scheduling</h3>
+          </div>
           <div class="form-group">
             <label for="id_no" class="control-label">Please enter your Faculty ID No.</label>
             <input type="text" id="id_no" name="id_no" class="form-control">
           </div>
-          <center>
-            <button type="submit" class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button>
-          </center>
+          <center><button class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button></center>
         </form>
+        <br>
       </div>
     </div>
   </div>
