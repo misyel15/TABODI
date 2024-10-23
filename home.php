@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Mcc Faculty Scheduling</title>
-  <link rel="icon" href="mcclogo.jpg" type="image/jpg">
+  <link rel="icon" href=".jpg" type="image/jpg">
 
   <!-- Include Bootstrap for styling -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
