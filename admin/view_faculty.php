@@ -19,7 +19,8 @@ if(isset($_GET['id'])){
 <div class="modal-footer display">
 	<div class="row">
 		<div class="col-md-12">
-			<button class="btn float-right btn-secondary" type="button" data-dismiss="modal">Close</button>
+			<button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 		</div>
 	</div>
 </div>
