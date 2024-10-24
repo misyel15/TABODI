@@ -139,7 +139,7 @@ if (isset($_POST['submit'])) {
 <div class="login-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <img src="assets/uploads/back.png" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img">
+      <img src="assets/uploads/mcclogo.jpg" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img">
       <a class="h2"><b>Reset Password</b></a>
     </div>
     <div class="card-body">
