@@ -188,49 +188,76 @@ include 'headers.php';
   </div>
 </section>
 
-  </footer>
+<!-- Footer Section -->
+<footer class="footer_section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="footer_info">
+          <h5 class="footer_title">Madridejos Community College</h5>
+          <p>Address: Madridejos, Cebu, Philippines</p>
+          <p>Contact: info@mcc.edu.ph | +63 123 4567 890</p>
+        </div>
+      </div>
+      <div class="col-md-6 text-right">
+        <div class="social_links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+        <p>&copy; 2024 MCC Faculty Scheduling. All Rights Reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
 
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Footer Styling -->
+<style>
+.footer_section {
+  background-color: #1e30f3; /* Dark blue background */
+  color: white;
+  padding: 20px 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
 
-  <!-- Initialize the Carousel -->
-  <script>
-    $(document).ready(function () {
-      $('.carousel').carousel({
-        interval: 3000  // Change slide every 3 seconds
-      });
-    });
-  </script>
-   </script>
+.footer_title {
+  font-weight: bold;
+}
 
-<!-- Anti-inspect JavaScript -->
-<script>
-// Disable right-click
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-}, false);
+.footer_info {
+  margin-bottom: 10px;
+}
 
-// Disable F12 (Inspect Element) and Ctrl+Shift+I
-document.addEventListener('keydown', function (e) {
-    // F12
-    if (e.keyCode === 123) {
-        e.preventDefault();
-    }
-    // Ctrl + Shift + I
-    if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
-        e.preventDefault();
-    }
-}, false);
+.social_links a {
+  color: white;
+  font-size: 24px;
+  margin-right: 15px;
+  transition: color 0.3s ease;
+}
 
-// Disable Ctrl+U (View Source)
-document.addEventListener('keydown', function (e) {
-    if (e.ctrlKey && e.keyCode === 85) {
-        e.preventDefault();
-    }
-}, false);
-</script>
+.social_links a:hover {
+  color: #e21e80; /* Pink color on hover */
+}
+
+.text-right {
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .text-right {
+    text-align: left;
+    margin-top: 20px;
+  }
+}
+</style>
+
+<!-- JS Libraries -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
-
 </html>
