@@ -60,8 +60,8 @@ if(isset($_GET['id'])){
         </div>
         
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
+        <button type="submit" class="btn btn-primary">Cancel</button>
     </div>
 </form>
     </form>
