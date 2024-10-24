@@ -127,14 +127,6 @@ $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
         </div>
     </div>    
 </div>
- <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
 <!-- Modal -->
 <div class="modal fade" id="uni_modal" tabindex="-1" role="dialog">
