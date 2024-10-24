@@ -178,6 +178,30 @@ include 'headers.php';
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
               </a>
+              <div class="container">
+    <h1>Our Mission, Vision, and Core Values</h1>
+
+    <div class="calendar-container">
+        <div class="calendar">
+            <h3>Mission</h3>
+            <div class="calendar-content">
+                <p>Our mission is to provide quality education that empowers students with the knowledge, skills, and values necessary to thrive in their professional and personal lives.</p>
+            </div>
+        </div>
+        <div class="calendar">
+            <h3>Vision</h3>
+            <div class="calendar-content">
+                <p>We envision a world where education is accessible to all, fostering innovation, leadership, and societal progress.</p>
+            </div>
+        </div>
+        <div class="calendar">
+            <h3>Core Values</h3>
+            <div class="calendar-content">
+                <p>Our core values include integrity, inclusivity, excellence, and a commitment to continuous improvement and lifelong learning.</p>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
           </div>
         </div>
