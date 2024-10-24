@@ -181,7 +181,18 @@ function printPage($conn) {
             Class Section: <?php echo htmlspecialchars($secid); ?><br>
             Semester: <?php echo htmlspecialchars($semester); ?>
         </div>
+ <script>
+            // Print the page and handle cancellation
+            window.onload = function() {
+                window.print();
+            };
 
+            // Detect when the print dialog is closed
+            window.onafterprint = function() {
+                // Redirect back if the print dialog was canceled
+                window.history.back();
+            };
+        </script>
         <?php echo $content; ?>
     </body>
     </html>
