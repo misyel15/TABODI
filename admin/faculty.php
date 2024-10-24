@@ -124,7 +124,29 @@ $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
                 </div>
             </div>
             <!-- Table Panel -->
-            
+              </div>
+    </div>    
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="uni_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="" id="manage-section">
+            <input type="hidden" name="id">
+            <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>">
+            </div>
+        </div>
+    </div>
+</div>
+
             <!-- Modal for New Entry -->
             <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="courseModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
