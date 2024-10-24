@@ -189,70 +189,7 @@ include 'headers.php';
 </section>
 <?php include 'About.php'; ?>
 <!-- Footer Section -->
-<footer class="footer_section">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="footer_info">
-          <h5 class="footer_title">Madridejos Community College</h5>
-          <p>Address: Madridejos, Cebu, Philippines</p>
-          <p>Contact: info@mcc.edu.ph | +63 123 4567 890</p>
-        </div>
-      </div>
-      <div class="col-md-6 text-right">
-        <div class="social_links">
-          <a href="#"><i class="fab fa-facebook"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-linkedin"></i></a>
-        </div>
-        <p>&copy; 2024 MCC Faculty Scheduling. All Rights Reserved.</p>
-      </div>
-    </div>
-  </div>
-</footer>
 
-<!-- Footer Styling -->
-<style>
-.footer_section {
-  background-color: #1e30f3; /* Dark blue background */
-  color: white;
-  padding: 20px 0;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-}
-
-.footer_title {
-  font-weight: bold;
-}
-
-.footer_info {
-  margin-bottom: 10px;
-}
-
-.social_links a {
-  color: white;
-  font-size: 24px;
-  margin-right: 15px;
-  transition: color 0.3s ease;
-}
-
-.social_links a:hover {
-  color: #e21e80; /* Pink color on hover */
-}
-
-.text-right {
-  text-align: right;
-}
-
-@media (max-width: 768px) {
-  .text-right {
-    text-align: left;
-    margin-top: 20px;
-  }
-}
-</style>
 
 <!-- JS Libraries -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
