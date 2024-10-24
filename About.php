@@ -1,14 +1,15 @@
 <?php
 // Optionally include a header file if you have a reusable header
-include('header.php'); // Remove this line if not needed
+include('header.php'); // Remove if not needed
 
-// Optional variables for dynamic content
+// Variables for dynamic content
 $pageTitle = "About Us";
 $companyName = "Your Company Name";
 $description = "We are committed to providing the best service possible with a focus on customer satisfaction.";
 $yearFounded = 2005;
 $location = "New York, USA";
 $teamMembers = ["John Doe", "Jane Smith", "Alice Johnson", "Michael Brown"];
+$companyEmail = "info@yourcompany.com"; // Add your company’s email address
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +28,7 @@ $teamMembers = ["John Doe", "Jane Smith", "Alice Johnson", "Michael Brown"];
         <h1><?php echo $companyName; ?></h1>
         <nav>
             <ul>
-                <li><a href="About.php" class="active">About</a></li>
+                <li><a href="about.php" class="active">About</a></li>
                 <li><a href="contact.php">Contact</a></li>
             </ul>
         </nav>
@@ -50,6 +51,13 @@ $teamMembers = ["John Doe", "Jane Smith", "Alice Johnson", "Michael Brown"];
                 }
                 ?>
             </ul>
+        </section>
+
+        <!-- Email Section -->
+        <section class="contact-section">
+            <h3>Contact Us</h3>
+            <p>If you have any questions, feel free to reach out to us at:</p>
+            <p><a href="mailto:<?php echo $companyEmail; ?>"><?php echo $companyEmail; ?></a></p>
         </section>
     </main>
 
