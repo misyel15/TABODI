@@ -127,7 +127,7 @@ include 'headers.php';
     </li>
 
     <li class="nav-item" style="margin-left:10px; font-weight: bold;">
-      <a class="nav-link" href="about.php">About</a>
+      <a class="nav-link" href="About.php">About</a>
     </li>
 
     <li class="nav-item dropdown" style="margin-left:10px; font-weight: bold;">
