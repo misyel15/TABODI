@@ -49,7 +49,7 @@ include 'headers.php';
   /* Carousel image adjustments */
   .carousel-item img {
     border-radius: 50%;
-    max-height: 420px;
+    max-height: 400px;
     width: 100%;
     object-fit: cover;
   }
