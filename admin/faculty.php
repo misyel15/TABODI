@@ -124,28 +124,38 @@ $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
                 </div>
             </div>
             <!-- Table Panel -->
-        </div>
-    </div>    
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="uni_modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            
+            <!-- Modal for New Entry -->
+            <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="courseModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="courseModalLabel">Course Form</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="" id="manage-course">
+                            <div class="modal-body">
+                                <input type="hidden" name="id">
+                                <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>"> <!-- Auto-set dept_id -->
+                                <div class="form-group">
+                                    <label class="control-label">Course</label>
+                                    <input type="text" class="form-control" name="course" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Description</label>
+                                    <textarea class="form-control" cols="30" rows='3' name="description" required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-            <form action="" id="manage-section">
-            <input type="hidden" name="id">
-            <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>">
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function(){
