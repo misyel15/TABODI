@@ -383,8 +383,8 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 
 <!-- Modal Footer -->
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
+    <button type="submit" class="btn btn-primary">Cancel</button>
 </div>
 
 <div class="imgF" style="display: none " id="img-clone">
