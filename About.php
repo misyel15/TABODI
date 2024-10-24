@@ -2,6 +2,15 @@
 // Optionally include a header file if you have a reusable header
 include('header.php'); // Remove this line if not needed
 
+// Optional variables for dynamic content
+$pageTitle = "About Us";
+$companyName = "Your Company Name";
+$description = "We are committed to providing the best service possible with a focus on customer satisfaction.";
+$yearFounded = 2005;
+$location = "New York, USA";
+$teamMembers = ["John Doe", "Jane Smith", "Alice Johnson", "Michael Brown"];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
