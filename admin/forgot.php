@@ -254,7 +254,7 @@ if (isset($_POST['reset'])) {
 <div class="login-box">
     <div class="card card-outline card-primary">
         <div class="card-header text-center">
-            <center><img src="assets/uploads/back.png" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img"></center>
+            <center><img src="assets/uploads/mcclogo.jpg" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img"></center>
             <a class="h1"><b>Retrieve</b>|Account</a>
         </div>
         <div class="card-body">
