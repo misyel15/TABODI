@@ -209,7 +209,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
-                                <button type="submit" class="btn btn-primary">Close</button>
+                                <button type="submit" class="btn btn-primary">Cancel</button>
                             </div>
                         </form>
                     </div>
