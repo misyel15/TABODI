@@ -4,12 +4,12 @@ include('header.php'); // Remove if not needed
 
 // Variables for dynamic content
 $pageTitle = "About Us";
-$companyName = "Your Company Name";
+$companyName = "Mcc Faculty Scheduling System";
 $description = "We are committed to providing the best service possible with a focus on customer satisfaction.";
-$yearFounded = 2005;
+$yearFounded = 2006;
 $location = "New York, USA";
-$teamMembers = ["John Doe", "Jane Smith", "Alice Johnson", "Michael Brown"];
-$companyEmail = "info@yourcompany.com"; // Add your company’s email address
+$teamMembers = ["John Rey Ybanez", "Michelle Layos Cose ", "James Tequillo", "Jeslyn Ybanez"];
+$companyEmail = "mccfacultyscheduling.com"; // Add your company’s email address
 ?>
 
 <!DOCTYPE html>
