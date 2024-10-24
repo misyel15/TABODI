@@ -227,7 +227,7 @@ include 'headers.php';
             text-align: justify;
         }
     </style>
-</head>
+
 <body>
 
 <div class="container">
