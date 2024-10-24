@@ -1,112 +1,143 @@
-<?php
-// Optionally include a header file if you have a reusable header
-include('header.php'); // Remove if not needed
-
-// Variables for dynamic content
-$pageTitle = "About Us";
-$companyName = "Mcc Faculty Scheduling System";
-$description = "We are committed to providing the best service possible with a focus on customer satisfaction.";
-$yearFounded = 2006;
-$location = "New York, USA";
-$teamMembers = ["John Rey Ybanez", "Michelle Layos Cose", "James Tequillo", "Jeslyn Ybanez"];
-$companyEmail = "info@mccfacultyscheduling.com"; // Use a valid email format
-
-// Process the contact form submission
-$messageSent = false;
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $message = $_POST['message'] ?? '';
-
-    // Email validation
-    if (!empty($name) && filter_var($email, FILTER_VALIDATE_EMAIL) && !empty($message)) {
-        $to = $companyEmail;
-        $subject = "New Contact Form Submission from $name";
-        $headers = "From: $email\r\nReply-To: $email\r\n";
-        $body = "Name: $name\nEmail: $email\n\n$message";
-
-        // Use mail() function to send email
-        if (mail($to, $subject, $body, $headers)) {
-            $messageSent = true;
-        } else {
-            $error = "There was an error sending your message. Please try again.";
-        }
-    } else {
-        $error = "Please fill out all fields correctly.";
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About Us - Learn more about our company, mission, and team.">
-    <title><?php echo $pageTitle; ?></title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS file -->
+    <title>Mission, Vision & Core Values with Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .calendar-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+        }
+        .calendar {
+            width: 30%;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section p {
+            text-align: justify;
+            padding: 0 20px;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Header Section -->
-    <header>
-        <h1><?php echo $companyName; ?></h1>
-        <nav>
-            <ul>
-                <li><a href="about.php" class="active">About</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+<div class="container">
+    <h1>Our Mission, Vision, and Core Values</h1>
 
-    <!-- Main Content Section -->
-    <main>
-        <section class="about-section">
-            <h2>About Us</h2>
-            <p><?php echo $description; ?></p>
+    <div class="calendar-container">
+        <div class="calendar">
+            <?php displayCalendar(-1); ?>
+        </div>
+        <div class="calendar">
+            <?php displayCalendar(0); ?>
+        </div>
+        <div class="calendar">
+            <?php displayCalendar(1); ?>
+        </div>
+    </div>
 
-            <h3>Founded</h3>
-            <p>We started our journey in <?php echo $yearFounded; ?> in <?php echo $location; ?>.</p>
+    <div class="section">
+        <h2>Mission</h2>
+        <p>Our mission is to provide quality education that empowers students with the knowledge, skills, and values necessary to thrive in their professional and personal lives.</p>
+    </div>
 
-            <h3>Meet Our Team</h3>
-            <ul>
-                <?php foreach ($teamMembers as $member) {
-                    echo "<li>$member</li>";
-                } ?>
-            </ul>
-        </section>
+    <div class="section">
+        <h2>Vision</h2>
+        <p>We envision a world where education is accessible to all, fostering innovation, leadership, and societal progress.</p>
+    </div>
 
-        <!-- Contact Form Section -->
-        <section class="contact-section">
-            <h3>Contact Us</h3>
-
-            <?php if ($messageSent): ?>
-                <p class="success-message">Thank you for reaching out! We’ll get back to you soon.</p>
-            <?php else: ?>
-                <?php if (!empty($error)): ?>
-                    <p class="error-message"><?php echo $error; ?></p>
-                <?php endif; ?>
-
-                <form action="about.php" method="POST">
-                    <label for="name">Your Name:</label>
-                    <input type="text" id="name" name="name" required>
-
-                    <label for="email">Your Email:</label>
-                    <input type="email" id="email" name="email" required>
-
-                    <label for="message">Your Message:</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-
-                    <button type="submit">Send Message</button>
-                </form>
-            <?php endif; ?>
-        </section>
-    </main>
-
-    <!-- Footer Section -->
-    <footer>
-        <p>&copy; <?php echo date('Y'); ?> <?php echo $companyName; ?>. All rights reserved.</p>
-    </footer>
+    <div class="section">
+        <h2>Core Values</h2>
+        <p>Our core values include integrity, inclusivity, excellence, and a commitment to continuous improvement and lifelong learning.</p>
+    </div>
+</div>
 
 </body>
 </html>
+
+<?php
+// Function to display a calendar for a given month offset (e.g., -1 for previous month, 0 for current, 1 for next)
+function displayCalendar($monthOffset) {
+    $currentMonth = date('n');
+    $currentYear = date('Y');
+    $targetMonth = $currentMonth + $monthOffset;
+    $targetYear = $currentYear;
+
+    if ($targetMonth < 1) {
+        $targetMonth = 12;
+        $targetYear--;
+    } elseif ($targetMonth > 12) {
+        $targetMonth = 1;
+        $targetYear++;
+    }
+
+    // Get the first day of the month and total number of days in the month
+    $firstDayOfMonth = mktime(0, 0, 0, $targetMonth, 1, $targetYear);
+    $daysInMonth = date('t', $firstDayOfMonth);
+
+    // Find out which day of the week the month starts on
+    $startDay = date('w', $firstDayOfMonth);
+
+    // Month and Year display
+    $monthName = date('F', $firstDayOfMonth);
+    echo "<h3>$monthName $targetYear</h3>";
+    echo "<table>";
+    echo "<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr><tr>";
+
+    // Fill in the empty days before the 1st day of the month
+    for ($i = 0; $i < $startDay; $i++) {
+        echo "<td></td>";
+    }
+
+    // Fill in the days of the month
+    for ($day = 1; $day <= $daysInMonth; $day++) {
+        echo "<td>$day</td>";
+        // Break to a new row after Saturday
+        if (($day + $startDay) % 7 == 0) {
+            echo "</tr><tr>";
+        }
+    }
+
+    // Fill in the remaining empty cells at the end of the month
+    while (($day + $startDay) % 7 != 1) {
+        echo "<td></td>";
+        $day++;
+    }
+
+    echo "</tr>";
+    echo "</table>";
+}
+?>
