@@ -187,7 +187,7 @@ include 'headers.php';
     </div>
   </div>
 </section>
-
+<?php include 'About.php'; ?>
 <!-- Footer Section -->
 <footer class="footer_section">
   <div class="container">
