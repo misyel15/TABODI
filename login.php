@@ -29,6 +29,47 @@ include 'headers.php';
   <link href="css/responsive.css" rel="stylesheet" />
 
  <style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .calendar-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+        }
+        .calendar {
+            width: 30%;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .calendar h3 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            margin: 0;
+            font-size: 1.2em;
+        }
+        .calendar-content {
+            padding: 20px;
+            font-size: 1em;
+            text-align: justify;
+        }
   /* Custom Styles */
   body {
     background-color: darkwhite; /* Light gray background */
