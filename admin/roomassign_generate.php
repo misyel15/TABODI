@@ -131,8 +131,7 @@ function printPage($conn, $dept_id) {
     <body onload="window.print()">
     <div class="header">
         <img src="assets/uploads/end.png">
-    </div>
-        <?php echo $content; ?>
+    </div> 
      <script>
             // Detect when the print dialog is closed
             window.onafterprint = function() {
@@ -140,6 +139,7 @@ function printPage($conn, $dept_id) {
                 window.history.back();
             };
         </script>
+         <?php echo $content; ?>
     </body>
     </html>
     <?php
