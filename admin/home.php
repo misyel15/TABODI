@@ -145,7 +145,7 @@ $subjects_data = json_encode(array_values($subjects_per_semester));
                     <div class="card" style="box-shadow: 0 0 5px black;">
                         <div class="card-body">
                             <div class="icon" style="text-align:right;">
-                                <i class="fa fa-4x fa-book-open text-secondary" aria-hidden="true"></i>
+                                 <i class="fa fa-4x fa-graduation-cap text-secondary" aria-hidden="true"></i>
                                 
                                 <i class="fa fa-4x fa-user-tie text-secondary" aria-hidden="true"></i>
                             </div>
