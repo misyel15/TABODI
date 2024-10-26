@@ -1,3 +1,43 @@
+<?php 
+include 'db_connect.php'; 
+session_start(); // Start the session
+
+include 'includes/header.php';
+// Check if the user is logged in and has a dept_id
+if (!isset($_SESSION['username']) || !isset($_SESSION['dept_id'])) {
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
+}
+
+// Define arrays to hold the subject count per semester
+$subjects_per_semester = [
+    '1st Year - 1st Semester' => 0,
+    '1st Year - 2nd Semester' => 0,
+    '2nd Year - 1st Semester' => 0,
+    '2nd Year - 2nd Semester' => 0,
+    '3rd Year - 1st Semester' => 0,
+    '3rd Year - 2nd Semester' => 0,
+    '3rd Year - Summer' => 0,
+    '4th Year - 1st Semester' => 0,
+    '4th Year - 2nd Semester' => 0
+];
+
+$dept_id = $_SESSION['dept_id'];
+$sql = "SELECT year, semester, COUNT(*) as subject_count FROM subjects WHERE dept_id = ? GROUP BY year, semester";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $dept_id);
+$stmt->execute();
+$query = $stmt->get_result();
+
+while ($row = $query->fetch_assoc()) {
+    $key = "{$row['year']} Year - {$row['semester']} Semester";
+    if (isset($subjects_per_semester[$key])) {
+        $subjects_per_semester[$key] = $row['subject_count'];
+    }
+}
+$subjects_data = json_encode(array_values($subjects_per_semester));
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +62,7 @@
             background: lightgray;
             color: #000;
             margin-bottom: 1rem;
-            display: block; /* Cards are initially visible */
+            display: block;
         }
         .card-body {
             text-align: center;
@@ -41,9 +81,10 @@
 </head>
 <body>
     <div class="container main-container" style="margin-top:100px;">
-        <h3 class="my-4"> <p>Welcome, <?php echo $_SESSION['name']; ?>!</p></h3>
+        <h3 class="my-4"><p>Welcome, <?php echo $_SESSION['name']; ?>!</p></h3>
         <div class="container-fluid">
             <div class="row">
+                <!-- Rooms Card -->
                 <div class="col-lg-3">
                     <div class="card" id="roomsCard" style="box-shadow: 0 0 5px black;">
                         <div class="card-body">
@@ -55,16 +96,17 @@
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("i", $dept_id);
                                 $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_rooms = $query->num_rows;
-                                echo "<h3>".$num_rooms."</h3>";
-                            ?> 
-                            <p>Number of Rooms</p>                
+                                $num_rooms = $stmt->get_result()->num_rows;
+                                echo "<h3>{$num_rooms}</h3>";
+                            ?>
+                            <p>Number of Rooms</p>
                             <hr>
                             <a class="medium text-secondary stretched-link" href="room.php">View Details</a>
                         </div>
                     </div>              
                 </div>
+
+                <!-- Faculty Card -->
                 <div class="col-lg-3">
                     <div class="card" id="facultyCard" style="box-shadow: 0 0 5px black;">
                         <div class="card-body">
@@ -76,16 +118,17 @@
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("i", $dept_id);
                                 $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_instructors = $query->num_rows;
-                                echo "<h3>".$num_instructors."</h3>";
+                                $num_instructors = $stmt->get_result()->num_rows;
+                                echo "<h3>{$num_instructors}</h3>";
                             ?>
-                            <p>Number of Instructors</p>  
+                            <p>Number of Instructors</p>
                             <hr>
                             <a class="medium text-secondary stretched-link" href="faculty.php">View Details</a>
                         </div>
                     </div>              
                 </div>
+
+                <!-- Subjects Card -->
                 <div class="col-lg-3">
                     <div class="card" id="subjectsCard" style="box-shadow: 0 0 5px black;">
                         <div class="card-body">
@@ -97,16 +140,17 @@
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("i", $dept_id);
                                 $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_subjects = $query->num_rows;
-                                echo "<h3>".$num_subjects."</h3>";
+                                $num_subjects = $stmt->get_result()->num_rows;
+                                echo "<h3>{$num_subjects}</h3>";
                             ?>
-                            <p>Number of Subjects</p>  
+                            <p>Number of Subjects</p>
                             <hr>
                             <a class="medium text-secondary stretched-link" href="subjects.php">View Details</a>
                         </div>
                     </div>              
                 </div>
+
+                <!-- Courses Card -->
                 <div class="col-lg-3">
                     <div class="card" id="coursesCard" style="box-shadow: 0 0 5px black;">
                         <div class="card-body">
@@ -118,11 +162,10 @@
                                 $stmt = $conn->prepare($sql);
                                 $stmt->bind_param("i", $dept_id);
                                 $stmt->execute();
-                                $query = $stmt->get_result();
-                                $num_courses = $query->num_rows;
-                                echo "<h3>".$num_courses."</h3>";
+                                $num_courses = $stmt->get_result()->num_rows;
+                                echo "<h3>{$num_courses}</h3>";
                             ?>
-                            <p>Number of Courses</p>  
+                            <p>Number of Courses</p>
                             <hr>
                             <a class="medium text-secondary stretched-link" href="courses.php">View Details</a>
                         </div>
@@ -133,13 +176,10 @@
     </div>
 
     <script>
-        // Add event listener to toggle visibility when icons are clicked
         document.querySelectorAll('.toggle-visibility').forEach(icon => {
             icon.addEventListener('click', function() {
                 const target = document.querySelector(this.getAttribute('data-target'));
-                if (target) {
-                    target.style.display = target.style.display === 'none' ? 'block' : 'none';
-                }
+                target.style.display = target.style.display === 'none' ? 'block' : 'none';
             });
         });
     </script>
