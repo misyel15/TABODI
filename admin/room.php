@@ -7,11 +7,12 @@ include 'includes/header.php';
 $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
 ?>
 
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-/kGmsw16e6GJh9Oj/N4Tx9uj9W3X70ggPLJ6Fv/tW72ZC7tBWyMIHqs1Ch1JGhgDtJ4ER5MXtf07HjOAHjzJ5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- Include SweetAlert CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<!-- Include Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <!-- Include DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
 
@@ -29,46 +30,45 @@ $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
     <div class="row">
         <!-- FORM Panel -->
         <div class="col-md-4">
-        <!-- Modal -->
-<div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="roomModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="roomModalLabel">Room Form</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" id="manage-room">
-                    <input type="hidden" name="id">
-                    <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>">
-                    <div class="form-group mb-3">
-                        <label class="form-label">Room ID</label>
-                        <input type="text" class="form-control" name="room_id" id="room_id">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Room</label>
-                        <input type="text" class="form-control" name="room" id="room">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="saveRoomBtn">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
-        </div>
-    </div>
-</div>
-
             <!-- Modal -->
+            <div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="roomModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="roomModalLabel">Room Form</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" id="manage-room">
+                                <input type="hidden" name="id">
+                                <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Room ID</label>
+                                    <input type="text" class="form-control" name="room_id" id="room_id">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Room</label>
+                                    <input type="text" class="form-control" name="room" id="room">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="saveRoomBtn">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- FORM Panel -->
 
         <!-- Table Panel -->
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <b>Room List</b>
-                    <button class="btn btn-primary btn-sm" id="newEntryBtn"><i class="fa fa-user-plus"></i> New Entry</button>
+                    <button class="btn btn-primary btn-sm" id="newEntryBtn">
+                        <i class="fas fa-plus-circle"></i> New Entry
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -81,19 +81,24 @@ $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php 
+                                <?php 
                                     $i = 1;
-                                    $course = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id' ORDER BY id ASC");
-                                    while($row = $course->fetch_assoc()):
-                                    ?>
+                                    $rooms = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id' ORDER BY id ASC");
+                                    while($row = $rooms->fetch_assoc()):
+                                ?>
                                 <tr>
                                     <td class="text-center"><?php echo $row['room_id']; ?></td>
-                                    <td>
-                                        <p>Room name: <b><?php echo $row['room_name']; ?></b></p>
-                                    </td>
+                                    <td><b><?php echo $row['room_name']; ?></b></td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-primary edit_room" type="button" data-id="<?php echo $row['id']; ?>" data-room="<?php echo $row['room_name']; ?>" data-room_id="<?php echo $row['room_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-sm btn-danger delete_room" type="button" data-id="<?php echo $row['id']; ?>"><i class="fas fa-trash-alt"></i> Delete</button>
+                                        <button class="btn btn-sm btn-primary edit_room" type="button" 
+                                            data-id="<?php echo $row['id']; ?>" 
+                                            data-room="<?php echo $row['room_name']; ?>" 
+                                            data-room_id="<?php echo $row['room_id']; ?>">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete_room" type="button" data-id="<?php echo $row['id']; ?>">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
@@ -103,7 +108,6 @@ $dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
                 </div>
             </div>
         </div>
-        <!-- Table Panel -->
     </div>    
 </div>
 
@@ -117,11 +121,12 @@ $(document).ready(function() {
     // Show the modal when clicking the "New Entry" button
     $('#newEntryBtn').click(function() {
         $('#roomModal').modal('show');
+        _reset();
     });
 
     // Reset form function
     function _reset() {
-        $('#manage-room').get(0).reset();
+        $('#manage-room')[0].reset();
         $('#manage-room input').val('');
     }
 
@@ -132,52 +137,28 @@ $(document).ready(function() {
 
     $('#manage-room').submit(function(e) {
         e.preventDefault();
-        let room = $("input[name='room']").val().trim();
-        let room_id = $("input[name='room_id']").val().trim();
+        let room = $('#room').val().trim();
+        let room_id = $('#room_id').val().trim();
 
         if (room === '' || room_id === '') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Warning!',
-                text: 'Please fill out all required fields.',
-                showConfirmButton: true
-            });
+            Swal.fire('Warning!', 'Please fill out all required fields.', 'warning');
             return;
         }
 
         $.ajax({
             url: 'ajax.php?action=save_room',
-            data: new FormData($(this)[0]),
+            data: new FormData(this),
             cache: false,
             contentType: false,
             processData: false,
             method: 'POST',
             success: function(resp) {
                 if (resp == 1) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Room data successfully added.',
-                        showConfirmButton: true
-                    }).then(function() {
-                        location.reload();
-                    });
+                    Swal.fire('Success!', 'Room successfully added.', 'success').then(() => location.reload());
                 } else if (resp == 2) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Room data successfully updated.',
-                        showConfirmButton: true
-                    }).then(function() {
-                        location.reload();
-                    });
+                    Swal.fire('Updated!', 'Room successfully updated.', 'success').then(() => location.reload());
                 } else if (resp == 3) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Room name or ID already exists.',
-                        showConfirmButton: true
-                    });
+                    Swal.fire('Error!', 'Room ID or name already exists.', 'error');
                 }
             }
         });
@@ -185,50 +166,37 @@ $(document).ready(function() {
 
     // Edit Room
     $('.edit_room').click(function() {
-        var cat = $('#manage-room');
-        cat.get(0).reset();
-        cat.find("[name='id']").val($(this).attr('data-id'));
-        cat.find("[name='room']").val($(this).attr('data-room'));
-        cat.find("[name='room_id']").val($(this).attr('data-room_id'));
+        let form = $('#manage-room');
+        form[0].reset();
+        form.find("[name='id']").val($(this).data('id'));
+        form.find("[name='room']").val($(this).data('room'));
+        form.find("[name='room_id']").val($(this).data('room_id'));
         $('#roomModal').modal('show');
     });
 
     // Delete Room
     $('.delete_room').click(function() {
-        var id = $(this).attr('data-id');
+        let id = $(this).data('id');
         Swal.fire({
             title: 'Are you sure?',
-            text: 'You will not be able to recover this data!',
+            text: 'This action cannot be undone!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                delete_room(id);
+                $.ajax({
+                    url: 'ajax.php?action=delete_room',
+                    method: 'POST',
+                    data: { id: id },
+                    success: function(resp) {
+                        if (resp == 1) {
+                            Swal.fire('Deleted!', 'Room successfully deleted.', 'success').then(() => location.reload());
+                        }
+                    }
+                });
             }
         });
     });
-
-    function delete_room(id) {
-        $.ajax({
-            url: 'ajax.php?action=delete_room',
-            method: 'POST',
-            data: { id: id },
-            success: function(resp) {
-                if (resp == 1) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted!',
-                        text: 'Room data successfully deleted.',
-                        showConfirmButton: true
-                    }).then(function() {
-                        location.reload();
-                    });
-                }
-            }
-        });
-    }
 });
 </script>
