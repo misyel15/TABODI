@@ -176,23 +176,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </select>
                                     </div>
                                 </div>
-
+    <!-- reCAPTCHA Widget -->
+    <div class="form-group">
+                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Replace with your site key -->
+                                </div>
                                 <div class="login-checkbox">
                                     <!-- Terms Agreement Checkbox -->
                                     <div class="form-group">
                                         <label>
-                                            <input type="checkbox" id="terms" required> I agree to the <a href="terms.html" target="_blank">terms and conditions</a>
+                                            <input type="checkbox" id="terms" required> I agree to the <a href="terms.html" target="_blank">terms and conditions</a><br>
+                                            <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                                         </label>
                                     </div>
-                                    <label>
-                                        <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-                                    </label>
+                                   
                                 </div>
 
-                                <!-- reCAPTCHA Widget -->
-                                <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Replace with your site key -->
-                                </div>
+                            
 
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
