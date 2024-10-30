@@ -5,19 +5,22 @@ ini_set('display_errors', 1);
 
 include('db_connect.php');
 
+// Check if department ID is set in the session
 if (!isset($_SESSION['dept_id'])) {
     die("Department ID is not set in the session.");
 }
+
 $dept_id = $_SESSION['dept_id'];
 
+// Function to generate table content for the specific department
 function generateTableContent($conn, $dept_id) {
-    $content = '<h1>Monday/Wednesday</h1>
+    $content = '<h4>TUESDAY/THURSDAY </h4>
     <table border="0.5" cellspacing="0" cellpadding="3" class="table table-bordered waffle no-grid" id="insloadtable">
         <thead>
             <tr>
                 <th class="text-center">Time</th>';
 
-    // Get room names
+    // Fetch room names for the department
     $rooms = [];
     $roomsResult = $conn->prepare("SELECT room_name FROM roomlist WHERE dept_id = ? ORDER BY room_id");
     $roomsResult->bind_param("i", $dept_id);
@@ -27,7 +30,7 @@ function generateTableContent($conn, $dept_id) {
         $rooms[] = $room['room_name'];
     }
 
-    // Get time slots
+    // Fetch time slots for the department
     $times = [];
     $timesResult = $conn->prepare("SELECT timeslot FROM timeslot WHERE schedule='TTH' AND dept_id = ? ORDER BY time_id");
     $timesResult->bind_param("i", $dept_id);
@@ -43,7 +46,7 @@ function generateTableContent($conn, $dept_id) {
     }
     $content .= '</tr></thead><tbody>';
 
-    // Add time slots and room assignments
+    // Populate the table with time slots and room assignments
     foreach ($times as $time) {
         $content .= '<tr><td>' . htmlspecialchars($time) . '</td>';
         foreach ($rooms as $room) {
@@ -61,6 +64,7 @@ function generateTableContent($conn, $dept_id) {
                 $load_id = $row['id'];
                 $scheds = $subject . " " . $course;
 
+                // Fetch faculty name
                 $facultyQuery = "SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
                 FROM faculty 
                 WHERE id = ? AND dept_id = ?";
@@ -71,7 +75,7 @@ function generateTableContent($conn, $dept_id) {
                 $instname = ($facultyData->num_rows > 0) ? $facultyData->fetch_assoc()['name'] : '';
                 $content .= '<td class="text-center" data-id="' . $load_id . '" data-scode="' . $subject . '">' . htmlspecialchars($scheds . " " . $instname) . '</td>';
             } else {
-                $content .= '<td></td>';
+                $content .= '<td></td>'; // Empty cell for no assignment
             }
         }
         $content .= '</tr>';
@@ -81,7 +85,33 @@ function generateTableContent($conn, $dept_id) {
     return $content;
 }
 
+// Function to print the page with a specific department's data
 function printPage($conn, $dept_id) {
+    // Determine the header image based on the department ID
+    switch ($dept_id) {
+        case 4444:
+            $headerImage = "assets/uploads/end.png";
+            break;
+        case 5858:
+            $headerImage = "assets/uploads/EDU.png";
+            break;
+        case 3333:
+            $headerImage = "assets/uploads/HM.jpg";
+            break;
+        case 12345:
+            $headerImage = "assets/uploads/BA.png";
+            break;
+        default:
+            $headerImage = "assets/uploads/default_header.png"; // Fallback to default header
+            break;
+    }
+
+    // Check if the image file exists; if not, use a default image
+    if (!file_exists($headerImage)) {
+        $headerImage = "assets/uploads/default_header.png"; // Fallback if specific image doesn't exist
+    }
+
+    // Generate content for the table
     $content = generateTableContent($conn, $dept_id);
     ?>
     <!DOCTYPE html>
@@ -89,7 +119,8 @@ function printPage($conn, $dept_id) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Printable Table</title>
+        <title>Printable Schedule</title>
+        <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
             body {
@@ -104,8 +135,8 @@ function printPage($conn, $dept_id) {
                 margin-bottom: 20px;
             }
             .header img {
-                width: 100%;
-                height: 20%;
+                width: 100%; /* Adjust width as necessary */
+                height: auto; /* Maintain aspect ratio */
             }
             table {
                 width: 100%;
@@ -130,21 +161,16 @@ function printPage($conn, $dept_id) {
     </head>
     <body onload="window.print()">
     <div class="header">
-        <img src="assets/uploads/end.png">
+        <img src="<?php echo htmlspecialchars($headerImage); ?>" alt="Department Header">
     </div>
-         <script>
-            // Print the page and handle cancellation
-            window.onload = function() {
-                window.print();
-            };
-
+        <?php echo $content; ?>
+     <script>
             // Detect when the print dialog is closed
             window.onafterprint = function() {
                 // Redirect back if the print dialog was canceled
                 window.history.back();
             };
         </script>
-        <?php echo $content; ?>
     </body>
     </html>
     <?php
