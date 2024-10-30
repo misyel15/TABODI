@@ -4,90 +4,92 @@ include('db_connect.php');
 include 'includes/header.php';
 
 // Assuming you store the department ID in the session during login
-// Example: $_SESSION['dept_id'] = $user['dept_id'];
 $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 ?>
-<div class="container-fluid"  style="margin-top:100px; margin-left:-15px;">
-<div class="container-fluid mt-5">
-    <!-- Table Panel for Monday/Wednesday -->
-    <div class="card mb-4">
-        <div class="card-header text-center">
-            <h3>Monday/Wednesday</h3>
-            <div class="d-flex justify-content-end">
-                <!-- Print Button -->
-                <button type="button" class="btn btn-success btn-sm btn-flat mr-2" id="print">
-                    <span class="glyphicon glyphicon-print"></span><i class="fa fa-print"></i> Print
-                </button>
-                <button class="btn btn-primary btn-sm" id="new_schedule_mw" data-toggle="modal" data-target="#newScheduleModal">
-                    <i class="fa fa-user-plus"></i> New Entry
-                </button>
+<div class="container-fluid" style="margin-top:100px; margin-left:-15px;">
+    <div class="container-fluid mt-5">
+        <!-- Table Panel for Monday/Wednesday -->
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h3>Monday/Wednesday</h3>
+                <div class="d-flex justify-content-end">
+                    <!-- Print Button -->
+                    <button type="button" class="btn btn-success btn-sm btn-flat mr-2" id="print">
+                        <span class="glyphicon glyphicon-print"></span><i class="fa fa-print"></i> Print
+                    </button>
+                    <button class="btn btn-primary btn-sm" id="new_schedule_mw" data-toggle="modal" data-target="#newScheduleModal">
+                        <i class="fa fa-user-plus"></i> New Entry
+                    </button>
+                </div>
+                <form method="POST" class="form-inline mt-2" id="printra" action="roomassign_generate.php">
+                    <!-- Form elements if needed -->
+                </form>
             </div>
-            <form method="POST" class="form-inline mt-2" id="printra" action="roomassign_generate.php">
-                <!-- Form elements if needed -->
-            </form>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered waffle no-grid" id="insloadtable">
-                <thead>
-                    <tr>
-                        <th class="text-center">Time</th>
+            <div class="card-body">
+                <table class="table table-bordered waffle no-grid" id="insloadtable">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Time</th>
+                            <?php
+                            // PHP code to generate table headers
+                            $rooms = array();
+                            $roomsdata = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id' ORDER BY room_id;");
+                            while ($r = $roomsdata->fetch_assoc()) {
+                                $rooms[] = $r['room_name'];
+                            }
+                            foreach ($rooms as $room) {
+                                echo '<th class="text-center">' . htmlspecialchars($room) . '</th>';
+                            }
+                            ?>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <?php
-                        // PHP code to generate table headers
-                        $rooms = array();
-                        $roomsdata = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id' order by room_id;");
-                        while ($r = $roomsdata->fetch_assoc()) {
-                            $rooms[] = $r['room_name'];
+                        $times = array();
+                        $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='MW' AND dept_id = '$dept_id' ORDER BY time_id;");
+                        while ($t = $timesdata->fetch_assoc()) {
+                            $times[] = $t['timeslot'];
                         }
-                        foreach ($rooms as $room) {
-                            echo '<th class="text-center">' . $room . '</th>';
+
+                        foreach ($times as $time) {
+                            echo "<tr><td>$time</td>";
+                            foreach ($rooms as $room) {
+                                $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='MW'";
+                                $result = mysqli_query($conn, $query);
+                                if (mysqli_num_rows($result) > 0) {
+                                    $row = mysqli_fetch_assoc($result);
+                                    $course = $row['course'];
+                                    $subject = $row['subjects'];
+                                    $faculty = $row['faculty'];
+                                    $load_id = $row['id'];
+                                    $scheds = $subject . " " . $course;
+                                    $faculty_name = $conn->query("SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=$faculty")->fetch_assoc()['name'];
+                                    $newSched = htmlspecialchars($scheds . " " . $faculty_name);
+                                    echo '<td class="text-center content" data-id="' . $load_id . '" data-scode="' . htmlspecialchars($subject) . '">' 
+                                        . $newSched 
+                                        . '<br>'
+                                        . '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#newScheduleModal"><i class="fa fa-edit"></i> Edit</button></span>'
+                                        . '<span><button class="btn btn-sm btn-danger delete_load" type="button" data-id="' . $load_id . '" data-scode="' . htmlspecialchars($subject) . '"><i class="fa fa-trash-alt"></i> Delete</button></span>'
+                                        . '</td>';
+                                } else {
+                                    echo "<td></td>";
+                                }
+                            }
+                            echo "</tr>";
                         }
                         ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $times = array();
-                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='MW' AND dept_id = '$dept_id' order by time_id;");
-                    while ($t = $timesdata->fetch_assoc()) {
-                        $times[] = $t['timeslot'];
-                    }
-
-                    foreach ($times as $time) {
-                        echo "<tr><td>$time</td>";
-                        foreach ($rooms as $room) {
-                            $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='MW'";
-                            $result = mysqli_query($conn, $query);
-                            if (mysqli_num_rows($result) > 0) {
-                                $row = mysqli_fetch_assoc($result);
-                                $course = $row['course'];
-                                $subject = $row['subjects'];
-                                $faculty = $row['faculty'];
-                                $load_id = $row['id'];
-                                $scheds = $subject . " " . $course;
-                                $faculty_name = $conn->query("SELECT concat(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id=$faculty")->fetch_assoc()['name'];
-                                $newSched = $scheds . " " . $faculty_name;
-                                echo '<td class="text-center content" data-id="' . $load_id . '" data-scode="' . $subject . '">' 
-                                    . $newSched 
-                                    . '<br>'
-                                        . '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#newScheduleModal"><i class="fa fa-edit"></i> Edit</button></span>'
-
-                                    . '<span><button class="btn btn-sm btn-danger delete_load" type="button" data-id="' . $load_id . '" data-scode="' . $subject . '"><i class="fa fa-trash-alt"></i> Delete</button></span>'
-                                    . '</td>';
-                            } else {
-                                echo "<td></td>";
-                            }
-                        }
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+</div>
 
     <!-- Table Panel for Tuesday/Thursday -->
-    <div class="card mb-4">
-        <div class="card-header text-center">
+	<div class="container-fluid mt-5">
+        <!-- Table Panel for Monday/Wednesday -->
+        <div class="card mb-4">
+            <div class="card-header text-center">
             <h3>Tuesday/Thursday</h3>
             <div class="d-flex justify-content-end">
                 <!-- Print Button -->
@@ -142,7 +144,83 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
                                 echo '<td class="text-center content" data-id="' . $load_id . '" data-scode="' . $subject . '">' 
                                     . $newSched 
                                     . '<br>'
-                                   . '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#newScheduleModal"><i class="fa fa-edit"></i> Edit</button></span>'
+									. '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#newScheduleModal"><i class="fa fa-edit"></i> Edit</button></span>'
+
+                                    . '<span><button class="btn btn-sm btn-danger delete_load" type="button" data-id="' . $load_id . '" data-scode="' . $subject . '"><i class="fa fa-trash-alt"></i> Delete</button></span>'
+                                    . '</td>';
+                            } else {
+                                echo "<td></td>";
+                            }
+                        }
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <!-- Table Panel for Tuesday/Thursday -->
+	<div class="container-fluid mt-5">
+        <!-- Table Panel for Monday/Wednesday -->
+        <div class="card mb-4">
+            <div class="card-header text-center">
+            <h3>Friday/Saturday</h3>
+            <div class="d-flex justify-content-end">
+                <!-- Print Button -->
+                <button type="button" class="btn btn-success btn-sm btn-flat mr-2" id="printfri">
+                    <span class="glyphicon glyphicon-print"></span><i class="fa fa-print"></i> Print
+                </button>
+                <form method="POST" class="form-inline" id="printrafri" action="roomassign_generatefri.php">
+                    <!-- Form elements if needed -->
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered waffle no-grid" id="insloadtable">
+                <thead>
+                    <tr>
+                        <th class="text-center">Time</th>
+                       <?php
+                        // PHP code to generate table headers
+                        $rooms = array();
+                        $roomsdata = $conn->query("SELECT * FROM roomlist WHERE dept_id = '$dept_id' order by room_id;");
+                        while ($r = $roomsdata->fetch_assoc()) {
+                            $rooms[] = $r['room_name'];
+                        }
+                        foreach ($rooms as $room) {
+                            echo '<th class="text-center">' . $room . '</th>';
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $times = array();
+                    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='FS' AND dept_id = '$dept_id' order by time_id;");
+                    while ($t = $timesdata->fetch_assoc()) {
+                        $times[] = $t['timeslot'];
+                    }
+
+                    foreach ($times as $time) {
+                        echo "<tr><td>$time</td>";
+                        foreach ($rooms as $room) {
+                            $query = "SELECT * FROM loading WHERE timeslot='$time' AND room_name='$room' AND days='FS'";
+                            $result = mysqli_query($conn, $query);
+                            if (mysqli_num_rows($result) > 0) {
+                                $row = mysqli_fetch_assoc($result);
+                                $course = $row['course'];
+                                $subject = $row['subjects'];
+                                $faculty = $row['faculty'];
+                                $load_id = $row['id'];
+                                $scheds = $subject . " " . $course;
+                                $faculty_name = $conn->query("SELECT concat(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id=$faculty")->fetch_assoc()['name'];
+                                $newSched = $scheds . " " . $faculty_name;
+                                echo '<td class="text-center content" data-id="' . $load_id . '" data-scode="' . $subject . '">' 
+                                    . $newSched 
+                                    . '<br>'
+									. '<span><button class="btn btn-sm btn-primary edit_load" type="button" data-id="' . $load_id . '" data-toggle="modal" data-target="#newScheduleModal"><i class="fa fa-edit"></i> Edit</button></span>'
 
                                     . '<span><button class="btn btn-sm btn-danger delete_load" type="button" data-id="' . $load_id . '" data-scode="' . $subject . '"><i class="fa fa-trash-alt"></i> Delete</button></span>'
                                     . '</td>';
@@ -383,8 +461,8 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
 
 <!-- Modal Footer -->
 <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    <button type="submit" class="btn btn-primary">Save</button>
 </div>
 
 <div class="imgF" style="display: none " id="img-clone">
