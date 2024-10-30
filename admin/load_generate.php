@@ -1,12 +1,15 @@
 <?php
+session_start();
 include('db_connect.php');
+
+// Get the department ID from the session
+$dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null; // Assuming dept_id is set during login
 
 // Function to generate table rows based on the faculty id
 function generateTableContent($conn, $id) {
     $content = '';
-    
+
     if (isset($id)) {
-        $i = 1;
         $sumtu = 0;
         $sumh = 0;
         $loads = $conn->query("SELECT * FROM loading WHERE faculty='$id' ORDER BY timeslot_sid ASC");
@@ -22,70 +25,90 @@ function generateTableContent($conn, $id) {
             // Faculty details
             $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=" . $fid);
             $frow = $faculty->fetch_assoc();
-            $instname = $frow['name'];
+            $instname = $frow ? $frow['name'] : "Unknown Instructor"; // Fallback if not found
 
             // Subject details
             $subjects = $conn->query("SELECT * FROM subjects WHERE subject = '$subject_code'");
             $srow = $subjects->fetch_assoc();
-            $description = $srow['description'];
-            $units = $srow['total_units'];
-            $lec_units = $srow['Lec_Units'];
-            $lab_units = $srow['Lab_Units'];
-            $hours = $srow['hours'];
+            $description = $srow ? $srow['description'] : "Unknown Subject";
+            $units = $srow ? $srow['total_units'] : 0;
+            $lec_units = $srow ? $srow['Lec_Units'] : 0;
+            $lab_units = $srow ? $srow['Lab_Units'] : 0;
+            $hours = $srow ? $srow['hours'] : 0;
+
             $sumh += $hours;
             $sumtu += $units;
 
             // Room details
             $rooms = $conn->query("SELECT * FROM roomlist WHERE id = " . $room_id);
             $roomrow = $rooms->fetch_assoc();
-            $room_name = $roomrow['room_name'];
+            $room_name = $roomrow ? $roomrow['room_name'] : "Unknown Room";
 
             // Generate the row content
             $content .= '<tr>
-                <td width="50px" align="center">' . htmlspecialchars($subject_code) . '</td>
-                <td width="100px" align="center">' . htmlspecialchars($description) . '</td>
-                <td width="50px" align="center">' . htmlspecialchars($days) . '</td>
-                <td width="50px" align="center">' . htmlspecialchars($timeslot) . '</td>
-                <td width="50px" align="center">' . htmlspecialchars($course) . '</td>
-                <td width="80px" align="center">' . htmlspecialchars($lec_units) . '</td>
-                <td width="50px" align="center">' . htmlspecialchars($lab_units) . '</td>
-                <td width="50px" align="center">' . htmlspecialchars($units) . '</td>
-                <td width="50px" align="center">' . htmlspecialchars($hours) . '</td>
+                <td align="center">' . htmlspecialchars($subject_code) . '</td>
+                <td align="center">' . htmlspecialchars($description) . '</td>
+                <td align="center">' . htmlspecialchars($days) . '</td>
+                <td align="center">' . htmlspecialchars($timeslot) . '</td>
+                <td align="center">' . htmlspecialchars($course) . '</td>
+                <td align="center">' . htmlspecialchars($lec_units) . '</td>
+                <td align="center">' . htmlspecialchars($lab_units) . '</td>
+                <td align="center">' . htmlspecialchars($units) . '</td>
+                <td align="center">' . htmlspecialchars($hours) . '</td>
             </tr>';
         }
 
         // Add total units and hours row
-        $content .= '<tr style="height: 20px">
-            <td class="s4"></td>
-            <td class="s3"></td>
-            <td class="s3"></td>
-            <td class="s3"></td>
-            <td class="s3"></td>
-            <td class="s10 softmerge">
-                <div class="softmerge-inner" style="width:298px;left:-1px">
-                    <span style="font-weight:bold; font-size:10px;">Total Number of Units/Hours (Basic)</span>
-                </div>
-            </td>
-            <td class="s11"></td>
-            <td class="text-center" align="center">' . $sumtu . '</td>
-            <td class="text-center" align="center">' . $sumh . '</td>
+        $content .= '<tr>
+            <td colspan="7" style="text-align:right;"><strong>Total Number of Units/Hours (Basic)</strong></td>
+            <td align="center">' . $sumtu . '</td>
+            <td align="center">' . $sumh . '</td>
         </tr>';
     }
 
     return $content;
 }
 
-$id = $_GET['id']; // Get faculty ID from URL parameter
+// Function to determine the header image based on department ID
+function getHeaderImage($dept_id) {
+    // Determine the header image based on the department ID
+    switch ($dept_id) {
+        case 4444:
+            $headerImage = "assets/uploads/end.png";
+            break;
+        case 5858:
+            $headerImage = "assets/uploads/EDU.png";
+            break;
+        case 3333:
+            $headerImage = "assets/uploads/HM.jpg";
+            break;
+        case 12345:
+            $headerImage = "assets/uploads/BA.png";
+            break;
+        default:
+            return "assets/uploads/default_header.png"; // Fallback to default header
+    }
+}
 
 // Function to print the page content
-function printPage($conn, $id) {
+function printPage($conn, $id, $dept_id) {
     // Fetch the instructor's name
     $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=" . $id);
-    $frow = $faculty->fetch_assoc();
-    $instname = $frow['name'];
+
+    // Check if the query returned a result
+    if ($faculty && $faculty->num_rows > 0) {
+        $frow = $faculty->fetch_assoc();
+        $instname = $frow['name'];
+    } else {
+        // Handle the error if no faculty is found
+        $instname = "Unknown Instructor"; // Default value or handle as needed
+    }
+
+    // Get the header image based on the faculty's department
+    $headerImage = getHeaderImage($dept_id); // Pass dept_id here
 
     // Generate the table content
-    $content = generateTableContent($conn, $id); 
+    $content = generateTableContent($conn, $id);
 
     ?>
     <!DOCTYPE html>
@@ -128,18 +151,18 @@ function printPage($conn, $id) {
             }
             .header img {
                 width: 100%;
-                height: 20%;
+                height: auto;
             }
             .instname {
                 font-weight: bold;
-                font-size: 24px;
+                font-size: 18px;
                 margin-bottom: 10px;
             }
         </style>
     </head>
     <body onload="window.print()">
         <div class="header">
-            <img src="assets/uploads/end.png" alt="Logo">
+            <img src="<?php echo $headerImage; ?>" alt="Department Logo">
         </div>
 
         <div class="instname">
@@ -177,6 +200,13 @@ function printPage($conn, $id) {
     <?php
 }
 
+// Get the faculty ID from the URL parameter
+$id = isset($_GET['id']) ? $_GET['id'] : null;
+
 // Call the function to display the print page
-printPage($conn, $id);
+if ($id) {
+    printPage($conn, $id, $dept_id); // Pass dept_id to printPage
+} else {
+    echo "No faculty ID provided.";
+}
 ?>
