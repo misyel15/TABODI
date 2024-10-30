@@ -136,6 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         transform: translateY(-50%);
         cursor: pointer;
     }
+    .g-recaptcha {
+    width: 100%; /* or any specific width */
+    height: 78px; /* or any specific height */
+}
+
 </style>
 
 <body class="animsition">
@@ -176,15 +181,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </select>
                                     </div>
                                 </div>
-    <!-- reCAPTCHA Widget -->
-    <div class="form-group">
+ 
+                                <!-- reCAPTCHA Widget -->
+                                <div class="form-group">
                                     <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Replace with your site key -->
                                 </div>
                                 <div class="login-checkbox">
                                     <!-- Terms Agreement Checkbox -->
                                     <div class="form-group">
                                         <label>
-                                            <input type="checkbox" id="terms" required> I agree to the <a href="terms.html" target="_blank">terms and conditions</a><br>
+                                            <input type="checkbox" id="terms" required> I agree the <a href="terms.html" target="_blank">terms and conditions</a><br>
                                             <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                                         </label>
                                     </div>
