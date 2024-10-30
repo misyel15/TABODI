@@ -1,6 +1,20 @@
-<?php 
+<?php
+session_start(); // Start the session
 include('db_connect.php');
-session_start();
+
+
+// Assuming the user department ID is stored in the session after login
+$dept_id = isset($_SESSION['dept_id']) ? $_SESSION['dept_id'] : null;
+// Function to generate a random password of 8 characters
+function generateRandomPassword($length = 8) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
+    $charactersLength = strlen($characters);
+    $randomPassword = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomPassword .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomPassword;
+}
 
 // Fetch user data if ID is set
 $meta = [];
@@ -13,6 +27,9 @@ if (isset($_GET['id'])) {
     $meta = $result->fetch_assoc();
     $stmt->close();
 }
+
+// Generate default password if creating a new user
+$defaultPassword = !isset($meta['id']) ? generateRandomPassword() : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,6 +73,9 @@ if (isset($_GET['id'])) {
     <form action="" id="manage-user">    
     <input type="hidden" name="id" value="<?php echo isset($meta['id']) ? htmlspecialchars($meta['id']) : ''; ?>">
     
+    <!-- Hidden Department ID Field -->
+    <input type="hidden" name="dept_id" value="<?php echo $dept_id; ?>">
+
     <!-- Name Field -->
     <div class="form-group">
         <label for="name">Name</label>
@@ -65,7 +85,7 @@ if (isset($_GET['id'])) {
     <!-- Username Field -->
     <div class="form-group">
         <label for="username">Username</label>
-        <input type="email" name="username" id="username" class="form-control" value="<?php echo isset($meta['username']) ? htmlspecialchars($meta['username']) : ''; ?>" required autocomplete="off">
+        <input type="text" name="username" id="username" class="form-control" value="<?php echo isset($meta['username']) ? htmlspecialchars($meta['username']) : ''; ?>" required autocomplete="off">
     </div>
 
     <!-- Email Field -->
@@ -74,37 +94,32 @@ if (isset($_GET['id'])) {
         <input type="email" name="email" id="email" class="form-control" value="<?php echo isset($meta['email']) ? htmlspecialchars($meta['email']) : ''; ?>" required autocomplete="off">
     </div>
 
-  <!-- Course Field -->
-<div class="form-group">
-    <div class="col-sm-13">
-        <label for="course" class="control-label">Course</label>
-        <select class="form-control" name="course" id="course" required>
-            <option value="0" disabled selected>Select Course</option>
-            <?php 
-                // Fetch courses filtered by department
-                $sql = "SELECT * FROM courses WHERE dept_id = '$dept_id'";
-                $query = $conn->query($sql);
-
-                // Loop through each course and populate the dropdown
-                while($row = $query->fetch_array()):
-                    $course = $row['course'];
-            ?>
-            <option value="<?php echo htmlspecialchars($course) ?>" 
-                <?php echo (isset($meta['course']) && $meta['course'] == $course) ? 'selected' : ''; ?>>
-                <?php echo ucwords(htmlspecialchars($course)) ?>
-            </option>
-            <?php endwhile; ?>
-        </select>
+    <!-- Course Field -->
+    <div class="form-group">
+        <label>Course</label>
+        <div class="col-sm-13">
+            <select class="form-control" name="course" id="course">
+                <option value="" disabled selected>Select Course</option>
+                <option value="BSIT">BSIT</option>
+            </select>
+        </div>
     </div>
-</div>
-
 
     <!-- Password Field -->
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" name="password" id="password" class="form-control" value="<?php echo !isset($meta['id']) ? 'defaultpassword123' : ''; ?>" autocomplete="off">
+        <div class="input-group">
+            <input type="password" name="password" id="password" class="form-control" value="<?php echo isset($meta['id']) ? '' : htmlspecialchars($defaultPassword); ?>" autocomplete="off" required>
+            <div class="input-group-append">
+                <span class="input-group-text" id="togglePassword">
+                    <i class="fa fa-eye"></i>
+                </span>
+            </div>
+        </div>
         <?php if (isset($meta['id'])): ?>
             <small><i>Leave this blank if you don't want to change the password.</i></small>
+        <?php else: ?>
+            <small><i>The default password is: <?php echo htmlspecialchars($defaultPassword); ?></i></small>
         <?php endif; ?>
     </div>
 
@@ -124,6 +139,7 @@ if (isset($_GET['id'])) {
     </div>
 </form>
 
+
     <!-- Include jQuery and SweetAlert JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.all.min.js"></script>
@@ -142,7 +158,7 @@ if (isset($_GET['id'])) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
-                            text: 'Data successfully updated!',
+                            text: 'Data successfully Save!',
                             showConfirmButton: true
                         }).then(function() {
                             location.reload(); // Reload the page after user acknowledges the success message
@@ -163,6 +179,21 @@ if (isset($_GET['id'])) {
                     });
                 }
             });
+        });
+
+        // Toggle password visibility
+        $('#togglePassword').on('click', function() {
+            let passwordField = $('#password');
+            let passwordFieldType = passwordField.attr('type');
+
+            // Toggle between text and password
+            if (passwordFieldType === 'password') {
+                passwordField.attr('type', 'text');
+                $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+            }
         });
     });
     </script>
