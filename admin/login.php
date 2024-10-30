@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
                                 <!-- reCAPTCHA Widget -->
                                 <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY" style="width: 10%; height: 8px;"></div> <!-- Adjust width and height as needed -->
+                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Adjust width and height as needed -->
                                 </div>
 
                                 <div class="login-checkbox">
