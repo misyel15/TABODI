@@ -47,9 +47,15 @@ include 'headers.php';
       object-fit: cover;
     }
 
-    .header_section {
-      background-color: #eae6f5;
-    }
+  .header_section {
+  background-color: #eae6f5;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensures the header stays above other elements */
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for visual separation */
+}
+
 
     .navbar-brand img {
       border: 2px solid #333;
