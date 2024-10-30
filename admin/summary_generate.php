@@ -4,51 +4,49 @@ include('db_connect.php');
 
 $dept_id = $_SESSION['dept_id'];
 
+// Function to generate table content for the specific department
 function generateTableContent($conn, $dept_id) {
     $content = '';
 
-    $sumloads = 0;
-    $sumotherl = 0;
-    $sumoverl = 0;
-    $totalloads = 0;
-    $instname = '';
-
-    $loads = $conn->query("
-        SELECT faculty, GROUP_CONCAT(DISTINCT sub_description ORDER BY sub_description ASC SEPARATOR ', ') AS subject, 
+    $loads = $conn->prepare("
+        SELECT faculty, 
+               GROUP_CONCAT(DISTINCT sub_description ORDER BY sub_description ASC SEPARATOR ', ') AS subject, 
                SUM(total_units) AS totunits 
         FROM loading 
-        WHERE dept_id = '$dept_id' 
+        WHERE dept_id = ? 
         GROUP BY faculty
     ");
+    $loads->bind_param("i", $dept_id);
+    $loads->execute();
+    $result = $loads->get_result();
 
-    if ($loads) {
-        while ($lrow = $loads->fetch_assoc()) {
+    if ($result && $result->num_rows > 0) {
+        while ($lrow = $result->fetch_assoc()) {
             $subjects = $lrow['subject'];
             $faculty_id = $lrow['faculty'];
             $sumloads = $lrow['totunits'];
-            $totalloads = $sumloads + $sumotherl;
+            $sumotherl = 0; // Assign as per your logic or fetch from the database if applicable
+            $sumoverl = 0; // Assign as per your logic or fetch from the database if applicable
+            $totalloads = $sumloads + $sumotherl + $sumoverl;
 
-            $faculty = $conn->query("
-                SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
+            $faculty = $conn->prepare("
+                SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name 
                 FROM faculty 
-                WHERE id='$faculty_id' AND dept_id='$dept_id' 
-                ORDER BY CONCAT(lastname, ', ', firstname, ' ', middlename) ASC
+                WHERE id = ? AND dept_id = ?
             ");
+            $faculty->bind_param("ii", $faculty_id, $dept_id);
+            $faculty->execute();
+            $facultyResult = $faculty->get_result();
 
-            if ($faculty && $faculty->num_rows > 0) {
-                $frow = $faculty->fetch_assoc();
-                $instname = $frow['name'];
-            } else {
-                $instname = 'Unknown Faculty';
-            }
+            $instname = ($facultyResult && $facultyResult->num_rows > 0) ? $facultyResult->fetch_assoc()['name'] : 'Unknown Faculty';
 
             $content .= '<tr>
-                            <td width="150px" align="center">' . $instname . '</td>
-                            <td width="200px" align="center">' . $subjects . '</td>
-                            <td width="40px" align="center">' . $sumloads . '</td>
-                            <td width="40px" align="center">' . $sumotherl . '</td>
-                            <td width="40px" align="center">' . $sumoverl . '</td>
-                            <td width="40px" align="center">' . $totalloads . '</td>
+                            <td width="150px" align="center">' . htmlspecialchars($instname) . '</td>
+                            <td width="200px" align="center">' . htmlspecialchars($subjects) . '</td>
+                            <td width="40px" align="center">' . htmlspecialchars($sumloads) . '</td>
+                            <td width="40px" align="center">' . htmlspecialchars($sumotherl) . '</td>
+                            <td width="40px" align="center">' . htmlspecialchars($sumoverl) . '</td>
+                            <td width="40px" align="center">' . htmlspecialchars($totalloads) . '</td>
                         </tr>';
         }
     } else {
@@ -58,8 +56,27 @@ function generateTableContent($conn, $dept_id) {
     return $content;
 }
 
+// Function to determine the header image based on the department ID
+function getHeaderImage($dept_id) {
+    switch ($dept_id) {
+        case 4444:
+            return "assets/uploads/end.png";
+        case 5858:
+            return "assets/uploads/EDU.png"; // Fixed ID from 5858 to 5555
+        case 3333:
+            return "assets/uploads/HM.png";
+        case 12345:
+            return "assets/uploads/BA.png";
+        default:
+            return "assets/uploads/default_header.png"; // Fallback header
+    }
+}
+
+// Function to print the page
 function printPage($conn, $dept_id) {
     $content = generateTableContent($conn, $dept_id);
+    $headerImage = getHeaderImage($dept_id);
+    
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -101,13 +118,13 @@ function printPage($conn, $dept_id) {
             }
             .header img {
                 width: 100%;
-                height: 20%;
+                height: auto; /* Maintain aspect ratio */
             }
         </style>
     </head>
     <body>
         <div class="header">
-            <img src="assets/uploads/end.png" alt="Logo">
+            <img src="<?php echo htmlspecialchars($headerImage); ?>" alt="Department Header">
         </div>
 
         <table>
@@ -143,5 +160,6 @@ function printPage($conn, $dept_id) {
     <?php
 }
 
+// Call the function to display the print page
 printPage($conn, $dept_id);
 ?>
