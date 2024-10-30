@@ -1,13 +1,32 @@
-<?php include('db_connect.php'); ?>
-
 <?php
-function generateRow($conn, $secid, $semester){
-    $content = '<tbody>';
+session_start();
+include('db_connect.php');
 
-    if(isset($secid) && isset($semester)){
-        $i = 1;
+// Assuming you store the department ID in the session during login
+$dept_id = $_SESSION['dept_id']; // Get the department ID from the session
+
+function getHeaderImage($dept_id) {
+    switch ($dept_id) {
+        case 4444:
+            return "assets/uploads/end.png";
+        case 5858:
+            return "assets/uploads/EDU.png"; // Fixed ID from 5858 to 5555
+        case 3333:
+            return "assets/uploads/HM.png";
+        case 12345:
+            return "assets/uploads/BA.png";
+        default:
+            return 'assets/uploads/default_header.png'; // Default header image
+    }
+}
+
+function generateRow($conn, $secid, $semester) {
+    $content = '<tbody>';
+    $totalUnits = 0; // Initialize total units variable
+
+    if (isset($secid) && isset($semester)) {
         $loads = $conn->query("SELECT * FROM loading WHERE course='$secid' AND semester='$semester' ORDER BY timeslot_sid ASC");
-        while($lrow = $loads->fetch_assoc()){
+        while ($lrow = $loads->fetch_assoc()) {
             $days = $lrow['days'];
             $timeslot = $lrow['timeslot'];
             $course = $lrow['course'];
@@ -17,22 +36,22 @@ function generateRow($conn, $secid, $semester){
 
             // Fetch subject details
             $subjects = $conn->query("SELECT * FROM subjects WHERE subject = '$subject_code'");
-            while($srow = $subjects->fetch_assoc()){
-                $description = $srow['description'];
-                $units = $srow['total_units'];
-            }
+            $srow = $subjects->fetch_assoc(); // Directly fetch one row since subject_code should be unique
+            $description = $srow['description'];
+            $units = $srow['total_units'];
+
+            // Add units to total units
+            $totalUnits += $units;
 
             // Fetch faculty details
             $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id=".$instid);
-            while($frow = $faculty->fetch_assoc()){
-                $instname = $frow['name'];
-            }
+            $frow = $faculty->fetch_assoc(); // Directly fetch one row since instid should be unique
+            $instname = $frow['name'];
 
             // Fetch room details
             $rooms = $conn->query("SELECT * FROM roomlist WHERE room_id = ".$room_id);
-            while($roomrow = $rooms->fetch_assoc()){
-                $room_name = $roomrow['room_name'];
-            }
+            $roomrow = $rooms->fetch_assoc(); // Directly fetch one row since room_id should be unique
+            $room_name = $roomrow['room_name'];
 
             // Append row content
             $content .= '<tr>
@@ -47,9 +66,8 @@ function generateRow($conn, $secid, $semester){
         }
     } else {
         // Fetch all records if no section or semester is selected
-        $i = 1;
         $loads = $conn->query("SELECT * FROM loading ORDER BY timeslot_sid ASC");
-        while($lrow = $loads->fetch_assoc()){
+        while ($lrow = $loads->fetch_assoc()) {
             $days = $lrow['days'];
             $timeslot = $lrow['timeslot'];
             $subject_code = $lrow['subjects'];
@@ -58,22 +76,22 @@ function generateRow($conn, $secid, $semester){
 
             // Fetch subject details
             $subjects = $conn->query("SELECT * FROM subjects WHERE subject = '$subject_code'");
-            while($srow = $subjects->fetch_assoc()){
-                $description = $srow['description'];
-                $units = $srow['total_units'];
-            }
+            $srow = $subjects->fetch_assoc();
+            $description = $srow['description'];
+            $units = $srow['total_units'];
+
+            // Add units to total units
+            $totalUnits += $units;
 
             // Fetch faculty details
             $faculty = $conn->query("SELECT *, CONCAT(lastname, ', ', firstname, ' ', middlename) as name FROM faculty WHERE id=".$instid);
-            while($frow = $faculty->fetch_assoc()){
-                $instname = $frow['name'];
-            }
+            $frow = $faculty->fetch_assoc();
+            $instname = $frow['name'];
 
             // Fetch room details
             $rooms = $conn->query("SELECT * FROM roomlist WHERE room_id = ".$room_id);
-            while($roomrow = $rooms->fetch_assoc()){
-                $room_name = $roomrow['room_name'];
-            }
+            $roomrow = $rooms->fetch_assoc();
+            $room_name = $roomrow['room_name'];
 
             // Append row content
             $content .= '<tr>
@@ -87,7 +105,14 @@ function generateRow($conn, $secid, $semester){
             </tr>';
         }
     }
-    
+
+    // Add the total units row
+    $content .= '<tr>
+        <td colspan="4" align="right"><strong>Total Units:</strong></td>
+        <td align="center"><strong>'.$totalUnits.'</strong></td>
+        <td colspan="2"></td>
+    </tr>';
+
     $content .= '</tbody>';
     return $content;
 }
@@ -115,6 +140,10 @@ function generateTableContent($conn) {
 function printPage($conn) {
     $secid = $_GET['secid'] ?? 'N/A'; // Get section id
     $semester = $_GET['semester'] ?? 'N/A'; // Get semester
+
+    // Get the header image based on the dept_id from the session
+    $dept_id = $_SESSION['dept_id'];
+    $headerImage = getHeaderImage($dept_id);
 
     $content = generateTableContent($conn);
     ?>
@@ -160,7 +189,7 @@ function printPage($conn) {
             }
             .header img {
                 width: 100%;
-                height: 20%;
+                height: auto; /* Changed to auto for proper aspect ratio */
             }
             .section-info {
                 font-size: 18px; /* Font size for section and semester info */
@@ -174,26 +203,22 @@ function printPage($conn) {
     </head>
     <body onload="window.print()">
         <div class="header">
-            <img src="assets/uploads/end.png" alt="Logo">
+            <img src="<?php echo htmlspecialchars($headerImage); ?>" alt="Header Image">
         </div>
 
         <div class="section-info">
             Class Section: <?php echo htmlspecialchars($secid); ?><br>
             Semester: <?php echo htmlspecialchars($semester); ?>
         </div>
- <script>
-            // Print the page and handle cancellation
-            window.onload = function() {
-                window.print();
-            };
 
+        <?php echo $content; ?>
+        <script>
             // Detect when the print dialog is closed
             window.onafterprint = function() {
                 // Redirect back if the print dialog was canceled
                 window.history.back();
             };
         </script>
-        <?php echo $content; ?>
     </body>
     </html>
     <?php
