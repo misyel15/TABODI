@@ -93,13 +93,13 @@ function printPage($conn, $dept_id) {
             $headerImage = "assets/uploads/end.png";
             break;
         case 5858:
-            $headerImage = "assets/uploads/edu.png";
+            $headerImage = "assets/uploads/EDU.png";
             break;
         case 3333:
-            $headerImage = "assets/uploads/hm.jpg";
+            $headerImage = "assets/uploads/HM.jpg";
             break;
         case 12345:
-            $headerImage = "assets/uploads/bsba.png";
+            $headerImage = "assets/uploads/BA.png";
             break;
         default:
             $headerImage = "assets/uploads/default_header.png"; // Fallback to default header
