@@ -136,7 +136,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         transform: translateY(-50%);
         cursor: pointer;
     }
-    
+ 
+    .form-group .g-recaptcha {
+        transform: scale(0.85); /* Adjust scale to fit */
+        transform-origin: 0 0; /* Set origin to top-left */
+    }
+
+    @media (max-width: 600px) {
+        .form-group .g-recaptcha {
+            transform: scale(0.75); /* Smaller for smaller screens */
+            transform-origin: 0 0;
+        }
+    }
 
 </style>
 
