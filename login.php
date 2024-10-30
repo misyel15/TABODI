@@ -34,7 +34,7 @@ include 'headers.php';
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
+
     .dropdown-item:hover {
       background-color: lightgray;
       color: #fff;
@@ -47,8 +47,14 @@ include 'headers.php';
       object-fit: cover;
     }
 
+    /* Sticky Header */
     .header_section {
       background-color: #eae6f5;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .navbar-brand img {
@@ -224,47 +230,14 @@ include 'headers.php';
       <div class="row text-center">
         <div class="col-md-4">
           <div class="calendar-box">
-            <div class="calendar-icon" style="color: #1e30f3;"><i class="fas fa-calendar-alt"></i></div>
-            <h5 class="mt-3">Class Schedules</h5>
-            <p>Manage and view all upcoming class schedules.</p>
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="calendar-box">
-            <div class="calendar-icon" style="color: #e21e80;"><i class="fas fa-calendar-check"></i></div>
-            <h5 class="mt-3">Faculty Meetings</h5>
-            <p>Keep track of faculty meetings and other important events.</p>
-          </div>
-        </div>
-        
-        <div class="col-md-4">
-          <div class="calendar-box">
-            <div class="calendar-icon" style="color: #28a745;"><i class="fas fa-calendar-plus"></i></div>
-            <h5 class="mt-3">Create New Schedules</h5>
-            <p>Effortlessly create new schedules for classes and events.</p>
+            <div class="calendar-icon" style="font-size: 70px;">📅</div>
+            <p>Stay organized with the latest scheduling information.</p>
           </div>
         </div>
       </div>
-    </div>
- 
-      <br>
-      <div class="footer-links">
-        
-  <center>    <p class="mt-3">&copy; 2024 Madridejos Community College. All Rights Reserved.</p></center> 
+      <p>© 2024 MCC Faculty Scheduling. All Rights Reserved.</p>
     </div>
   </footer>
-
-  <!-- jQuery, Bootstrap JS and Other Scripts -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/owl.carousel.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $('.carousel').carousel();
-    });
-  </script>
 </body>
 
 </html>
