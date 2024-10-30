@@ -137,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         cursor: pointer;
     }
     .g-recaptcha {
-    width: 100%; /* or any specific width */
-    height: 78px; /* or any specific height */
+    width: 50%; /* or any specific width */
+    height: 50px; /* or any specific height */
 }
 
 </style>
