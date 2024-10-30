@@ -67,38 +67,89 @@ class Action {
 		header("location:../home.php");
 	}
 
-	function save_user(){
+		function save_user() {
 		extract($_POST);
-		$data = " name = '$name' ";
-		$data .= ", username = '$username' ";
-		if(!empty($password))
-		$data .= ", password = '".md5($password)."' ";
-		$data .= ", email = '$email' ";
-		$data .= ", course = '$course' ";
-		$data .= ", type = '$type' ";
-		if($type == 1)
+	
+		// Ensure all variables are properly escaped to prevent SQL injection
+		$dept_id = $this->db->real_escape_string($dept_id);
+		$name = $this->db->real_escape_string($name);
+		$username = $this->db->real_escape_string($username);
+		$email = $this->db->real_escape_string($email);
+		$course = $this->db->real_escape_string($course);
+		$type = $this->db->real_escape_string($type);
+		$id = isset($id) ? intval($id) : null; // Ensure ID is an integer
+	
+		$data = "dept_id = '$dept_id', ";
+		$data .= "name = '$name', ";
+		$data .= "username = '$username', ";
+	
+		// Only hash the password if it's not empty
+		if (!empty($password)) {
+			$data .= "password = '" . md5($password) . "', "; // Consider using password_hash() for better security
+		}
+	
+		$data .= "email = '$email', ";
+		$data .= "course = '$course', ";
+		$data .= "type = '$type' ";
+	
+		// Set establishment_id to 0 if type is 1 (consider uncommenting if needed)
+		if ($type == 1) {
 			$establishment_id = 0;
-		//$data .= ", establishment_id = '$establishment_id' ";
-		$chk = $this->db->query("Select * from users where username = '$username' and id !='$id' ")->num_rows;
-		if($chk > 0){
-			return 2;
-			exit;
 		}
-		if(empty($id)){
-			$save = $this->db->query("INSERT INTO users set ".$data);
-		}else{
-			$save = $this->db->query("UPDATE users set ".$data." where id = ".$id);
+	
+		// Check if the username already exists
+		$chk = $this->db->query("SELECT * FROM users WHERE username = '$username' AND id != '$id'")->num_rows;
+		if ($chk > 0) {
+			return 2; // Username already exists
 		}
-		if($save){
-			return 1;
+	
+		// Insert or update user data
+		if (empty($id)) {
+			$save = $this->db->query("INSERT INTO users SET " . $data);
+		} else {
+			$save = $this->db->query("UPDATE users SET " . $data . " WHERE id = " . $id);
 		}
+	
+		
+		// Prepare notification variables
+		$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+		$message = empty($id) ? 'New User added: ' . $name : 'User updated: ' . $name;
+		$status = $save ? 'unread' : 'read'; // Mark notification as unread
+		$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+	
+		// Insert notification record if save was successful
+		if ($save) {
+			$this->db->query("INSERT INTO notifications (user_id, message, status, created_at)
+							  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+		}
+	
+		// Return success status
+		return $save ? 1 : 2; // Return 2 in case of failure
 	}
+	
 	function delete_user(){
 		extract($_POST);
+
 		$delete = $this->db->query("DELETE FROM users where id = ".$id);
-		if($delete)
-			return 1;
-	}
+	// Prepare notification variables
+	$user_id = $_SESSION['user_id']; // Assuming you're storing user_id in session
+	$message = $delete ? 'User deleted: ' . $id : 'User deletion failed: ' . $id;
+	$status = $delete ? 'unread' : 'read'; // Mark notification as unread if deletion was successful
+	$timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
+	// Insert notification record
+	$this->db->query("INSERT INTO notifications (user_id, message, status, created_at) 
+					  VALUES ('$user_id', '$message', '$status', '$timestamp')");
+
+	// Query to count the total number of unread notifications
+	$notification_count_query = $this->db->query("SELECT COUNT(*) AS unread_count FROM notifications WHERE status = 'unread'");
+	$notification_count = $notification_count_query->fetch_assoc()['unread_count'];
+
+	// Return success or failure status
+	return $delete ? 1 : 2; // Return 1 for success, 2 for failure
+}
+
+
 
 	function signup(){
 		extract($_POST);
