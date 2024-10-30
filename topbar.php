@@ -35,7 +35,7 @@
   }
 
   .dropdown-item:hover {
-    background-color:  #eae6f5; /* Darker red for hover effect */
+    background-color:  lightgray; /* Darker red for hover effect */
   }
 
   .navbar-nav {
