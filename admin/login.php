@@ -1,16 +1,33 @@
 <?php
 session_start();
-include 'db_connect.php'; 
+include 'db_connect.php';
+
+// Define max attempts
+define('MAX_ATTEMPTS', 3);
+define('LOCK_TIME', 5); // seconds
+
+// Check if the user has reached max attempts
+if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_ATTEMPTS) {
+    // Check if the lock time has passed
+    $time_diff = time() - $_SESSION['last_attempt_time'];
+    if ($time_diff < LOCK_TIME) {
+        echo "You have reached the maximum number of login attempts. Please try again in " . (LOCK_TIME - $time_diff) . " seconds.";
+        exit;
+    } else {
+        // Reset failed attempts after lock time
+        $_SESSION['login_attempts'] = 0;
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize user input to prevent XSS attacks
+    // Sanitize user input
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
-    $captcha_response = $_POST['g-recaptcha-response']; // Get the reCAPTCHA response
+    $captcha_response = $_POST['g-recaptcha-response'];
 
     // Verify reCAPTCHA
-    $secret_key = '6LckZG8qAAAAAKts8tP7BtqhVOio5v5YVAnjJQlM'; // Replace with your secret key
+    $secret_key = '6LckZG8qAAAAAKts8tP7BtqhVOio5v5YVAnjJQlM';
     $captcha_verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$captcha_response");
     $captcha_response_data = json_decode($captcha_verify);
 
@@ -21,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Prepare and execute the login query
     $stmt = $conn->prepare("SELECT id, name, username, course, dept_id, type FROM users WHERE username = ? AND password = ?");
-    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
+    $hashed_password = md5($password);
     $stmt->bind_param("ss", $username, $hashed_password);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -29,13 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $user_data = $result->fetch_assoc();
 
-        // Check if the course matches
         if ($user_data['course'] === $course) {
-            // Store only necessary user information in the session
+            // Reset login attempts on successful login
+            $_SESSION['login_attempts'] = 0;
+
+            // Store user information in session
             $_SESSION['user_id'] = $user_data['id'];
             $_SESSION['dept_id'] = $user_data['dept_id'];
-            $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
-            $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
+            $_SESSION['username'] = htmlspecialchars($user_data['username']);
+            $_SESSION['name'] = htmlspecialchars($user_data['name']);
             $_SESSION['login_type'] = $user_data['type'];
 
             if ($_SESSION['login_type'] != 1) {
@@ -48,11 +67,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo 4; // Course mismatch
         }
     } else {
-        echo 3; // Invalid username/password
+        // Increase login attempt count
+        if (!isset($_SESSION['login_attempts'])) {
+            $_SESSION['login_attempts'] = 0;
+        }
+        $_SESSION['login_attempts']++;
+
+        // Track the last attempt time
+        $_SESSION['last_attempt_time'] = time();
+
+        if ($_SESSION['login_attempts'] >= MAX_ATTEMPTS) {
+            echo "You have reached the maximum number of login attempts. Please try again in 5 seconds.";
+        } else {
+            echo 3; // Invalid username/password
+        }
     }
     exit;
 }
-?>
+
 
 <!DOCTYPE html>
 <html lang="en">
