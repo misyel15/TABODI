@@ -128,6 +128,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <style>
+    .cookie-consent-content button {
+    background-color: #4caf50; /* Green for Accept */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px; /* Space between buttons */
+}
+
+.cookie-consent-content button#declineCookie {
+    background-color: #f44336; /* Red for Decline */
+}
+
+.cookie-consent-content button:hover {
+    opacity: 0.8;
+}
+
     body.animsition {
         background-color: #f0f2f5; /* Light gray background color */
     }
@@ -228,6 +246,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                                        
                                     </center> 
+                                <div id="cookieConsent" class="cookie-consent-banner">
+    <div class="cookie-consent-content">
+        <p>We use cookies to improve your experience. By using our website, you consent to our use of cookies. <a href="#">Learn more</a></p>
+        <button id="acceptCookie">Accept</button>
+        <button id="declineCookie">Decline</button>
+    </div>
+</div>
+
                             </form>
                         </div>
                     </div>
@@ -332,6 +358,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
     });
+});
+// Check if the user has already accepted or declined cookies
+if (!document.cookie.split(';').some((item) => item.trim().startsWith('cookie_consent='))) {
+    // Display the consent banner
+    document.getElementById("cookieConsent").style.display = "block";
+}
+
+// When the user accepts the cookies
+document.getElementById("acceptCookie").addEventListener('click', function() {
+    // Set a cookie to remember the user's consent
+    document.cookie = "cookie_consent=true; max-age=" + 60*60*24*365 + "; path=/"; // Cookie expires in 1 year
+    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
+});
+
+// When the user declines the cookies
+document.getElementById("declineCookie").addEventListener('click', function() {
+    // Simply hide the banner without setting the cookie
+    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
 });
 
     </script>
