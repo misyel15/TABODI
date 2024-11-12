@@ -4,14 +4,13 @@ include 'db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if user is locked out due to failed attempts
-    if ($_SESSION['login_attempts'] >= 3) {
-        // Check if lock time has expired (5 seconds)
+    if (isset($_SESSION['lock_time']) && $_SESSION['lock_time'] !== null) {
         if (time() - $_SESSION['lock_time'] < 5) {
-            echo 6; // Locked out due to too many attempts
+            $remaining_time = 5 - (time() - $_SESSION['lock_time']);
+            echo "Locked out. Please try again in $remaining_time seconds.";
             exit;
         } else {
             // Reset attempts after lockout period
-            $_SESSION['login_attempts'] = 0;
             $_SESSION['lock_time'] = null;
         }
     }
@@ -21,17 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
 
-    // Capture geolocation data
-    $latitude = isset($_POST['latitude']) ? $_POST['latitude'] : null;
-    $longitude = isset($_POST['longitude']) ? $_POST['longitude'] : null;
-
-    // CAPTCHA verification (your existing CAPTCHA code here)
+    // CAPTCHA verification
     $captcha_response = $_POST['h-captcha-response'];
     $secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae';
     $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
     $captcha_response_data = json_decode($captcha_verify);
     if (!$captcha_response_data->success) {
-        echo 5;
+        echo 'CAPTCHA Failed. Please try again.';
         exit;
     }
 
@@ -58,29 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['login_type'] = $user_data['type'];
 
             // Optionally, you can log or store the latitude and longitude
-            $_SESSION['latitude'] = $latitude;
-            $_SESSION['longitude'] = $longitude;
+            $_SESSION['latitude'] = isset($_POST['latitude']) ? $_POST['latitude'] : null;
+            $_SESSION['longitude'] = isset($_POST['longitude']) ? $_POST['longitude'] : null;
 
             if ($_SESSION['login_type'] != 1) {
                 session_unset();
-                echo 2;
+                echo 'Access Denied. You do not have permission to access this area.';
             } else {
-                echo 1;
+                echo 'Login Successful. Redirecting...';
             }
-
-            // Reset login attempts after successful login
-            $_SESSION['login_attempts'] = 0;
         } else {
-            echo 4;
+            echo 'Course Mismatch. The selected course does not match your account.';
         }
     } else {
-        echo 3;
-        $_SESSION['login_attempts'] += 1;
-
-        // Lockout after 3 failed attempts
-        if ($_SESSION['login_attempts'] >= 3) {
-            $_SESSION['lock_time'] = time();
-        }
+        echo 'Login Failed. Username or password is incorrect.';
+        $_SESSION['lock_time'] = time(); // Lockout the user for 5 seconds
     }
     exit;
 }
@@ -244,45 +231,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="form-group">
                                     <label>Password</label>
                                     <div class="password-container">
-                                        <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
-                                        <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
+                                        <input class="au-input au-input--full" type="password" name="password" placeholder="Password" id="password" required>
+                                        <i class="fa fa-eye-slash eye-icon" id="toggle-password"></i>
                                     </div>
                                 </div>
-                                <!-- Course Field -->
                                 <div class="form-group">
                                     <label>Course</label>
-                                    <div class="col-sm-13">
-                                        <select class="form-control" name="course" id="course" required>
-                                            <option value="" disabled selected>Select Course</option>
-                                            <option value="BSIT">BSIT</option>
-                                            <option value="BSBA">BSBA</option>
-                                            <option value="BSHM">BSHM</option>
-                                            <option value="BSED">BSED</option>
-                                        </select>
-                                    </div>
+                                    <input class="au-input au-input--full" type="text" name="course" placeholder="Course" required>
                                 </div>
- 
-                        
-                        <!-- Updated HTML for hCaptcha -->
-                       <div class="form-group">
-                      <div class="h-captcha" data-sitekey="0a809f3c-8a90-4672-9d9a-0508be54f062"></div> <!-- Replace with your actual site key -->
-                       </div>
-                                <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                                <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
-                                  <center>  
-                                            <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-                                       
-                                    </center> 
-         
-
+                                <!-- CAPTCHA -->
+                                <div class="form-group">
+                                    <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE"></div>
+                                </div>
+                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">Login</button>
                             </form>
-                                                   <div id="cookieConsent" class="cookie-consent-banner">
-    <div class="cookie-consent-content">
-        <p>We use cookies to improve your experience. By using our website, you consent to our use of cookies. <a href="#">Learn more</a></p>
-        <button id="acceptCookie">Accept</button>
-        <button id="declineCookie">Decline</button>
-    </div>
-</div>
                         </div>
                     </div>
                 </div>
@@ -290,151 +252,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Jquery JS-->
-    <script src="vendor/jquery-3.2.1.min.js"></script>
-    <!-- Bootstrap JS-->
-    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
-    <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <!-- Vendor JS       -->
-    <script src="vendor/slick/slick.min.js"></script>
-    <script src="vendor/wow/wow.min.js"></script>
-    <script src="vendor/animsition/animsition.min.js"></script>
-    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <script src="vendor/select2/select2.min.js"></script>
-    <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    <!-- Main JS-->
-    <script src="js/main.js"></script>
-
-    <!-- SweetAlert JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 
     <script>
-        // Toggle password visibility
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
+    // Toggle password visibility
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
 
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-            this.classList.toggle('fa-eye');
-        });
+    togglePassword.addEventListener('click', function (e) {
+        // Toggle the type attribute
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        // Toggle the eye icon
+        togglePassword.classList.toggle('fa-eye');
+        togglePassword.classList.toggle('fa-eye-slash');
+    });
 
-        // Handle form submission
- $(document).ready(function() {
-    $('#login-form').on('submit', function(e) {
+    document.getElementById('login-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
-        // Get the user's geolocation
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                // Capture latitude and longitude
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-
-                // Add geolocation data to the form data
-                const formData = $('#login-form').serialize() + '&latitude=' + latitude + '&longitude=' + longitude;
-
-                // Disable submit button and show loading text
-                $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'login.php', // Ensure this is the correct PHP file
-                    data: formData,
-                    success: function(resp) {
-                        if (resp == 1) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Login Successful',
-                                text: 'Redirecting...',
-                                showConfirmButton: true
-                            }).then(() => {
-                                location.href = 'home.php';
-                            });
-                        } else if (resp == 2) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Access Denied',
-                                text: 'You do not have permission to access this area.'
-                            });
-                        } else if (resp == 4) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Course Mismatch',
-                                text: 'The selected course does not match your account.'
-                            });
-                        } else if (resp == 5) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'CAPTCHA Failed',
-                                text: 'Please complete the CAPTCHA.'
-                            });
-                        } else if (resp == 6) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Too Many Attempts',
-                                text: 'Please wait 5 seconds before trying again.'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Login Failed',
-                                text: 'Username or password is incorrect.'
-                            });
-                        }
-                        // Re-enable submit button
-                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'There was an error processing your request. Please try again.'
-                        });
-                        // Re-enable submit button
-                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                    }
-                });
-            }, function(error) {
-                // Handle error if user denies geolocation
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Geolocation Error',
-                    text: 'Unable to retrieve your location. Please check your browser settings.'
-                });
-            });
-        } else {
-            // If geolocation is not supported
+        // Add form submission code here
+        let formData = new FormData(this);
+        fetch('login.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
             Swal.fire({
                 icon: 'error',
-                title: 'Geolocation Not Supported',
-                text: 'Your browser does not support geolocation.'
+                title: 'Oops...',
+                text: data
             });
-        }
+        })
+        .catch(error => console.error('Error:', error));
     });
-});
-
-// Check if the user has already accepted or declined cookies
-if (!document.cookie.split(';').some((item) => item.trim().startsWith('cookie_consent='))) {
-    // Display the consent banner
-    document.getElementById("cookieConsent").style.display = "block";
-}
-
-// When the user accepts the cookies
-document.getElementById("acceptCookie").addEventListener('click', function() {
-    // Set a cookie to remember the user's consent
-    document.cookie = "cookie_consent=true; max-age=" + 60*60*24*365 + "; path=/"; // Cookie expires in 1 year
-    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
-});
-
-// When the user declines the cookies
-document.getElementById("declineCookie").addEventListener('click', function() {
-    // Simply hide the banner without setting the cookie
-    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
-});
-
     </script>
 </body>
 </html>
