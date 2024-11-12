@@ -128,23 +128,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <style>
-    .cookie-consent-content button {
-    background-color: #4caf50; /* Green for Accept */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-right: 10px; /* Space between buttons */
+  .cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  z-index: 9999;
+  display: block;
 }
 
-.cookie-consent-content button#declineCookie {
-    background-color: #f44336; /* Red for Decline */
+.cookie-consent-banner .cookie-consent-content {
+  display: inline-block;
 }
 
-.cookie-consent-content button:hover {
-    opacity: 0.8;
+.cookie-consent-banner button {
+  margin-left: 10px;
+  padding: 5px 15px;
+  cursor: pointer;
 }
+
 
     body.animsition {
         background-color: #f0f2f5; /* Light gray background color */
@@ -360,24 +366,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     });
 });
-// Check if the user has already accepted or declined cookies
-if (!document.cookie.split(';').some((item) => item.trim().startsWith('cookie_consent='))) {
-    // Display the consent banner
-    document.getElementById("cookieConsent").style.display = "block";
+// Show the cookie consent banner
+document.getElementById('cookie-consent-banner').style.display = 'block';
+
+// Handle the Accept and Decline buttons
+document.getElementById('accept-cookies').addEventListener('click', function() {
+    // Store the consent status
+    localStorage.setItem('cookies-accepted', 'true');
+    // Hide the banner after consent is given (if you want to remove the banner after consent)
+    document.getElementById('cookie-consent-banner').style.display = 'none';
+});
+
+document.getElementById('decline-cookies').addEventListener('click', function() {
+    // Store the decline status
+    localStorage.setItem('cookies-accepted', 'false');
+    // Hide the banner after decline (optional)
+    document.getElementById('cookie-consent-banner').style.display = 'none';
+});
+
+// Always show the banner regardless of consent
+if (localStorage.getItem('cookies-accepted') === null) {
+    // If there's no consent info, show the banner
+    document.getElementById('cookie-consent-banner').style.display = 'block';
+} else {
+    // You can check consent status and take appropriate actions
+    const consentGiven = localStorage.getItem('cookies-accepted');
+    if (consentGiven === 'true') {
+        // Do something if cookies were accepted
+    } else {
+        // Do something if cookies were declined
+    }
 }
 
-// When the user accepts the cookies
-document.getElementById("acceptCookie").addEventListener('click', function() {
-    // Set a cookie to remember the user's consent
-    document.cookie = "cookie_consent=true; max-age=" + 60*60*24*365 + "; path=/"; // Cookie expires in 1 year
-    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
-});
-
-// When the user declines the cookies
-document.getElementById("declineCookie").addEventListener('click', function() {
-    // Simply hide the banner without setting the cookie
-    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
-});
 
     </script>
 </body>
