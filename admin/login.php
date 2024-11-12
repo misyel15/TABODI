@@ -7,17 +7,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
-    $captcha_response = $_POST['g-recaptcha-response']; // Get the reCAPTCHA response
+  // Remove reCAPTCHA verification code
+$captcha_response = $_POST['h-captcha-response']; // Get the hCaptcha response
+$secret_key = 'YOUR_HCAPTCHA_SECRET_KEY'; // Replace with your hCaptcha secret key
 
-    // Verify reCAPTCHA
-    $secret_key = '6LckZG8qAAAAAKts8tP7BtqhVOio5v5YVAnjJQlM'; // Replace with your secret key
-    $captcha_verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$captcha_response");
-    $captcha_response_data = json_decode($captcha_verify);
+// Verify hCaptcha
+$captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
+$captcha_response_data = json_decode($captcha_verify);
 
-    if (!$captcha_response_data->success) {
-        echo 5; // CAPTCHA verification failed
-        exit;
-    }
+if (!$captcha_response_data->success) {
+    echo 5; // CAPTCHA verification failed
+    exit;
+}
 
     // Prepare and execute the login query
     $stmt = $conn->prepare("
@@ -96,8 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Include SweetAlert CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     
-    <!-- Include reCAPTCHA API -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+          <!-- reCAPTCHA Widget -->
+      <script src="https://hcaptcha.com/1/api.js" async defer></script>
+
+   
 </head>
 
 <style>
@@ -190,10 +193,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 </div>
  
-                                <!-- reCAPTCHA Widget -->
-                                <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Adjust width and height as needed -->
-                                </div>
+                        
+                        <!-- Updated HTML for hCaptcha -->
+                       <div class="form-group">
+                      <div class="h-captcha" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div> <!-- Replace with your actual site key -->
+                       </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
                                   <center>  
