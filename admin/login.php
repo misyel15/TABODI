@@ -20,12 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Prepare and execute the login query
-    $stmt = $conn->prepare("
-        SELECT id, name, username, course, dept_id, type 
-        FROM users 
-        WHERE username = ? 
-        AND password = ?
-    ");
+    $stmt = $conn->prepare("SELECT id, name, username, course, dept_id, type FROM users WHERE username = ? AND password = ?");
     $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
     $stmt->bind_param("ss", $username, $hashed_password);
     $stmt->execute();
@@ -72,84 +67,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Title Page-->
     <title>Login</title>
     <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
-    <!-- Fontfaces CSS-->
-    <link href="css/font-face.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
-    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
-
-    <!-- Bootstrap CSS-->
-    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
-
-    <!-- Vendor CSS-->
-    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
-    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
-    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
-    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
-    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
-    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
-    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
-
-    <!-- Main CSS-->
-    <link href="css/theme.css" rel="stylesheet" media="all">
-
-    <!-- Include SweetAlert CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     
+    <!-- External CSS and Scripts -->
+    <link href="css/font-face.css" rel="stylesheet" media="all">
+    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <link href="vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" media="all">
+
     <!-- Include reCAPTCHA API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-</head>
 
-<style>
-    body.animsition {
-        background-color: #f0f2f5; /* Light gray background color */
-    }
-
-    .page-wrapper {
-        background-color: #eae6f5; /* White background for the page wrapper */
-        padding-top: 50px; /* Add some spacing at the top */
-    }
-
-    .login-wrap {
-        background-color: #ffffff; /* White background for the login card */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for the card */
-    }
-
-    .login-content {
-        background-color: #ffffff; /* Background for content */
-    }
-
-    .password-container {
-        position: relative;
-        width: 100%;
-    }
-
-    .au-input {
-        width: 100%;
-        padding-right: 40px; /* Adjust to make space for the icon */
-    }
-
-    .eye-icon {
-        position: absolute;
-        right: 10px; /* Adjust according to your design */
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
- 
-    .form-group .g-recaptcha {
-        transform: scale(0.85); /* Adjust scale to fit */
-        transform-origin: 0 0; /* Set origin to top-left */
-    }
-
-    @media (max-width: 600px) {
+    <style>
         .form-group .g-recaptcha {
-            transform: scale(0.75); /* Smaller for smaller screens */
-            transform-origin: 0 0;
+            transform: scale(0.85); /* Adjust scale to fit */
+            transform-origin: 0 0; /* Set origin to top-left */
         }
-    }
 
-</style>
+        @media (max-width: 600px) {
+            .form-group .g-recaptcha {
+                transform: scale(0.75); /* Smaller for smaller screens */
+                transform-origin: 0 0;
+            }
+        }
+    </style>
+
+</head>
 
 <body class="animsition">
     <div class="page-wrapper">
@@ -171,35 +113,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <div class="password-container">
-                                        <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
-                                        <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
-                                    </div>
+                                    <input class="au-input au-input--full" type="password" name="password" placeholder="Password" required>
                                 </div>
-                                <!-- Course Field -->
                                 <div class="form-group">
                                     <label>Course</label>
-                                    <div class="col-sm-13">
-                                        <select class="form-control" name="course" id="course" required>
-                                            <option value="" disabled selected>Select Course</option>
-                                            <option value="BSIT">BSIT</option>
-                                            <option value="BSBA">BSBA</option>
-                                            <option value="BSHM">BSHM</option>
-                                            <option value="BSED">BSED</option>
-                                        </select>
-                                    </div>
+                                    <select class="form-control" name="course" required>
+                                        <option value="" disabled selected>Select Course</option>
+                                        <option value="BSIT">BSIT</option>
+                                        <option value="BSBA">BSBA</option>
+                                        <option value="BSHM">BSHM</option>
+                                        <option value="BSED">BSED</option>
+                                    </select>
                                 </div>
- 
+
                                 <!-- reCAPTCHA Widget -->
                                 <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Adjust width and height as needed -->
+                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div>
                                 </div>
+
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                                <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
-                                  <center>  
-                                            <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-                                       
-                                    </center> 
+                                <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                             </form>
                         </div>
                     </div>
@@ -208,48 +141,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Jquery JS-->
+    <!-- jQuery JS -->
     <script src="vendor/jquery-3.2.1.min.js"></script>
-    <!-- Bootstrap JS-->
-    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
     <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <!-- Vendor JS       -->
-    <script src="vendor/slick/slick.min.js"></script>
-    <script src="vendor/wow/wow.min.js"></script>
-    <script src="vendor/animsition/animsition.min.js"></script>
-    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <script src="vendor/select2/select2.min.js"></script>
-    <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-
-    <!-- Main JS-->
-    <script src="js/main.js"></script>
-
-    <!-- SweetAlert JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="vendor/sweetalert2/sweetalert2.min.js"></script>
 
     <script>
-        // Toggle password visibility
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-            this.classList.toggle('fa-eye');
-        });
-
-        // Handle form submission
         $(document).ready(function() {
             $('#login-form').on('submit', function(e) {
                 e.preventDefault();
                 const formData = $(this).serialize();
 
-                $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
-
                 $.ajax({
                     type: 'POST',
-                    url: 'login.php', // Update to the correct URL of your PHP script
+                    url: 'login.php', 
                     data: formData,
                     success: function(resp) {
                         if (resp == 1) {
@@ -257,38 +162,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 icon: 'success',
                                 title: 'Login Successful',
                                 text: 'Redirecting...',
-                                showConfirmButton: true
+                                showConfirmButton: false
                             }).then(() => {
-                                location.href = 'home.php'; // Redirect to the homepage
+                                location.href = 'home.php'; 
                             });
-                        } else if (resp == 2) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Access Denied',
-                                text: 'You do not have permission to access this area.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                        } else if (resp == 4) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Course Mismatch',
-                                text: 'The selected course does not match your account.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                        } else if (resp == 5) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'CAPTCHA Failed',
-                                text: 'Please complete the CAPTCHA.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                         } else {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Login Failed',
-                                text: 'Username or password is incorrect.'
+                                text: 'Please check your credentials or reCAPTCHA.'
                             });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                         }
                     },
                     error: function() {
@@ -297,7 +180,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             title: 'Error',
                             text: 'There was an error processing your request. Please try again.'
                         });
-                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                     }
                 });
             });
