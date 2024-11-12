@@ -194,21 +194,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="form-group">
                                     <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Adjust width and height as needed -->
                                 </div>
-
-                                <div class="login-checkbox">
-                                    <!-- Terms Agreement Checkbox -->
-                                    <div class="form-group">
-                                        <label>
-                                            <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-                                        </label>
-                                    </div>
-                                   
-                                </div>
-
-                            
-
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
+                                     <label>
+                                            <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+                                        </label>
+                                    
                             </form>
                         </div>
                     </div>
