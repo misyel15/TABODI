@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="h-captcha" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div>
+                                    <div class="h-captcha" data-sitekey="3a6addfe-f2ec-40b2-9bf6-51b24478fcdc"></div>
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
