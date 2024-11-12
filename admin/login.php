@@ -2,12 +2,6 @@
 session_start();
 include 'db_connect.php';
 
-// Check if login attempts are set, initialize if not
-if (!isset($_SESSION['login_attempts'])) {
-    $_SESSION['login_attempts'] = 0;
-    $_SESSION['lock_time'] = null;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if user is locked out due to failed attempts
     if ($_SESSION['login_attempts'] >= 3) {
@@ -27,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
 
+    // Capture geolocation data
+    $latitude = isset($_POST['latitude']) ? $_POST['latitude'] : null;
+    $longitude = isset($_POST['longitude']) ? $_POST['longitude'] : null;
+
     // CAPTCHA verification (your existing CAPTCHA code here)
     $captcha_response = $_POST['h-captcha-response'];
     $secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae';
@@ -42,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         SELECT id, name, username, course, dept_id, type 
         FROM users 
         WHERE username = ? 
-        AND password = ?
+        AND password = ? 
     ");
     $hashed_password = md5($password);
     $stmt->bind_param("ss", $username, $hashed_password);
@@ -58,6 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = htmlspecialchars($user_data['username']);
             $_SESSION['name'] = htmlspecialchars($user_data['name']);
             $_SESSION['login_type'] = $user_data['type'];
+
+            // Optionally, you can log or store the latitude and longitude
+            $_SESSION['latitude'] = $latitude;
+            $_SESSION['longitude'] = $longitude;
 
             if ($_SESSION['login_type'] != 1) {
                 session_unset();
@@ -82,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -319,71 +322,100 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
 
         // Handle form submission
-   $(document).ready(function() {
+ $(document).ready(function() {
     $('#login-form').on('submit', function(e) {
         e.preventDefault();
-        const formData = $(this).serialize();
 
-        $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
+        // Get the user's geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Capture latitude and longitude
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
 
-        $.ajax({
-            type: 'POST',
-            url: 'login.php', // Update to the correct URL of your PHP script
-            data: formData,
-            success: function(resp) {
-                if (resp == 1) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Login Successful',
-                        text: 'Redirecting...',
-                        showConfirmButton: true
-                    }).then(() => {
-                        location.href = 'home.php';
-                    });
-                } else if (resp == 2) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Access Denied',
-                        text: 'You do not have permission to access this area.'
-                    });
-                } else if (resp == 4) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Course Mismatch',
-                        text: 'The selected course does not match your account.'
-                    });
-                } else if (resp == 5) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'CAPTCHA Failed',
-                        text: 'Please complete the CAPTCHA.'
-                    });
-                } else if (resp == 6) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Too Many Attempts',
-                        text: 'Please wait 5 seconds before trying again.'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login Failed',
-                        text: 'Username or password is incorrect.'
-                    });
-                }
-                $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-            },
-            error: function() {
+                // Add geolocation data to the form data
+                const formData = $('#login-form').serialize() + '&latitude=' + latitude + '&longitude=' + longitude;
+
+                // Disable submit button and show loading text
+                $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'login.php', // Ensure this is the correct PHP file
+                    data: formData,
+                    success: function(resp) {
+                        if (resp == 1) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                text: 'Redirecting...',
+                                showConfirmButton: true
+                            }).then(() => {
+                                location.href = 'home.php';
+                            });
+                        } else if (resp == 2) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Access Denied',
+                                text: 'You do not have permission to access this area.'
+                            });
+                        } else if (resp == 4) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Course Mismatch',
+                                text: 'The selected course does not match your account.'
+                            });
+                        } else if (resp == 5) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'CAPTCHA Failed',
+                                text: 'Please complete the CAPTCHA.'
+                            });
+                        } else if (resp == 6) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Too Many Attempts',
+                                text: 'Please wait 5 seconds before trying again.'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Login Failed',
+                                text: 'Username or password is incorrect.'
+                            });
+                        }
+                        // Re-enable submit button
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'There was an error processing your request. Please try again.'
+                        });
+                        // Re-enable submit button
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                    }
+                });
+            }, function(error) {
+                // Handle error if user denies geolocation
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: 'There was an error processing your request. Please try again.'
+                    title: 'Geolocation Error',
+                    text: 'Unable to retrieve your location. Please check your browser settings.'
                 });
-                $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-            }
-        });
+            });
+        } else {
+            // If geolocation is not supported
+            Swal.fire({
+                icon: 'error',
+                title: 'Geolocation Not Supported',
+                text: 'Your browser does not support geolocation.'
+            });
+        }
     });
 });
+
 // Check if the user has already accepted or declined cookies
 if (!document.cookie.split(';').some((item) => item.trim().startsWith('cookie_consent='))) {
     // Display the consent banner
