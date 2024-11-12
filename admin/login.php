@@ -235,6 +235,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+<!-- Cookie Consent Banner -->
+<div id="cookieConsent" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background-color: #f5f5f5; padding: 15px; text-align: center; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); font-size: 14px;">
+    <p style="margin: 0; color: #333;">
+        This website uses cookies to ensure you get the best experience. 
+        <a href="privacy-policy.html" style="color: #007bff;">Learn more</a>.
+        <button id="acceptCookies" class="au-btn au-btn--green" style="margin-left: 15px; padding: 5px 10px;">Accept</button>
+    </p>
+</div>
 
     <!-- Jquery JS-->
     <script src="vendor/jquery-3.2.1.min.js"></script>
@@ -334,6 +342,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
 });
 
-    </script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if the consent cookie exists
+        if (!document.cookie.includes('cookieConsent=true')) {
+            document.getElementById('cookieConsent').style.display = 'block';
+        }
+
+        // When user clicks Accept
+        document.getElementById('acceptCookies').addEventListener('click', function () {
+            // Set a cookie to remember consent for 365 days
+            const date = new Date();
+            date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
+            document.cookie = 'cookieConsent=true; expires=' + date.toUTCString() + '; path=/';
+
+            // Hide the consent banner
+            document.getElementById('cookieConsent').style.display = 'none';
+        });
+    });
+</script>
+
 </body>
 </html>  
