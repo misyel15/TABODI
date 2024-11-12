@@ -1,17 +1,17 @@
 <?php
 session_start();
-include 'db_connect.php';
+include 'db_connect.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize user input to prevent XSS attacks
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
-    $captcha_response = $_POST['h-captcha-response']; // Get the hCaptcha response
+    $captcha_response = $_POST['g-recaptcha-response']; // Get the reCAPTCHA response
 
-    // Verify hCaptcha
-    $secret_key = 'ES_69eb..'; // Replace with your secret key
-    $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
+    // Verify reCAPTCHA
+    $secret_key = '6LckZG8qAAAAAKts8tP7BtqhVOio5v5YVAnjJQlM'; // Replace with your secret key
+    $captcha_verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$captcha_response");
     $captcha_response_data = json_decode($captcha_verify);
 
     if (!$captcha_response_data->success) {
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE username = ? 
         AND password = ?
     ");
-    $hashed_password = md5($password);
+    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
     $stmt->bind_param("ss", $username, $hashed_password);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -34,29 +34,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $user_data = $result->fetch_assoc();
 
+        // Check if the course matches
         if ($user_data['course'] === $course) {
+            // Store only necessary user information in the session
             $_SESSION['user_id'] = $user_data['id'];
             $_SESSION['dept_id'] = $user_data['dept_id'];
-            $_SESSION['username'] = htmlspecialchars($user_data['username']);
-            $_SESSION['name'] = htmlspecialchars($user_data['name']);
+            $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
+            $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
             $_SESSION['login_type'] = $user_data['type'];
 
             if ($_SESSION['login_type'] != 1) {
                 session_unset();
-                echo 2;
+                echo 2; // User is not allowed
             } else {
-                echo 1;
+                echo 1; // Successful login
             }
         } else {
-            echo 4;
+            echo 4; // Course mismatch
         }
     } else {
-        echo 3;
+        echo 3; // Invalid username/password
     }
     exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     
     <!-- Include reCAPTCHA API -->
- <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <style>
@@ -191,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
                                 <!-- reCAPTCHA Widget -->
                                 <div class="form-group">
-                                   <div class="h-captcha" data-sitekey="3a6addfe-f2ec-40b2-9bf6-51b24478fcdc"></div>
+                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Adjust width and height as needed -->
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
