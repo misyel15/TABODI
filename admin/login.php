@@ -128,6 +128,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <style>
+    .cookie-consent-content button {
+    background-color: #4caf50; /* Green for Accept */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px; /* Space between buttons */
+}
+
+.cookie-consent-content button#declineCookie {
+    background-color: #f44336; /* Red for Decline */
+}
+
+.cookie-consent-content button:hover {
+    opacity: 0.8;
+}
+
   .cookie-consent-banner {
   position: fixed;
   bottom: 0;
