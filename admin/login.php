@@ -228,14 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                                        
                                     </center> 
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<!-- Cookie Consent Banner -->
+                                <!-- Cookie Consent Banner -->
 <div id="cookieConsent" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background-color: #f5f5f5; padding: 15px; text-align: center; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); font-size: 14px;">
     <p style="margin: 0; color: #333;">
         This website uses cookies to ensure you get the best experience. 
@@ -243,6 +236,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button id="acceptCookies" class="au-btn au-btn--green" style="margin-left: 15px; padding: 5px 10px;">Accept</button>
     </p>
 </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Jquery JS-->
     <script src="vendor/jquery-3.2.1.min.js"></script>
