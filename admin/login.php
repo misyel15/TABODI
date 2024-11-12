@@ -1,60 +1,84 @@
 <?php
 session_start();
-include 'db_connect.php'; 
+include 'db_connect.php';
+
+// Check if login attempts are set, initialize if not
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['lock_time'] = null;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize user input to prevent XSS attacks
+    // Check if user is locked out due to failed attempts
+    if ($_SESSION['login_attempts'] >= 3) {
+        // Check if lock time has expired (5 seconds)
+        if (time() - $_SESSION['lock_time'] < 5) {
+            echo 6; // Locked out due to too many attempts
+            exit;
+        } else {
+            // Reset attempts after lockout period
+            $_SESSION['login_attempts'] = 0;
+            $_SESSION['lock_time'] = null;
+        }
+    }
+
+    // Sanitize user input
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
-  // Remove reCAPTCHA verification code
-$captcha_response = $_POST['h-captcha-response']; // Get the hCaptcha response
-$secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae'; // Replace with your hCaptcha secret key
 
-// Verify hCaptcha
-$captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
-$captcha_response_data = json_decode($captcha_verify);
+    // CAPTCHA verification (your existing CAPTCHA code here)
+    $captcha_response = $_POST['h-captcha-response'];
+    $secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae';
+    $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
+    $captcha_response_data = json_decode($captcha_verify);
+    if (!$captcha_response_data->success) {
+        echo 5;
+        exit;
+    }
 
-if (!$captcha_response_data->success) {
-    echo 5; // CAPTCHA verification failed
-    exit;
-}
-
-    // Prepare and execute the login query
+    // Prepare and execute login query
     $stmt = $conn->prepare("
         SELECT id, name, username, course, dept_id, type 
         FROM users 
         WHERE username = ? 
         AND password = ?
     ");
-    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
+    $hashed_password = md5($password);
     $stmt->bind_param("ss", $username, $hashed_password);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user_data = $result->fetch_assoc();
-
-        // Check if the course matches
+        
         if ($user_data['course'] === $course) {
-            // Store only necessary user information in the session
             $_SESSION['user_id'] = $user_data['id'];
             $_SESSION['dept_id'] = $user_data['dept_id'];
-            $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
-            $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
+            $_SESSION['username'] = htmlspecialchars($user_data['username']);
+            $_SESSION['name'] = htmlspecialchars($user_data['name']);
             $_SESSION['login_type'] = $user_data['type'];
 
             if ($_SESSION['login_type'] != 1) {
                 session_unset();
-                echo 2; // User is not allowed
+                echo 2;
             } else {
-                echo 1; // Successful login
+                echo 1;
             }
+
+            // Reset login attempts after successful login
+            $_SESSION['login_attempts'] = 0;
         } else {
-            echo 4; // Course mismatch
+            echo 4;
         }
     } else {
-        echo 3; // Invalid username/password
+        echo 3;
+        $_SESSION['login_attempts'] += 1;
+
+        // Lockout after 3 failed attempts
+        if ($_SESSION['login_attempts'] >= 3) {
+            $_SESSION['lock_time'] = time();
+        }
     }
     exit;
 }
@@ -244,68 +268,72 @@ if (!$captcha_response_data->success) {
         });
 
         // Handle form submission
-        $(document).ready(function() {
-            $('#login-form').on('submit', function(e) {
-                e.preventDefault();
-                const formData = $(this).serialize();
+   $(document).ready(function() {
+    $('#login-form').on('submit', function(e) {
+        e.preventDefault();
+        const formData = $(this).serialize();
 
-                $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
+        $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
 
-                $.ajax({
-                    type: 'POST',
-                    url: 'login.php', // Update to the correct URL of your PHP script
-                    data: formData,
-                    success: function(resp) {
-                        if (resp == 1) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Login Successful',
-                                text: 'Redirecting...',
-                                showConfirmButton: true
-                            }).then(() => {
-                                location.href = 'home.php'; // Redirect to the homepage
-                            });
-                        } else if (resp == 2) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Access Denied',
-                                text: 'You do not have permission to access this area.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                        } else if (resp == 4) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Course Mismatch',
-                                text: 'The selected course does not match your account.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                        } else if (resp == 5) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'CAPTCHA Failed',
-                                text: 'Please complete the CAPTCHA.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Login Failed',
-                                text: 'Username or password is incorrect.'
-                            });
-                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                        }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'There was an error processing your request. Please try again.'
-                        });
-                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
-                    }
+        $.ajax({
+            type: 'POST',
+            url: 'login.php', // Update to the correct URL of your PHP script
+            data: formData,
+            success: function(resp) {
+                if (resp == 1) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: 'Redirecting...',
+                        showConfirmButton: true
+                    }).then(() => {
+                        location.href = 'home.php';
+                    });
+                } else if (resp == 2) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Access Denied',
+                        text: 'You do not have permission to access this area.'
+                    });
+                } else if (resp == 4) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Course Mismatch',
+                        text: 'The selected course does not match your account.'
+                    });
+                } else if (resp == 5) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'CAPTCHA Failed',
+                        text: 'Please complete the CAPTCHA.'
+                    });
+                } else if (resp == 6) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Too Many Attempts',
+                        text: 'Please wait 5 seconds before trying again.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: 'Username or password is incorrect.'
+                    });
+                }
+                $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'There was an error processing your request. Please try again.'
                 });
-            });
+                $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+            }
         });
+    });
+});
+
     </script>
 </body>
 </html> 
