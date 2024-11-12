@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $captcha_response = $_POST['h-captcha-response']; // Get the hCaptcha response
 
     // Verify hCaptcha
-    $secret_key = 'YOUR_HCAPTCHA_SECRET_KEY'; // Replace with your secret key
+    $secret_key = 'ES_69e..'; // Replace with your secret key
     $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
     $captcha_response_data = json_decode($captcha_verify);
 
