@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_SESSION['login_attempts'] >= 3) {
         // Check if lock time has expired (5 seconds)
         if (time() - $_SESSION['lock_time'] < 5) {
-            echo json_encode(['status' => 6, 'message' => 'Please wait 5 seconds before trying again.']);
+            echo 6; // Locked out due to too many attempts
             exit;
         } else {
             // Reset attempts after lockout period
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
     $captcha_response_data = json_decode($captcha_verify);
     if (!$captcha_response_data->success) {
-        echo json_encode(['status' => 5, 'message' => 'Please complete the CAPTCHA.']);
+        echo 5;
         exit;
     }
 
@@ -61,30 +61,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($_SESSION['login_type'] != 1) {
                 session_unset();
-                echo json_encode(['status' => 2, 'message' => 'You do not have permission to access this area.']);
+                echo 2;
             } else {
-                echo json_encode(['status' => 1, 'message' => 'Login Successful']);
+                echo 1;
             }
 
             // Reset login attempts after successful login
             $_SESSION['login_attempts'] = 0;
         } else {
-            echo json_encode(['status' => 4, 'message' => 'The selected course does not match your account.']);
+            echo 4;
         }
     } else {
+        echo 3;
         $_SESSION['login_attempts'] += 1;
-        $remaining_attempts = 3 - $_SESSION['login_attempts'];
 
+        // Lockout after 3 failed attempts
         if ($_SESSION['login_attempts'] >= 3) {
             $_SESSION['lock_time'] = time();
-            echo json_encode(['status' => 6, 'message' => 'Too many attempts. Please wait 5 seconds before trying again.']);
-        } else {
-            echo json_encode(['status' => 3, 'message' => "Username or password is incorrect. You have $remaining_attempts attempt(s) remaining."]);
         }
     }
     exit;
 }
-
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -269,7 +267,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             this.classList.toggle('fa-eye');
         });
 
-  $(document).ready(function() {
+        // Handle form submission
+   $(document).ready(function() {
     $('#login-form').on('submit', function(e) {
         e.preventDefault();
         const formData = $(this).serialize();
@@ -278,20 +277,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $.ajax({
             type: 'POST',
-            url: 'login.php', 
+            url: 'login.php', // Update to the correct URL of your PHP script
             data: formData,
-            success: function(response) {
-                const resp = JSON.parse(response);
-                Swal.fire({
-                    icon: resp.status === 1 ? 'success' : 'error',
-                    title: resp.status === 1 ? 'Login Successful' : 'Login Failed',
-                    text: resp.message,
-                    showConfirmButton: true
-                }).then(() => {
-                    if (resp.status === 1) {
+            success: function(resp) {
+                if (resp == 1) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful',
+                        text: 'Redirecting...',
+                        showConfirmButton: true
+                    }).then(() => {
                         location.href = 'home.php';
-                    }
-                });
+                    });
+                } else if (resp == 2) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Access Denied',
+                        text: 'You do not have permission to access this area.'
+                    });
+                } else if (resp == 4) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Course Mismatch',
+                        text: 'The selected course does not match your account.'
+                    });
+                } else if (resp == 5) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'CAPTCHA Failed',
+                        text: 'Please complete the CAPTCHA.'
+                    });
+                } else if (resp == 6) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Too Many Attempts',
+                        text: 'Please wait 5 seconds before trying again.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: 'Username or password is incorrect.'
+                    });
+                }
                 $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
             },
             error: function() {
@@ -306,7 +334,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
 });
 
-
     </script>
 </body>
-</html> 
+</html>  
