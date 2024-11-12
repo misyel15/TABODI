@@ -246,15 +246,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                                        
                                     </center> 
-                                <div id="cookieConsent" class="cookie-consent-banner">
+         
+
+                            </form>
+                                                   <div id="cookieConsent" class="cookie-consent-banner">
     <div class="cookie-consent-content">
         <p>We use cookies to improve your experience. By using our website, you consent to our use of cookies. <a href="#">Learn more</a></p>
         <button id="acceptCookie">Accept</button>
         <button id="declineCookie">Decline</button>
     </div>
 </div>
-
-                            </form>
                         </div>
                     </div>
                 </div>
