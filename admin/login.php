@@ -437,4 +437,4 @@ document.getElementById("declineCookie").addEventListener('click', function() {
 
     </script>
 </body>
-</html>show the message attempt in form and the seconds remove the attempt fuction
+</html>
