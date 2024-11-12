@@ -199,7 +199,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <!-- Terms Agreement Checkbox -->
                                     <div class="form-group">
                                         <label>
-                                            <input type="checkbox" id="terms" required> I agree the <a href="terms.html" target="_blank">terms and conditions</a><br>
                                             <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
                                         </label>
                                     </div>
