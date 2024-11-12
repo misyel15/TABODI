@@ -2,24 +2,26 @@
 session_start();
 include 'db_connect.php';
 
-// Define max attempts
+// Define max attempts and lock time
 define('MAX_ATTEMPTS', 3);
 define('LOCK_TIME', 5); // seconds
 
-// Check if the user has reached max attempts
-if (isset($_SESSION['login_attempts']) && $_SESSION['login_attempts'] >= MAX_ATTEMPTS) {
-    // Check if the lock time has passed
-    $time_diff = time() - $_SESSION['last_attempt_time'];
-    if ($time_diff < LOCK_TIME) {
-        echo "You have reached the maximum number of login attempts. Please try again in " . (LOCK_TIME - $time_diff) . " seconds.";
-        exit;
-    } else {
-        // Reset failed attempts after lock time
-        $_SESSION['login_attempts'] = 0;
-    }
+// Initialize or check existing session variables
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+}
+if (!isset($_SESSION['last_attempt_time'])) {
+    $_SESSION['last_attempt_time'] = time();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if the user is locked out
+    if ($_SESSION['login_attempts'] >= MAX_ATTEMPTS && (time() - $_SESSION['last_attempt_time']) < LOCK_TIME) {
+        $remaining_lock_time = LOCK_TIME - (time() - $_SESSION['last_attempt_time']);
+        echo json_encode(['status' => 6, 'remaining_attempts' => 0, 'remaining_lock_time' => $remaining_lock_time]);
+        exit;
+    }
+
     // Sanitize user input
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
@@ -32,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $captcha_response_data = json_decode($captcha_verify);
 
     if (!$captcha_response_data->success) {
-        echo 5; // CAPTCHA verification failed
+        echo json_encode(['status' => 5, 'remaining_attempts' => MAX_ATTEMPTS - $_SESSION['login_attempts']]);
         exit;
     }
 
@@ -59,73 +61,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($_SESSION['login_type'] != 1) {
                 session_unset();
-                echo 2; // User is not allowed
+                echo json_encode(['status' => 2, 'remaining_attempts' => MAX_ATTEMPTS - $_SESSION['login_attempts']]);
             } else {
-                echo 1; // Successful login
+                echo json_encode(['status' => 1, 'remaining_attempts' => MAX_ATTEMPTS - $_SESSION['login_attempts']]);
             }
         } else {
-            echo 4; // Course mismatch
+            echo json_encode(['status' => 4, 'remaining_attempts' => MAX_ATTEMPTS - $_SESSION['login_attempts']]);
         }
     } else {
         // Increase login attempt count
-        if (!isset($_SESSION['login_attempts'])) {
-            $_SESSION['login_attempts'] = 0;
-        }
         $_SESSION['login_attempts']++;
 
         // Track the last attempt time
         $_SESSION['last_attempt_time'] = time();
 
         if ($_SESSION['login_attempts'] >= MAX_ATTEMPTS) {
-            echo "You have reached the maximum number of login attempts. Please try again in 5 seconds.";
+            echo json_encode(['status' => 6, 'remaining_attempts' => 0]); // Max attempts reached
         } else {
-            echo 3; // Invalid username/password
+            echo json_encode(['status' => 3, 'remaining_attempts' => MAX_ATTEMPTS - $_SESSION['login_attempts']]);
         }
     }
     exit;
 }
-
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="School Faculty Scheduling System">
     <meta name="author" content="Your Name">
     <meta name="keywords" content="School, Faculty, Scheduling, System">
 
-    <!-- Title Page-->
     <title>Login</title>
     <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
     
-    <!-- External CSS and Scripts -->
     <link href="css/font-face.css" rel="stylesheet" media="all">
-    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
     <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
-    <link href="vendor/sweetalert2/sweetalert2.min.css" rel="stylesheet" media="all">
-
-    <!-- Include reCAPTCHA API -->
+    <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
+    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link href="vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all">
+    <link href="vendor/animsition/animsition.min.css" rel="stylesheet" media="all">
+    <link href="vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all">
+    <link href="vendor/wow/animate.css" rel="stylesheet" media="all">
+    <link href="vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all">
+    <link href="vendor/slick/slick.css" rel="stylesheet" media="all">
+    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all">
+    <link href="css/theme.css" rel="stylesheet" media="all">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-    <style>
-        .form-group .g-recaptcha {
-            transform: scale(0.85); /* Adjust scale to fit */
-            transform-origin: 0 0; /* Set origin to top-left */
-        }
-
-        @media (max-width: 600px) {
-            .form-group .g-recaptcha {
-                transform: scale(0.75); /* Smaller for smaller screens */
-                transform-origin: 0 0;
-            }
-        }
-    </style>
-
 </head>
-
-<body class="animsition">
+<body>
     <div class="page-wrapper">
         <div class="page-content--bge4">
             <div class="container">
@@ -145,26 +133,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input class="au-input au-input--full" type="password" name="password" placeholder="Password" required>
+                                    <div class="password-container">
+                                        <input class="au-input au-input--full" type="password" id="password" name="password" placeholder="Password" required>
+                                        <i class="fas fa-eye-slash eye-icon" id="togglePassword"></i>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Course</label>
-                                    <select class="form-control" name="course" required>
-                                        <option value="" disabled selected>Select Course</option>
-                                        <option value="BSIT">BSIT</option>
-                                        <option value="BSBA">BSBA</option>
-                                        <option value="BSHM">BSHM</option>
-                                        <option value="BSED">BSED</option>
-                                    </select>
+                                    <div class="col-sm-13">
+                                        <select class="form-control" name="course" id="course" required>
+                                            <option value="" disabled selected>Select Course</option>
+                                            <option value="BSIT">BSIT</option>
+                                            <option value="BSBA">BSBA</option>
+                                            <option value="BSHM">BSHM</option>
+                                            <option value="BSED">BSED</option>
+                                        </select>
+                                    </div>
                                 </div>
-
-                                <!-- reCAPTCHA Widget -->
                                 <div class="form-group">
                                     <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div>
                                 </div>
-
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
-                                <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+                                <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
+                                <center>  
+                                    <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
+                                </center> 
                             </form>
                         </div>
                     </div>
@@ -173,10 +166,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- jQuery JS -->
     <script src="vendor/jquery-3.2.1.min.js"></script>
+    <script src="vendor/bootstrap-4.1/popper.min.js"></script>
     <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <script src="vendor/sweetalert2/sweetalert2.min.js"></script>
+    <script src="vendor/slick/slick.min.js"></script>
+    <script src="vendor/wow/wow.min.js"></script>
+    <script src="vendor/animsition/animsition.min.js"></script>
+    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script src="vendor/counter-up/jquery.counterup.min.js"></script>
+    <script src="vendor/select2/select2.min.js"></script>
+    <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="js/main.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -184,27 +185,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 e.preventDefault();
                 const formData = $(this).serialize();
 
+                $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
+
                 $.ajax({
                     type: 'POST',
-                    url: 'login.php', 
+                    url: '', // Current page
                     data: formData,
                     success: function(resp) {
-                        if (resp == 1) {
+                        const data = JSON.parse(resp);
+
+                        if (data.status == 1) {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Login Successful',
                                 text: 'Redirecting...',
-                                showConfirmButton: false
+                                showConfirmButton: true
                             }).then(() => {
-                                location.href = 'home.php'; 
+                                location.href = 'home.php'; // Redirect to the homepage
                             });
-                        } else {
+                        } else if (data.status == 2) {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Login Failed',
-                                text: 'Please check your credentials or reCAPTCHA.'
+                                title: 'Access Denied',
+                                text: 'You do not have permission to access this area.'
+                            });
+                        } else if (data.status == 3) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Invalid Credentials',
+                                text: 'You have ' + data.remaining_attempts + ' attempts remaining.'
+                            });
+                        } else if (data.status == 4) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Course Mismatch',
+                                text: 'The selected course does not match your account.'
+                            });
+                        } else if (data.status == 5) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'CAPTCHA Failed',
+                                text: 'Please complete the CAPTCHA.'
+                            });
+                        } else if (data.status == 6) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Max Attempts Reached',
+                                text: 'You have reached the maximum number of login attempts. Please try again in ' + data.remaining_lock_time + ' seconds.'
                             });
                         }
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                     },
                     error: function() {
                         Swal.fire({
@@ -212,6 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             title: 'Error',
                             text: 'There was an error processing your request. Please try again.'
                         });
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                     }
                 });
             });
