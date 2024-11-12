@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $course = htmlspecialchars(trim($_POST['course']));
   // Remove reCAPTCHA verification code
 $captcha_response = $_POST['h-captcha-response']; // Get the hCaptcha response
-$secret_key = 'YOUR_HCAPTCHA_SECRET_KEY'; // Replace with your hCaptcha secret key
+$secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae'; // Replace with your hCaptcha secret key
 
 // Verify hCaptcha
 $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
@@ -196,7 +196,7 @@ if (!$captcha_response_data->success) {
                         
                         <!-- Updated HTML for hCaptcha -->
                        <div class="form-group">
-                      <div class="h-captcha" data-sitekey="YOUR_HCAPTCHA_SITE_KEY"></div> <!-- Replace with your actual site key -->
+                      <div class="h-captcha" data-sitekey="0a809f3c-8a90-4672-9d9a-0508be54f062"></div> <!-- Replace with your actual site key -->
                        </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
