@@ -366,38 +366,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     });
 });
-// Show the cookie consent banner
-document.getElementById('cookie-consent-banner').style.display = 'block';
-
-// Handle the Accept and Decline buttons
-document.getElementById('accept-cookies').addEventListener('click', function() {
-    // Store the consent status
-    localStorage.setItem('cookies-accepted', 'true');
-    // Hide the banner after consent is given (if you want to remove the banner after consent)
-    document.getElementById('cookie-consent-banner').style.display = 'none';
-});
-
-document.getElementById('decline-cookies').addEventListener('click', function() {
-    // Store the decline status
-    localStorage.setItem('cookies-accepted', 'false');
-    // Hide the banner after decline (optional)
-    document.getElementById('cookie-consent-banner').style.display = 'none';
-});
-
-// Always show the banner regardless of consent
-if (localStorage.getItem('cookies-accepted') === null) {
-    // If there's no consent info, show the banner
-    document.getElementById('cookie-consent-banner').style.display = 'block';
-} else {
-    // You can check consent status and take appropriate actions
-    const consentGiven = localStorage.getItem('cookies-accepted');
-    if (consentGiven === 'true') {
-        // Do something if cookies were accepted
-    } else {
-        // Do something if cookies were declined
-    }
+// Check if the user has already accepted or declined cookies
+if (!document.cookie.split(';').some((item) => item.trim().startsWith('cookie_consent='))) {
+    // Display the consent banner
+    document.getElementById("cookieConsent").style.display = "block";
 }
 
+// When the user accepts the cookies
+document.getElementById("acceptCookie").addEventListener('click', function() {
+    // Set a cookie to remember the user's consent
+    document.cookie = "cookie_consent=true; max-age=" + 60*60*24*365 + "; path=/"; // Cookie expires in 1 year
+    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
+});
+
+// When the user declines the cookies
+document.getElementById("declineCookie").addEventListener('click', function() {
+    // Simply hide the banner without setting the cookie
+    document.getElementById("cookieConsent").style.display = "none"; // Hide the banner
+});
 
     </script>
 </body>
