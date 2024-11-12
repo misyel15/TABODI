@@ -4,17 +4,7 @@ include 'db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if user is locked out due to failed attempts
-    if ($_SESSION['login_attempts'] >= 3) {
-        // Check if lock time has expired (5 seconds)
-        if (time() - $_SESSION['lock_time'] < 5) {
-            echo 6; // Locked out due to too many attempts
-            exit;
-        } else {
-            // Reset attempts after lockout period
-            $_SESSION['login_attempts'] = 0;
-            $_SESSION['lock_time'] = null;
-        }
-    }
+  
 
     // Sanitize user input
     $username = htmlspecialchars(trim($_POST['username']));
@@ -68,22 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo 1;
             }
 
-            // Reset login attempts after successful login
-            $_SESSION['login_attempts'] = 0;
-        } else {
-            echo 4;
-        }
-    } else {
-        echo 3;
-        $_SESSION['login_attempts'] += 1;
-
-        // Lockout after 3 failed attempts
-        if ($_SESSION['login_attempts'] >= 3) {
-            $_SESSION['lock_time'] = time();
-        }
-    }
-    exit;
-}
+  
 
 ?>
 
