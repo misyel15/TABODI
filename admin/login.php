@@ -196,9 +196,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
-                                  <center>  <label>
+                                  <center>  
                                             <a href="forgot.php" class="forgot-password-btn">Forgot Password?</a>
-                                        </label>
+                                       
                                     </center> 
                             </form>
                         </div>
