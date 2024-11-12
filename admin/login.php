@@ -1,16 +1,16 @@
 <?php
 session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 include 'db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize user input to prevent XSS attacks
     $username = htmlspecialchars(trim($_POST['username']));
     $password = htmlspecialchars(trim($_POST['password']));
     $course = htmlspecialchars(trim($_POST['course']));
-    $captcha_response = $_POST['h-captcha-response']; // Get the hCaptcha response
+    $captcha_response = $_POST['h-captcha-response'];
 
-    // Verify hCaptcha
-    $secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae'; // Replace with your hCaptcha secret key
+    $secret_key = 'ES_7f358ad256b1474aa1262e98acc952ae';
     $captcha_verify = file_get_contents("https://hcaptcha.com/siteverify?secret=$secret_key&response=$captcha_response");
     $captcha_response_data = json_decode($captcha_verify);
 
@@ -19,45 +19,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Prepare and execute the login query
-    $stmt = $conn->prepare("
-        SELECT id, name, username, course, dept_id, type 
-        FROM users 
-        WHERE username = ? 
-        AND password = ?
-    ");
-    $hashed_password = md5($password); // Use md5 or a stronger hashing algorithm
-    $stmt->bind_param("ss", $username, $hashed_password);
+    $stmt = $conn->prepare("SELECT id, name, username, course, dept_id, type, password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user_data = $result->fetch_assoc();
+        if (password_verify($password, $user_data['password'])) {
+            if ($user_data['course'] === $course) {
+                $_SESSION['user_id'] = $user_data['id'];
+                $_SESSION['dept_id'] = $user_data['dept_id'];
+                $_SESSION['username'] = htmlspecialchars($user_data['username']);
+                $_SESSION['name'] = htmlspecialchars($user_data['name']);
+                $_SESSION['login_type'] = $user_data['type'];
 
-        // Check if the course matches
-        if ($user_data['course'] === $course) {
-            // Store only necessary user information in the session
-            $_SESSION['user_id'] = $user_data['id'];
-            $_SESSION['dept_id'] = $user_data['dept_id'];
-            $_SESSION['username'] = htmlspecialchars($user_data['username']); // Prevent XSS when outputting username
-            $_SESSION['name'] = htmlspecialchars($user_data['name']); // Prevent XSS when outputting name
-            $_SESSION['login_type'] = $user_data['type'];
-
-            if ($_SESSION['login_type'] != 1) {
-                session_unset();
-                echo 2; // User is not allowed
+                echo $_SESSION['login_type'] == 1 ? 1 : 2;
             } else {
-                echo 1; // Successful login
+                echo 4;
             }
         } else {
-            echo 4; // Course mismatch
+            echo 3;
         }
     } else {
-        echo 3; // Invalid username/password
+        echo 3;
     }
     exit;
 }
-?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -96,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Include SweetAlert CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
     
-    <!-- Include hCaptcha API -->
-    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <!-- Include reCAPTCHA API -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <style>
@@ -137,13 +126,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         cursor: pointer;
     }
  
-    .form-group .h-captcha {
+    .form-group .g-recaptcha {
         transform: scale(0.85); /* Adjust scale to fit */
         transform-origin: 0 0; /* Set origin to top-left */
     }
 
     @media (max-width: 600px) {
-        .form-group .h-captcha {
+        .form-group .g-recaptcha {
             transform: scale(0.75); /* Smaller for smaller screens */
             transform-origin: 0 0;
         }
@@ -190,9 +179,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 </div>
  
-                                <!-- hCaptcha Widget -->
+                                <!-- reCAPTCHA Widget -->
                                 <div class="form-group">
-                                    <div class="h-captcha" data-sitekey="0a809f3c-8a90-4672-9d9a-0508be54f062"></div> <!-- Replace with your hCaptcha site key -->
+                                    <div class="g-recaptcha" data-sitekey="6LckZG8qAAAAAOaB5IlBAIcLTOiHW0jhSQeE0qOY"></div> <!-- Adjust width and height as needed -->
                                 </div>
                                 <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Login</button>
                                 <a href="https://mccfacultyscheduling.com/login.php" class="au-btn au-btn--block au-btn--green m-b-20" style="text-align:center;">Home</a>
@@ -213,45 +202,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Bootstrap JS-->
     <script src="vendor/bootstrap-4.1/popper.min.js"></script>
     <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>
-    <!-- Vendor JS -->
-    <script src="vendor/sweetalert/sweetalert.all.min.js"></script>
+    <!-- Vendor JS       -->
+    <script src="vendor/slick/slick.min.js"></script>
+    <script src="vendor/wow/wow.min.js"></script>
+    <script src="vendor/animsition/animsition.min.js"></script>
+    <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="vendor/select2/select2.min.js"></script>
+    <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <!-- Main JS-->
+    <script src="js/main.js"></script>
+
+    <!-- SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
-        $(document).ready(function () {
-            $('#login-form').on('submit', function (e) {
-                e.preventDefault();
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
 
-                // Send AJAX request to PHP login processing
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+            this.classList.toggle('fa-eye');
+        });
+
+        // Handle form submission
+        $(document).ready(function() {
+            $('#login-form').on('submit', function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+
+                $('#login-form button[type="submit"]').attr('disabled', 'disabled').html('Logging in...');
+
                 $.ajax({
-                    url: 'login.php',
                     type: 'POST',
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        if (response == 1) {
-                            Swal.fire('Success!', 'Login successful!', 'success').then(() => {
-                                window.location.href = 'home.php';
+                    url: 'login.php', // Update to the correct URL of your PHP script
+                    data: formData,
+                    success: function(resp) {
+                        if (resp == 1) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful',
+                                text: 'Redirecting...',
+                                showConfirmButton: true
+                            }).then(() => {
+                                location.href = 'home.php'; // Redirect to the homepage
                             });
-                        } else if (response == 2) {
-                            Swal.fire('Access Denied', 'You are not allowed to access this page.', 'error');
-                        } else if (response == 3) {
-                            Swal.fire('Error', 'Invalid username or password.', 'error');
-                        } else if (response == 4) {
-                            Swal.fire('Error', 'Course mismatch. Please select the correct course.', 'error');
-                        } else if (response == 5) {
-                            Swal.fire('Error', 'Captcha verification failed. Please try again.', 'error');
+                        } else if (resp == 2) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Access Denied',
+                                text: 'You do not have permission to access this area.'
+                            });
+                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                        } else if (resp == 4) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Course Mismatch',
+                                text: 'The selected course does not match your account.'
+                            });
+                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                        } else if (resp == 5) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'CAPTCHA Failed',
+                                text: 'Please complete the CAPTCHA.'
+                            });
+                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Login Failed',
+                                text: 'Username or password is incorrect.'
+                            });
+                            $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                         }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'There was an error processing your request. Please try again.'
+                        });
+                        $('#login-form button[type="submit"]').removeAttr('disabled').html('Login');
                     }
                 });
-            });
-
-            // Toggle password visibility
-            $('#togglePassword').on('click', function () {
-                const passwordInput = $('#password');
-                const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
-                passwordInput.attr('type', type);
-                $(this).toggleClass('fa-eye fa-eye-slash');
             });
         });
     </script>
 </body>
-</html>
+</html> 
