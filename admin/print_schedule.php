@@ -109,7 +109,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: black;
+            background-color: white;
         }
 
         .container {
