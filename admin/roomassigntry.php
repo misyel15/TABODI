@@ -372,8 +372,7 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         </select>
     </div>
 </div>
-
-					<input type="hidden" name="description" id="description" value="<?php echo isset($meta['sub_description']) ? htmlspecialchars($meta['sub_description']) : '' ?>">
+<input type="hidden" name="description" id="description" value="<?php echo isset($meta['sub_description']) ? htmlspecialchars($meta['sub_description']) : '' ?>">
 <input type="hidden" name="total_units" id="total_units" value="<?php echo isset($meta['total_units']) ? htmlspecialchars($meta['total_units']) : '' ?>">
 <input type="hidden" name="lec_units" id="lec_units" value="<?php echo isset($meta['lec_units']) ? htmlspecialchars($meta['lec_units']) : '' ?>">
 <input type="hidden" name="lab_units" id="lab_units" value="<?php echo isset($meta['lab_units']) ? htmlspecialchars($meta['lab_units']) : '' ?>">
@@ -403,14 +402,26 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         </select>
     </div>
 </div>
-   <div class="form-group">
-                                    <label for="specialization" class="control-label">Days of Week</label>
-                                    <select class="form-control" name="specialization" id="specialization" required>
-                                        <option value="" disabled selected>Select Days</option>
-                                        <option value="MW">MW</option>
-                                        <option value="TTH">TTH</option>
-                                    </select>
-                                </div>
+  <div class="form-group">
+    <div class="col-sm-12">
+        <label for="specialization" class="control-label">Days of Week</label>
+        <select class="form-control" name="days" id="days">
+            <option value="" disabled selected>Select Days of Week</option>
+            <?php 
+            // Query to fetch days based on department
+            $sql = "SELECT * FROM days ";
+            $query = $conn->query($sql);
+
+            // Loop through the fetched rows and populate the dropdown
+            while ($row = $query->fetch_array()):
+            ?>
+            <option value="<?php echo htmlspecialchars($row['days']) ?>" 
+                <?php echo isset($meta['days']) && $meta['days'] == $row['days'] ? 'selected' : '' ?>>
+                <?php echo ucwords(htmlspecialchars($row['days'])) ?>
+            </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
 </div>
 
 <!-- Timeslot Selection -->
