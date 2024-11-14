@@ -92,7 +92,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print Room Schedule - <?php echo htmlspecialchars($selected_room); ?></title>
+    <title><?php echo htmlspecialchars($selected_room); ?></title>
     <link rel="stylesheet" href="path/to/bootstrap.css"> <!-- Include Bootstrap CSS -->
     <style>
         @media print {
@@ -109,7 +109,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: black;
         }
 
         .container {
