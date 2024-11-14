@@ -57,7 +57,6 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
     }
     echo "</tbody></table>";
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,149 +74,144 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
             margin: 20px auto;
             width: 90%;
         }
-      
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f9;
-    }
 
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #ffffff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h2, h4 {
-        color: #333;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: white;
-        font-size: 16px;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #004085;
-    }
-
-    /* Table Styles */
-    .table {
-        width: 100%;
-        margin-top: 20px;
-        border-collapse: collapse;
-        background-color: #fff;
-    }
-
-    .table th, .table td {
-        padding: 12px;
-        text-align: center;
-        border: 1px solid #ddd;
-    }
-
-    .table th {
-        background-color: #f8f9fa;
-        color: #333;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .table td {
-        font-size: 16px;
-        color: #555;
-    }
-
-    .table-striped tbody tr:nth-child(odd) {
-        background-color: #f2f2f2;
-    }
-
-    /* Print Styles */
-    @media print {
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-        }
-
-        .no-print {
-            display: none;
+            background-color: #f4f4f9;
         }
 
         .container {
-            width: 100%;
-            box-shadow: none;
-            padding: 10px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h2, h4 {
-            color: #000;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
 
-        .table th, .table td {
-            padding: 8px;
-            font-size: 14px;
-        }
-
-        .table {
-            margin-top: 10px;
+        .text-center {
+            text-align: center;
         }
 
         .btn-primary {
-            display: none;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            font-size: 16px;
         }
-    }
 
-    /* Custom Text Styling */
-    .table td {
-        word-wrap: break-word;
-        hyphens: auto;
-    }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
 
-    .text-center h2 {
-        font-size: 24px;
-        color: #007bff;
-    }
+        /* Table Styles */
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
 
-    .table td {
-        text-align: left;
-    }
-</style>
+        .table th, .table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
 
+        .table th {
+            background-color: #f8f9fa;
+            color: #333;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .table td {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .container {
+                width: 100%;
+                box-shadow: none;
+                padding: 10px;
+            }
+
+            h2, h4 {
+                color: #000;
+            }
+
+            .table th, .table td {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .table {
+                margin-top: 10px;
+            }
+
+            .btn-primary {
+                display: none;
+            }
+        }
+
+        /* Custom Text Styling */
+        .table td {
+            word-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .text-center h2 {
+            font-size: 24px;
+            color: #007bff;
+        }
+
+        .table td {
+            text-align: left;
+        }
     </style>
 </head>
 <body onload="window.print()">
- <script>
-            // Detect when the print dialog is closed
-            window.onafterprint = function() {
-                // Redirect back if the print dialog was canceled
-                window.history.back();
-            };
-        </script>
-<div class="container">
-    <div class="text-center">
-        <h2>Room Schedule for <?php echo htmlspecialchars($selected_room); ?></h2>
-      
+    <script>
+        // Detect when the print dialog is closed
+        window.onafterprint = function() {
+            // Redirect back to the room schedule page after printing or canceling
+            window.location.href = 'roomsched.php'; // Replace with your actual page URL
+        };
+    </script>
+    <div class="container">
+        <div class="text-center">
+            <h2>Room Schedule for <?php echo htmlspecialchars($selected_room); ?></h2>
+        </div>
+
+        <?php
+        // Display each schedule by day type
+        display_schedule("MW", $selected_room, $dept_id, $conn);
+        display_schedule("TTH", $selected_room, $dept_id, $conn);
+        display_schedule("FS", $selected_room, $dept_id, $conn);
+        ?>
     </div>
-
-    <?php
-    // Display each schedule by day type
-    display_schedule("MW", $selected_room, $dept_id, $conn);
-    display_schedule("TTH", $selected_room, $dept_id, $conn);
-    display_schedule("FS", $selected_room, $dept_id, $conn);
-    ?>
-
-</div>
-
 </body>
 </html>
