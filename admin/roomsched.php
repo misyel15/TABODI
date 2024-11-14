@@ -12,6 +12,8 @@ $selected_room = isset($_POST['selected_room']) ? $_POST['selected_room'] : '';
 
 <div class="container-fluid" style="margin-top:100px; margin-left:-15px;">
     <div class="container-fluid mt-5">
+<a href="print_schedule.php?selected_room=<?php echo urlencode($selected_room); ?>" class="btn btn-secondary ml-2">Print Schedule</a>
+
         <div class="card mb-4">
             <div class="card-header text-center">
                 <h3>Room Schedule</h3>
