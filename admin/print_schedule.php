@@ -207,7 +207,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
 <div class="container">
     <div class="text-center">
         <h2>Room Schedule for <?php echo htmlspecialchars($selected_room); ?></h2>
-        <button class="btn btn-primary no-print" onclick="window.print()">Print</button>
+      
     </div>
 
     <?php
