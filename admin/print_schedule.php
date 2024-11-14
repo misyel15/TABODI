@@ -11,6 +11,35 @@ if (!$selected_room) {
     exit;
 }
 
+// Function to get the appropriate header image based on department ID
+function getHeaderImage($dept_id) {
+    // Determine the header image based on the department ID
+    switch ($dept_id) {
+        case 4444:
+            $headerImage = "assets/uploads/back.png";
+            break;
+        case 5858:
+            $headerImage = "assets/uploads/end.png";
+            break;
+        case 3333:
+            $headerImage = "assets/uploads/mcclogo.jpg";
+            break;
+        case 6666:
+            $headerImage = "assets/uploads/header_6666.png";
+            break;
+        default:
+            $headerImage = "assets/uploads/default_header.png"; // Fallback to default header
+            break;
+    }
+
+    // Check if the image file exists; if not, use a default image
+    if (!file_exists($headerImage)) {
+        $headerImage = "assets/uploads/default_header.png"; // Fallback if specific image doesn't exist
+    }
+
+    return $headerImage;
+}
+
 // Helper function to display schedules by day type
 function display_schedule($day_type, $selected_room, $dept_id, $conn) {
     echo "<h4 class='text-center'>$day_type </h4>";
@@ -57,6 +86,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
     }
     echo "</tbody></table>";
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +100,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
             .no-print { display: none; }
             table { width: 100%; }
         }
+
         .table {
             margin: 20px auto;
             width: 90%;
@@ -191,6 +222,17 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
         .table td {
             text-align: left;
         }
+
+        /* Header Image Style */
+        .header-image {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-image img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body onload="window.print()">
@@ -198,10 +240,15 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
         // Detect when the print dialog is closed
         window.onafterprint = function() {
             // Redirect back to the room schedule page after printing or canceling
-            window.location.href = 'roomsched.php'; // Replace with your actual page URL
+            window.location.href = 'your-room-schedule-page-url.php'; // Replace with your actual page URL
         };
     </script>
     <div class="container">
+        <!-- Header Image Section -->
+        <div class="header-image">
+            <img src="<?php echo getHeaderImage($dept_id); ?>" alt="Department Header Image">
+        </div>
+
         <div class="text-center">
             <h2>Room Schedule for <?php echo htmlspecialchars($selected_room); ?></h2>
         </div>
