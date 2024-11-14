@@ -197,7 +197,13 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
     </style>
 </head>
 <body onload="window.print()">
-
+ <script>
+            // Detect when the print dialog is closed
+            window.onafterprint = function() {
+                // Redirect back if the print dialog was canceled
+                window.history.back();
+            };
+        </script>
 <div class="container">
     <div class="text-center">
         <h2>Room Schedule for <?php echo htmlspecialchars($selected_room); ?></h2>
