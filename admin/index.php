@@ -67,10 +67,10 @@
     </div>
   </div>
   <main id="view-panel" >
-      <?php $page = isset($_GET['page']) ? $_GET['page'] :'home'; ?>
-  	<?php include $page.'.php' ?>
-  	
-
+     <?php
+      $page = isset($_GET['page']) ? $_GET['page'] : 'home';
+      include $page;  // No need to specify '.php' as .htaccess handles it
+    ?>
   </main>
 
   <div id="preloader"></div>
