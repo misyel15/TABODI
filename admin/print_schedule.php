@@ -13,7 +13,7 @@ if (!$selected_room) {
 
 // Helper function to display schedules by day type
 function display_schedule($day_type, $selected_room, $dept_id, $conn) {
-    echo "<h4 class='text-center'>$day_type Schedule</h4>";
+    echo "<h4 class='text-center'>$day_type </h4>";
     echo "<table class='table table-bordered table-striped'>";
     echo "<thead><tr><th class='text-center'>Time</th><th class='text-center'>$selected_room</th></tr></thead><tbody>";
 
