@@ -240,7 +240,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
         // Detect when the print dialog is closed
         window.onafterprint = function() {
             // Redirect back to the room schedule page after printing or canceling
-            window.location.href = 'your-room-schedule-page-url.php'; // Replace with your actual page URL
+            window.location.href = 'roomsched.php'; // Replace with your actual page URL
         };
     </script>
     <div class="container">
