@@ -404,8 +404,12 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
     </div>
 </div>
    <div class="form-group">
-                                    <label class="control-label">Days of Week</label>
-                                    <input type="text" class="form-control" name="schedule" id="schedule" required>
+                                    <label for="specialization" class="control-label">Days of Week</label>
+                                    <select class="form-control" name="specialization" id="specialization" required>
+                                        <option value="" disabled selected>Select Days</option>
+                                        <option value="MW">MW</option>
+                                        <option value="TTH">TTH</option>
+                                    </select>
                                 </div>
 </div>
 
