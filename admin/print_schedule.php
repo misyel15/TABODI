@@ -16,16 +16,16 @@ function getHeaderImage($dept_id) {
     // Determine the header image based on the department ID
     switch ($dept_id) {
         case 4444:
-            $headerImage = "assets/uploads/back.png";
-            break;
-        case 5858:
             $headerImage = "assets/uploads/end.png";
             break;
-        case 3333:
-            $headerImage = "assets/uploads/mcclogo.jpg";
+        case 5858:
+            $headerImage = "assets/uploads/EDU.png";
             break;
-        case 6666:
-            $headerImage = "assets/uploads/header_6666.png";
+        case 3333:
+            $headerImage = "assets/uploads/HM.jpg";
+            break;
+        case 12345:
+            $headerImage = "assets/uploads/BA.png";
             break;
         default:
             $headerImage = "assets/uploads/default_header.png"; // Fallback to default header
