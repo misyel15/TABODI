@@ -92,7 +92,9 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($selected_room); ?></title>
+    <title>roomschedule</title>
+      <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="path/to/bootstrap.css"> <!-- Include Bootstrap CSS -->
     <style>
         @media print {
@@ -248,9 +250,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
             <img src="<?php echo getHeaderImage($dept_id); ?>" alt="Department Header Image">
         </div>
 
-        <div class="text-center">
-            <h2>Room Schedule for <?php echo htmlspecialchars($selected_room); ?></h2>
-        </div>
+      
 
         <?php
         // Display each schedule by day type
