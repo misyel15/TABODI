@@ -403,26 +403,10 @@ $dept_id = $_SESSION['dept_id']; // Get the department ID from the session
         </select>
     </div>
 </div>
-<div class="form-group">
-    <div class="col-sm-12">
-        <label for="specialization" class="control-label">Days of Week</label>
-        <select class="form-control" name="days" id="days">
-            <option value="" disabled selected>Select Days of Week</option>
-            <?php 
-            // Query to fetch days based on department
-            $sql = "SELECT * FROM days ";
-            $query = $conn->query($sql);
-
-            // Loop through the fetched rows and populate the dropdown
-            while ($row = $query->fetch_array()):
-            ?>
-            <option value="<?php echo htmlspecialchars($row['days']) ?>" 
-                <?php echo isset($meta['days']) && $meta['days'] == $row['days'] ? 'selected' : '' ?>>
-                <?php echo ucwords(htmlspecialchars($row['days'])) ?>
-            </option>
-            <?php endwhile; ?>
-        </select>
-    </div>
+   <div class="form-group">
+                                    <label class="control-label">Days of Week</label>
+                                    <input type="text" class="form-control" name="schedule" id="schedule" required>
+                                </div>
 </div>
 
 <!-- Timeslot Selection -->
