@@ -14,7 +14,7 @@ if (!$selected_room) {
 // Helper function to display schedules by day type
 function display_schedule($day_type, $selected_room, $dept_id, $conn) {
     echo "<h4 class='text-center'>$day_type Schedule</h4>";
-    echo "<table class='table table-bordered'>";
+    echo "<table class='table table-bordered table-striped'>";
     echo "<thead><tr><th class='text-center'>Time</th><th class='text-center'>$selected_room</th></tr></thead><tbody>";
 
     // Fetch time slots for the specific day type
@@ -26,7 +26,7 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
 
     // Display each time slot
     foreach ($times as $time) {
-        echo "<tr><td>" . htmlspecialchars($time) . "</td>";
+        echo "<tr><td class='text-center'>" . htmlspecialchars($time) . "</td>";
 
         // Prepare statement to fetch loading data
         $query = "SELECT * FROM loading WHERE timeslot=? AND room_name=? AND days=?";
@@ -48,10 +48,10 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
                 $faculty_name_result = $faculty_stmt->get_result();
                 $faculty_name = $faculty_name_result->fetch_assoc()['name'] ?? 'Unknown Faculty';
 
-                echo "<td class='text-center'>" . htmlspecialchars("$subject $course $faculty_name") . "</td>";
+                echo "<td class='text-center'>" . htmlspecialchars("$subject $course - $faculty_name") . "</td>";
             }
         } else {
-            echo "<td></td>"; // No data for this time slot
+            echo "<td class='text-center'>No class scheduled</td>";
         }
         echo "</tr>";
     }
@@ -69,6 +69,11 @@ function display_schedule($day_type, $selected_room, $dept_id, $conn) {
     <style>
         @media print {
             .no-print { display: none; }
+            table { width: 100%; }
+        }
+        .table {
+            margin: 20px auto;
+            width: 90%;
         }
     </style>
 </head>
