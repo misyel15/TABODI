@@ -56,17 +56,24 @@ function printPageHeader($dept_id) {
             background-color: #f2f2f2;
         }
     </style>
-    <script>
-        // Detect when the print dialog is closed
-        window.onafterprint = function() {
-            window.history.back();
-        };
+   <script>
+    // Detect when the print dialog is closed
+    window.onafterprint = function() {
+        // Check if there is a previous history entry
+        if (window.history.length > 1) {
+            window.history.back(); // Go back to the previous page
+        } else {
+            // Redirect to a specific page if no history is available
+            window.location.href = 'https://mccfacultyscheduling.com/admin/roomsched.php'; // Replace with your desired URL
+        }
+    };
 
-        // Automatically open the print dialog
-        window.onload = function() {
-            window.print();
-        };
-    </script>
+    // Automatically open the print dialog
+    window.onload = function() {
+        window.print();
+    };
+</script>
+
 </head>
 <body>
     <div class="container">
