@@ -2,262 +2,147 @@
 session_start();
 include('db_connect.php');
 
-// Get the department ID and selected room from the session and request
-$dept_id = $_SESSION['dept_id'];
-$selected_room = isset($_GET['selected_room']) ? $_GET['selected_room'] : '';
-
-if (!$selected_room) {
-    echo "No room selected for printing.";
-    exit;
+// Ensure the connection is valid
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
 }
 
-// Function to get the appropriate header image based on department ID
-function getHeaderImage($dept_id) {
-    // Determine the header image based on the department ID
-    switch ($dept_id) {
-        case 4444:
-            $headerImage = "assets/uploads/end.png";
-            break;
-        case 5858:
-            $headerImage = "assets/uploads/EDU.png";
-            break;
-        case 3333:
-            $headerImage = "assets/uploads/HM.jpg";
-            break;
-        case 12345:
-            $headerImage = "assets/uploads/BA.png";
-            break;
-        default:
-            $headerImage = "assets/uploads/default_header.png"; // Fallback to default header
-            break;
-    }
-    // Check if the image file exists; if not, use a default image
+// Get the department ID from the session
+$dept_id = $_SESSION['dept_id'] ?? null;
+
+// Get the selected room from the query parameter
+$selected_room = isset($_GET['selected_room']) ? htmlspecialchars($_GET['selected_room']) : '';
+
+// Function to print the department-specific header
+function printPageHeader($dept_id) {
+    $headers = [
+        4444 => "assets/uploads/end.png",
+        5858 => "assets/uploads/EDU.png",
+        3333 => "assets/uploads/HM.jpg",
+        12345 => "assets/uploads/BA.png",
+    ];
+    $headerImage = $headers[$dept_id] ?? "assets/uploads/default_header.png";
+
+    // Check if the file exists, fallback to default
     if (!file_exists($headerImage)) {
-        $headerImage = "assets/uploads/default_header.png"; // Fallback if specific image doesn't exist
+        $headerImage = "assets/uploads/default_header.png";
     }
 
-    return $headerImage;
+    echo '<img src="' . $headerImage . '" alt="Department Header" style="display: block; margin: 0 auto; width: 100%; max-width: 800px; margin-bottom: 20px;">';
 }
-
-// Helper function to display schedules by day type
-function display_schedule($day_type, $selected_room, $dept_id, $conn) {
-    echo "<h4 class='text-center'>$day_type </h4>";
-    echo "<table class='table table-bordered table-striped'>";
-    echo "<thead><tr><th class='text-center'>Time</th><th class='text-center'>$selected_room</th></tr></thead><tbody>";
-
-    // Fetch time slots for the specific day type
-    $times = [];
-    $timesdata = $conn->query("SELECT * FROM timeslot WHERE schedule='$day_type' AND dept_id = '$dept_id' ORDER BY time_id");
-    while ($t = $timesdata->fetch_assoc()) {
-        $times[] = $t['timeslot'];
-    }
-
-    // Display each time slot
-    foreach ($times as $time) {
-        echo "<tr><td class='text-center'>" . htmlspecialchars($time) . "</td>";
-
-        // Prepare statement to fetch loading data
-        $query = "SELECT * FROM loading WHERE timeslot=? AND room_name=? AND days=?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('sss', $time, $selected_room, $day_type);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $course = htmlspecialchars($row['course']);
-                $subject = htmlspecialchars($row['subjects']);
-                $faculty_id = htmlspecialchars($row['faculty']);
-
-                // Fetch faculty name
-                $faculty_stmt = $conn->prepare("SELECT CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty WHERE id=?");
-                $faculty_stmt->bind_param('i', $faculty_id);
-                $faculty_stmt->execute();
-                $faculty_name_result = $faculty_stmt->get_result();
-                $faculty_name = $faculty_name_result->fetch_assoc()['name'] ?? 'Unknown Faculty';
-
-                echo "<td class='text-center'>" . htmlspecialchars("$subject $course - $faculty_name") . "</td>";
-            }
-        } else {
-            echo "<td class='text-center'>No class scheduled</td>";
-        }
-        echo "</tr>";
-    }
-    echo "</tbody></table>";
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>roomschedule</title>
-      <link rel="icon" href="assets/uploads/mcclogo.jpg" type="image/jpg">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="path/to/bootstrap.css"> <!-- Include Bootstrap CSS -->
+    <title>Room Schedule - <?php echo $selected_room ?: 'All Rooms'; ?></title>
     <style>
-        @media print {
-            .no-print { display: none; }
-            table { width: 100%; }
-        }
-
-        .table {
-            margin: 20px auto;
-            width: 90%;
-        }
-
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: white;
+            margin: 20px;
         }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2, h4 {
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: white;
-            font-size: 16px;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-
-        /* Table Styles */
-        .table {
+        table {
             width: 100%;
-            margin-top: 20px;
             border-collapse: collapse;
-            background-color: #fff;
+            margin-top: 20px;
         }
-
-        .table th, .table td {
-            padding: 12px;
+        th, td {
+            padding: 8px 12px;
             text-align: center;
             border: 1px solid #ddd;
         }
-
-        .table th {
-            background-color: #f8f9fa;
-            color: #333;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .table td {
-            font-size: 16px;
-            color: #555;
-        }
-
-        .table-striped tbody tr:nth-child(odd) {
+        th {
             background-color: #f2f2f2;
         }
-
-        /* Print Styles */
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-
-            .no-print {
-                display: none;
-            }
-
-            .container {
-                width: 100%;
-                box-shadow: none;
-                padding: 10px;
-            }
-
-            h2, h4 {
-                color: #000;
-            }
-
-            .table th, .table td {
-                padding: 8px;
-                font-size: 14px;
-            }
-
-            .table {
-                margin-top: 10px;
-            }
-
-            .btn-primary {
-                display: none;
-            }
-        }
-
-        /* Custom Text Styling */
-        .table td {
-            word-wrap: break-word;
-            hyphens: auto;
-        }
-
-        .text-center h2 {
-            font-size: 24px;
-            color: #007bff;
-        }
-
-        .table td {
-            text-align: left;
-        }
-
-        /* Header Image Style */
-        .header-image {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header-image img {
-            max-width: 100%;
-            height: auto;
-        }
     </style>
-</head>
-<body onload="window.print()">
     <script>
         // Detect when the print dialog is closed
         window.onafterprint = function() {
-            // Redirect back to the room schedule page after printing or canceling
-            window.location.href = 'roomsched.php'; // Replace with your actual page URL
+            window.history.back();
+        };
+
+        // Automatically open the print dialog
+        window.onload = function() {
+            window.print();
         };
     </script>
+</head>
+<body>
     <div class="container">
-        <!-- Header Image Section -->
-        <div class="header-image">
-            <img src="<?php echo getHeaderImage($dept_id); ?>" alt="Department Header Image">
-        </div>
+        <?php printPageHeader($dept_id); ?>
 
-      
+        <center><h3 class="text-center">Room Schedule - <?php echo $selected_room ?: 'All Rooms'; ?></h3></center>
+        <table>
+            <thead>
+                <tr>
+                    <th class="text-center">Time</th>
+                    <th class="text-center">MW</th>
+                    <th class="text-center">TTH</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Fetch timeslots for the department
+                $timeslot_query = $conn->prepare("SELECT timeslot FROM timeslot WHERE dept_id = ? ORDER BY time_id");
+                $timeslot_query->bind_param("i", $dept_id);
+                $timeslot_query->execute();
+                $timeslot_result = $timeslot_query->get_result();
 
-        <?php
-        // Display each schedule by day type
-        display_schedule("MW", $selected_room, $dept_id, $conn);
-        display_schedule("TTH", $selected_room, $dept_id, $conn);
-        display_schedule("FS", $selected_room, $dept_id, $conn);
-        ?>
+                $times = [];
+                while ($row = $timeslot_result->fetch_assoc()) {
+                    $times[] = $row['timeslot'];
+                }
+
+                // Fetch all faculty names in advance
+                $faculty_query = $conn->query("SELECT id, CONCAT(lastname, ', ', firstname, ' ', middlename) AS name FROM faculty");
+                $faculty_names = [];
+                while ($row = $faculty_query->fetch_assoc()) {
+                    $faculty_names[$row['id']] = $row['name'];
+                }
+
+                // Render schedule rows
+                foreach ($times as $time) {
+                    echo "<tr><td>" . htmlspecialchars($time) . "</td>";
+
+                    foreach (['MW', 'TTH'] as $days) {
+                        echo "<td>";
+                        
+                        $query = "SELECT course, subjects, faculty FROM loading WHERE timeslot = ? AND days = ?";
+                        if ($selected_room) {
+                            $query .= " AND room_name = ?";
+                        }
+
+                        $stmt = $conn->prepare($query);
+                        if ($selected_room) {
+                            $stmt->bind_param("sss", $time, $days, $selected_room);
+                        } else {
+                            $stmt->bind_param("ss", $time, $days);
+                        }
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                $course = htmlspecialchars($row['course']);
+                                $subject = htmlspecialchars($row['subjects']);
+                                $faculty_id = $row['faculty'];
+                                $faculty_name = $faculty_names[$faculty_id] ?? 'Unknown Faculty';
+
+                                echo '<p>' . htmlspecialchars("$subject $course $faculty_name") . '</p>';
+                            }
+                        } else {
+                            echo "&nbsp;"; // Empty cell placeholder
+                        }
+
+                        echo "</td>";
+                    }
+
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
