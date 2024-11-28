@@ -70,7 +70,7 @@
   }
 
   /* Media query for responsive design */
-  @media (max-width: 576px) {
+  @media (max-width: 400px) {
     .navbar-brand span {
       display: none; /* Hide text on smaller screens */
     }
