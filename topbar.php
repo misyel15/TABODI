@@ -42,6 +42,7 @@
     padding: 10px 15px;
     color: #495057;
     font-size: 0.9rem;
+      min-width: 150px;
     transition: background-color 0.3s, color 0.3s;
   }
 
