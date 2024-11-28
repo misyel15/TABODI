@@ -89,7 +89,7 @@
 <div class="custom-navbar">
   <a class="navbar-brand" href="#">
     <img src="mcclogo.jpg" alt="Logo">
-    <span>MFSS</span>
+    MFSS
   </a>
   <ul class="navbar-nav">
     <li class="nav-item dropdown">
