@@ -1,71 +1,108 @@
-
 <style>
-  .logo {
-    margin: auto;
-    font-size: 0px;
-    background: white;
-    padding: 7px 11px;
-    border-radius: 50% 50%;
-    color: #000000b3;
+  /* General styling for the navbar */
+  .custom-navbar {
+    background-color: #f8f9fa; /* Light gray for contrast */
+    border-bottom: 2px solid #dee2e6; /* Subtle bottom border */
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .custom-navbar {
-    background-color: white; /* Dark red color */
-   
+  /* Branding logo and text */
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
   }
 
   .navbar-brand img {
-    width: 50px;
+    width: 40px;
     height: 40px;
+    border-radius: 50%; /* Rounded logo */
+    margin-right: 10px; /* Space between logo and text */
   }
 
-  .navbar-brand {
-    color: white;
-    font-size: 0.8rem;
+  .navbar-brand span {
+    color: #343a40;
+    font-size: 1rem;
     font-weight: bold;
   }
 
+  /* Dropdown menu styling */
   .dropdown-menu {
-    background: white; /* Same as navbar background */
-    border: none;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 0;
+    min-width: 150px;
   }
 
   .dropdown-item {
-    color: black;
+    padding: 10px 15px;
+    color: #495057;
+    font-size: 0.9rem;
+    transition: background-color 0.3s, color 0.3s;
   }
 
   .dropdown-item:hover {
-    background-color:  lightgray; /* Darker red for hover effect */
+    background-color: #f1f1f1;
+    color: #007bff;
   }
 
-  .navbar-nav {
-    margin-left: auto; /* Align items to the right */
-    font-size: 0.8rem;
+  /* User account icon and text */
+  .nav-link {
+    display: flex;
+    align-items: center;
+    color: black;
+    font-size: 0.9rem;
     font-weight: bold;
+    text-decoration: none;
   }
 
-  .nav-item {
-    margin-left: 15px; /* Space between items */
+  .nav-link i {
+    margin-right: 5px;
+    font-size: 1.2rem;
+  }
+
+  .nav-link:hover {
+    color: #007bff;
+  }
+
+  /* Media query for responsive design */
+  @media (max-width: 576px) {
+    .navbar-brand span {
+      display: none; /* Hide text on smaller screens */
+    }
+
+    .dropdown-menu {
+      min-width: 100px;
+    }
+
+    .dropdown-item {
+      font-size: 0.8rem;
+    }
   }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar" style="padding: 0; min-height: 2.0rem;">
-  <div class="container-fluid mt-2 mb-2">
-    <a class="navbar-brand" href="#">
-      <img src="mcclogo.jpg" alt="Logo"> MFSS
-    </a>
-    <ul class="navbar-nav ml-auto"> <!-- Aligns the nav items to the right -->
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-black" href="#" id="account_settings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-user text-secondary" aria-hidden="true"></i> <?php echo $_SESSION['login_name'] ?>
+<div class="custom-navbar">
+  <a class="navbar-brand" href="#">
+    <img src="mcclogo.jpg" alt="Logo">
+    <span>MFSS</span>
+  </a>
+  <ul class="navbar-nav">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" id="account_settings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-user"></i> <?php echo $_SESSION['login_name'] ?>
+      </a>
+      <div class="dropdown-menu" aria-labelledby="account_settings">
+        <a class="dropdown-item" href="admin/ajax.php?action=logout2">
+          <i class="fa fa-power-off"></i> Logout
         </a>
-        <div class="dropdown-menu" aria-labelledby="account_settings">
-          <a class="dropdown-item" href="admin/ajax.php?action=logout2"><i class="fa fa-power-off"></i> Logout</a>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
+      </div>
+    </li>
+  </ul>
+</div>
 
 <script>
   $('#manage_my_account').click(function(){
