@@ -98,7 +98,7 @@
       </a>
       <div class="dropdown-menu" aria-labelledby="account_settings">
         <a class="dropdown-item" href="admin/ajax.php?action=logout2">
-          <i class="fa fa-power-off"></i> Logout
+       <center>   <i class="fa fa-power-off"></i> Logout </center>
         </a>
       </div>
     </li>
