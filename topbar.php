@@ -21,6 +21,9 @@
     height: 40px;
     border-radius: 50%; /* Rounded logo */
     margin-right: 10px; /* Space between logo and text */
+        color: #343a40;
+    font-size: 1rem;
+    font-weight: bold;
   }
 
   .navbar-brand span {
