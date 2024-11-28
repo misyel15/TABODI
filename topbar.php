@@ -14,6 +14,8 @@
     display: flex;
     align-items: center;
     text-decoration: none;
+    color: black; /* Make "MFSS" black */
+    font-weight: bold; /* Optional: makes it stand out more */
   }
 
   .navbar-brand img {
@@ -21,15 +23,6 @@
     height: 40px;
     border-radius: 50%; /* Rounded logo */
     margin-right: 10px; /* Space between logo and text */
-        color: #343a40;
-    font-size: 1rem;
-    font-weight: bold;
-  }
-
-  .navbar-brand span {
-    color: #343a40;
-    font-size: 1rem;
-    font-weight: bold;
   }
 
   /* Dropdown menu styling */
@@ -45,7 +38,7 @@
     padding: 10px 15px;
     color: #495057;
     font-size: 0.9rem;
-      min-width: 150px;
+    min-width: 150px;
     transition: background-color 0.3s, color 0.3s;
   }
 
@@ -90,7 +83,7 @@
 </style>
 
 <div class="custom-navbar">
-  <a class="navbar-brand" href="#">
+  <a class="navbar-brand">
     <img src="mcclogo.jpg" alt="Logo">
     MFSS
   </a>
@@ -101,7 +94,7 @@
       </a>
       <div class="dropdown-menu" aria-labelledby="account_settings">
         <a class="dropdown-item" href="admin/ajax.php?action=logout2">
-       <center>   <i class="fa fa-power-off"></i> Logout </center>
+       <center><i class="fa fa-power-off"></i> Logout</center>
         </a>
       </div>
     </li>
