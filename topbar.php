@@ -94,7 +94,7 @@
   <ul class="navbar-nav">
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="account_settings" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-user"></i> <?php echo $_SESSION['login_name'] ?>
+        <i class="fa fa-user"></i> <?php echo $_SESSION['login_lastname'] ?>
       </a>
       <div class="dropdown-menu" aria-labelledby="account_settings">
         <a class="dropdown-item" href="admin/ajax.php?action=logout2">
