@@ -1,7 +1,9 @@
 <?php 
 include 'style.php'; 
 include 'headers.php'; 
-
+ // Set Referrer-Policy and Permissions-Policy headers
+  header("Referrer-Policy: strict-origin-when-cross-origin");
+  header("Permissions-Policy: geolocation=(self), microphone=(), camera=()");
     // Security headers
     header("Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted-scripts.com;");
     header("X-Frame-Options: DENY");
