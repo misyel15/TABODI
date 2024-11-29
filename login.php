@@ -1,7 +1,75 @@
 <?php 
 include 'style.php'; 
 include 'headers.php'; 
+
+    // Security headers
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted-scripts.com;");
+    header("X-Frame-Options: DENY");
+    header("Content-Security-Policy: frame-ancestors 'none';");
+    header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+    
+    // Redirect all HTTP requests to HTTPS if not already using HTTPS
+    if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+      header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+      exit();
+    }
+    
+    // Secure session cookie settings
+    ini_set('session.cookie_secure', '1');    // Enforces HTTPS-only session cookies
+    ini_set('session.cookie_httponly', '1');  // Prevents JavaScript from accessing session cookies
+    ini_set('session.cookie_samesite', 'Strict'); // Prevents CSRF by limiting cross-site cookie usage
+    
+    // Additional security headers
+    header("X-Content-Type-Options: nosniff");
+    header("X-Frame-Options: DENY");
+    header("X-XSS-Protection: 1; mode=block");
+
+    // Anti-XXE: Secure XML parsing
+    libxml_disable_entity_loader(true); // Disable loading of external entities
+    libxml_use_internal_errors(true);   // Suppress libxml errors for better handling
+
+    // Function to parse XML securely with extra checks
+    function parseXMLSecurely($xmlString) {
+        // Check if the XML string is valid before processing
+        if (empty($xmlString)) {
+            throw new Exception('Empty XML string.');
+        }
+
+        // Create a new DOMDocument instance
+        $dom = new DOMDocument();
+        
+        // Load the XML string securely (with protection against external entity attacks)
+        if (!$dom->loadXML($xmlString, LIBXML_NOENT | LIBXML_DTDLOAD | LIBXML_DTDATTR | LIBXML_NOCDATA)) {
+            // Catch any parsing errors and handle them securely
+            throw new Exception('Error loading XML: ' . implode(", ", libxml_get_errors()));
+        }
+        
+        // Additional processing or manipulation of XML content
+        // For example, you could validate the XML schema or transform it here
+        return $dom;
+    }
+    
+    // Example usage of the secure XML parsing function
+    try {
+        $xmlString = '<root><element>Sample</element></root>'; // Replace with actual XML input
+        $dom = parseXMLSecurely($xmlString);
+
+        // Example: you can now work with the $dom object safely, for example, fetching elements
+        $elements = $dom->getElementsByTagName('element');
+        foreach ($elements as $element) {
+            echo 'Element value: ' . $element->nodeValue;
+        }
+        
+    } catch (Exception $e) {
+        // Handle errors securely and log if needed
+        // Always avoid exposing sensitive information in the error message to the user
+        error_log('Error processing XML: ' . $e->getMessage());
+        echo 'Error processing XML. Please try again later.';
+    }
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
